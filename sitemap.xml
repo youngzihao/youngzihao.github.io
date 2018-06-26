@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2018/06/26/soft%20skills/</loc>
+    
+    <lastmod>2018-06-26T14:37:59.158Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2017/09/05/data-visualization/</loc>
+    
+    <lastmod>2018-06-26T14:37:51.581Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2018/02/25/modern-art/</loc>
     
     <lastmod>2018-02-25T11:29:43.262Z</lastmod>
@@ -19,13 +33,6 @@
     <loc>http://yoursite.com/2017/10/24/1501/</loc>
     
     <lastmod>2017-12-26T01:24:19.858Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2017/09/05/data-visualization/</loc>
-    
-    <lastmod>2017-12-24T08:16:34.643Z</lastmod>
     
   </url>
   
