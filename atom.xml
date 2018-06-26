@@ -5,9 +5,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="https://github.com/youngzihao/youngzihao.github.io/"/>
+  <link href="http://yoursite.com/"/>
   <updated>2018-06-26T10:09:54.355Z</updated>
-  <id>https://github.com/youngzihao/youngzihao.github.io/</id>
+  <id>http://yoursite.com/</id>
   
   <author>
     <name>John Doe</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="https://github.com/youngzihao/youngzihao.github.io/2018/06/26/hello-world/"/>
-    <id>https://github.com/youngzihao/youngzihao.github.io/2018/06/26/hello-world/</id>
+    <link href="http://yoursite.com/2018/06/26/hello-world/"/>
+    <id>http://yoursite.com/2018/06/26/hello-world/</id>
     <published>2018-06-26T10:09:54.355Z</published>
     <updated>2018-06-26T10:09:54.355Z</updated>
     
