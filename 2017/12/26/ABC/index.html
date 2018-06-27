@@ -667,6 +667,750 @@
 <li><p>伪随机数生成器：通过硬件生成的随机数列，是根据传感器收集的热量、声音的变化等事实上无法预测和重现的自然信息来生成的，像这样的硬件设备就称为<strong>随机数生成器</strong>（Random Number Generator，RNG），而可以生成随机数的软件就称为<strong>伪随机数生成器</strong>（Pseudo Random Number Generator，PRNG）。</p>
 <p>伪随机数生成器的结构：</p>
 <p>（1）内部状态：是指伪随机数生成器所管理的内存中的数值，为了响应下一个伪随机数请求，伪随机数生成器会改变自己的内部状态，因此将根据内部状态计算伪随机数生成器的方法和改变内部状态的方法结合起来，就是伪随机数生成的算法。由于内部状态决定了下一个生成的伪随机数，因此内部状态不能被攻击者知道。</p>
+<p>（2）种子：是用来对伪随机数生成器的内部状态进行初始化的。种子是一串随机的比特序列，根据种子可以生成出专属于自己的伪随机数列，伪随机数生成器是公开的，但种子是需要自己保密的。</p>
+<p>具体的伪随机数生成器：</p>
+<p>（1）杂乱的方法：该方法无法用于密码技术，因为周期太短，不具有不可预测性，并且程序员都不能理解算法的详细内容，无法判断是否具有不可预测性。</p>
+<p>（2）线性同余法（line congruential method）：是一种使用很广泛的伪随机数生成器算法，然而，它并不能用于密码技术。   </p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fmsv52a6cdj30sg0lcju7.jpg" alt="16"></p>
+<p><strong>线性同余法就是将当前的伪随机数乘以 <em>A</em> 在加上 <em>C</em> ，然后将除以 <em>M</em> 得到的余数作为下一个伪随机数</strong>。（<em>A</em>、<em>C</em>、<em>M</em> 都是常量，且 <em>A</em> 和 <em>C</em> 需要小于 <em>M</em>）</p>
+<p><strong>线性同余法不具备不可预测性，因此不可以将线性同余法用于密码技术</strong>。很多伪随机数生成器的库函数（library function）都是采用线性同余法编写的，例如 C 语言的库函数 rand ，以及 Java 的java.util.Random类，都采用了线性同余法，因此这些函数都无法用于密码技术。</p>
+<p>（3）单向散列函数法：</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmsv51wqusj30sg0lctbq.jpg" alt="17"></p>
+<p>① 用伪随机数的种子初始化内部状态（计数器）。</p>
+<p>② 用单向散列函数计算计算器的散列值。</p>
+<p>③ 将散列值作为随机数输出——计算器的值加 1 。</p>
+<p>④ 据需要的伪随机数数量重复步骤。</p>
+<p>在此方法中，<strong>单向散列函数的单向性是支撑伪随机数生成器不可预测性的基础</strong>。</p>
+<p>（4）密码法：</p>
+<p>① 初始化内部状态（计数器）。</p>
+<p>② 用密钥加密计数器的值。</p>
+<p>③ 将密文作为伪随机数输出——计数器的值加 1 。 </p>
+<p>④ 根据需要的伪随机数数量重复步骤。</p>
+<p>在此方法中，<strong>密码的机密性是支撑伪随机数生成器不可预测性的基础</strong>。</p>
+<p>（5）ANSI X9.17 ：关于用密码实现伪随机数生成器的具体方法，被用于密码软件 PGP 中。</p>
+<p>（6）其他算法：除了上面介绍的算法，还有很多其他的生成随机数的算法，在安全相关的软件开发中，开发者在选择随机数生成算法时必须确认“这个随机数算法是否能够用于密码学和安全相关用途”。一个随机数算法再优秀，如果它不具备不可预测性，那么就不能用于密码学和安全相关用途。</p>
+<p>有一个有名的伪随机数生成算法叫做<strong>梅森旋转算法</strong>（Mersenne twister），但它并不能用于安全相关的用途，和线性同余法一样，只要观察足够长的随机数列，就能够对之后生成的随机数列进行预测。</p>
+<p>Java 中有一个用于生成随机数列的类，名叫 java.util.Random ,然而这个类也不能用于安全相关用途，要用于安全用途，可以使用另一个名叫 java.security.SecureRandom 的类。</p>
+<p>和 Java 一样，Ruby 中也分别有 Random 类和 SecureRandom 模块，在安全相关用途中应该使用 SecureRandom，而不是 Random 。</p>
+</li>
+<li><p>对伪随机数的攻击：</p>
+<p>（1）对种子进行攻击：伪随机数的种子和密码的密钥同等重要，一旦被攻击者知道种子，那他就能知道这个伪随机数生成器所生成的全部伪随机数列。要避免种子被攻击者知道，我们需要使用具备不可重现性的真随机数作为种子。</p>
+<p>（2）对随机数池进行攻击：我们一般不会到了需要的时候才生成真随机数，而是事先在一个名为<strong>随机数池</strong>（Random pool）的文件中积累随机比特序列。随机数池的内容不可以被攻击者知道，否则伪随机数的种子就可能被预测出来。</p>
+<blockquote>
+<p>Linux 系统中的 /dev/random 文件就是一个根据硬件设备驱动收集的背景噪声储存真随机数的随机数池。</p>
+</blockquote>
 </li>
 </ul>
-</div></article></div></main><footer><div class="paginator"><a href="/2018/02/25/modernArt/" class="prev">上一篇</a><a href="/2017/10/24/1501/" class="next">下一篇</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
+<h2 id="十三、PGP"><a href="#十三、PGP" class="headerlink" title="十三、PGP"></a>十三、PGP</h2><ul>
+<li><p>PGP（Pretty Good Privacy）：是于 1990 年左右由 Philip Zimmermann 个人编写的密码软件，现在依然被广泛使用。</p>
+</li>
+<li><p>OpenPGP：是对密文和数字签名格式进行定义的标准规格（RFC1991、RFC2440、RFC4880、RFC5581、RFC6637）。</p>
+<p>1996 年的 RFC1991 中对 PGP 的消息格式进行了定义。2007 年的 RFC4880 中新增了对 RSA 和DSA 的支持。2012年的 RFC6637 中新增了对椭圆曲线（EEC）的支持，并且还支持基于 Curve P-256、P-384、P-521 三种椭圆曲线的椭圆曲线 DSA（Elliptic Curve Digital Signature Algorithm，ECDSA）和椭圆曲线 Diffie-Hellman 密钥交换（Elliptic Curve Diffie-Hellman，ECDH）。</p>
+<p>RFC6637 中新增了用于比较密码学强度的平衡性的对照表，由此表可知，例如当我们选用 256 比特的椭圆曲线密码算法时，相应地应该选用 256 比特的散列算法以及密钥长度为 128 比特的对称算法。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">椭圆曲线名</th>
+<th style="text-align:center">ECC</th>
+<th style="text-align:center">RSA</th>
+<th style="text-align:center">散列</th>
+<th style="text-align:center">对称密码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">P-256</td>
+<td style="text-align:center">256</td>
+<td style="text-align:center">3072</td>
+<td style="text-align:center">256</td>
+<td style="text-align:center">128</td>
+</tr>
+<tr>
+<td style="text-align:center">P-384</td>
+<td style="text-align:center">384</td>
+<td style="text-align:center">7680</td>
+<td style="text-align:center">384</td>
+<td style="text-align:center">192</td>
+</tr>
+<tr>
+<td style="text-align:center">P-521</td>
+<td style="text-align:center">521</td>
+<td style="text-align:center">15360</td>
+<td style="text-align:center">512</td>
+<td style="text-align:center">256</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>GNU Privacy Guard（GunPG、GPG）：是一款基于 OpenPGP 标准开发的密码学软件，支持加密、数字签名、密钥管理、S/MIME、ssh 等多功能，基于 GNU GPL 协议发布，因此任何人可以使用它。GunPG 本身是一款命令行工具，也经常被集成到其他软件中去。</p>
+</li>
+<li><p>PGP 的功能：</p>
+<p>（1）对称密码：可以使用的对称密码算法包括 AES、IDEA、CAST、三重 DES、Blowfish、Twofish、Camellia等。</p>
+<p>（2）公钥密码：可以使用的公钥密钥算法包括 RSA 和 ElGamal 等。</p>
+<p>（3）数字签名：可以使用的数字签名算法包括 RSA、 DSA、ECDMA（椭圆曲线 DSA）、EdDSA（爱德华兹曲线 DSA）等。</p>
+<p>（4）单向散列函数：可以使用的单向散列函数包括 SHA-1、SHA-224、SHA-256、SHA-384、SHA-512 和 RIPEMD-160 等。</p>
+<p>（5）证书：可以使用 OpenGPG 中规定格式的证书，以及与 X.509 规范兼容的证书，此外，还可以颁发公钥的作废证明（revocation certificate），并可以使用 CRL 和 OSCP 对证书进行检验。</p>
+<p>（6）压缩：压缩采用 ZIP、ZLIB、BZIPZ 等格式。</p>
+<p>（7）文本数据：可以将二进制数据和文本数据（ASCII radix-64 格式）进行互换。（radix-64 格式是在邮件等场合中经常使用的 base-64 编码的基础上，增加了检测数据错误的校验和的版本）</p>
+<p>（8）大文件的拆分和拼合</p>
+<p>（9）钥匙串管理：可以管理所生成的密钥对以及外部获取的公钥，用于管理密钥的文件称为钥匙串（key ring）</p>
+</li>
+<li><p>加密与解密：基本结构和混合密码系统是一样的，差异在于这里还包括了消息的压缩与解压缩以及二进制＜－＞文本转换（ASCII radix-64 格式）这两个步骤。</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmsv52k13dj30sg0lctbg.jpg" alt="18"></p>
+</li>
+<li><p>生成和验证数字签名：</p>
+</li>
+<li><p>生成数字签名并加密以及解密并验证数字签名： </p>
+</li>
+<li><p>信任网（web of trust）：在这种方法中，PGP 用户会互相对对方的公钥进行数字签名，不依赖认证机构，而是建立每个人之间的信任关系。PGP 用户可以自行设置对谁进行何种程度的信任，PGP 就是根据信任数据库中的设置来判断所得到的公钥是否属于本人。PGP 当初的设计目的是在连国家都不可信的情况下依然能够使用，因此并不关心有没有可信的认证机构。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">信任级别</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">绝对信任（Ultimately trusted）</td>
+</tr>
+<tr>
+<td style="text-align:center">完全信任（Fully trusted）</td>
+</tr>
+<tr>
+<td style="text-align:center">有限信任（Marginally trusted）</td>
+</tr>
+<tr>
+<td style="text-align:center">不信任（Never trust this key）</td>
+</tr>
+<tr>
+<td style="text-align:center">未知密钥（Not enough information）</td>
+</tr>
+<tr>
+<td style="text-align:center">未设置（No owner trust assigned）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="十四、SSL-TLS"><a href="#十四、SSL-TLS" class="headerlink" title="十四、SSL / TLS"></a>十四、SSL / TLS</h2><ul>
+<li><p>SSL/TLS ：是世界上使用最广泛的密码通信方法。</p>
+<p>客户端与服务器：当我们需要用浏览器浏览一个网页的时候，Web 浏览器就是我方计算机上运行的一个程序，而 Web 服务器则是对方计算机上运行的一个程序，它们都遵循 <strong>HTTP</strong>（HyperText Transfer Protocol，超文本传输协议）来进行通信，其中，Web浏览器被称为 <strong>HTTP 客户端</strong>，Web 服务器被称为 <strong>HTTP 服务器</strong>，HTTP 可以认为是在 HTTP 客户端与 HTTP 服务器之间进行请求和响应的规范。</p>
+<p>用 SSL/TLS 承载 HTTP：当Web浏览器发送信用卡号时，我们可以用 SSL（Secure Socket Layer）或者 TLS（Transport Layer Security）作为对通信进行加密的协议，然后<strong>在此之上承载 HTTP</strong> 。通过将两种协议叠加，我们就可以对 HTTP 的通信进行加密，因此当通过 SSL/TLS 进行通信时，URL不是以 http://开头，而是以https://开头。</p>
+<p>SSL/TLS 也可以保护其他的协议：不仅可以承载 HTTP ，发送邮件时使用的 SMTP（Simple Mail Transfer Protocol，简单邮件传输协议）和接受邮件时使用的 POP3（Post Office Protocol，邮局协议）都可以用 SSL/TLS 进行承载。</p>
+<p>密码套件（cipher suite）：SSL/TLS 提供了一种密码通信的框架，这意味着 SSL/TLS 中使用的对称密码、公钥密码、数字签名、单向散列函数等技术，都可以像零件一样进行替换，也就是说，如果发现所使用的某个密码技术存在的弱点，只要将这一部分进行替换就好了。</p>
+<p>尽管如此，并不是说所有的组件都可以自由选择，选择过于自由，难以保证整体的兼容性，为此，SSL/TLS 就像事先搭配好的盒饭一样，规定了一些密码技术的“推荐套餐”，被称为密码套件。</p>
+<p>SSL 与 TLS 的区别：SSL（Secure Socket Layer，安全套接层）是 1994 年由网景（Netscape）公司设计的一种协议，随后成为行业标准。SSL 已于 1995 年发布了 3.0 版本，但在 2014 年，SSL 3.0 协议被发现存在可能导致 POODLE 攻击的安全漏洞，因此 SSL 3.0 已经不安全了。</p>
+<p>TLS（Transport Layer Security，传输层安全）是 IETF 在 SSL 3.0 的基础上设计的协议，TLS 相当于 SSL 的后续版本。</p>
+</li>
+<li><p>使用 SSL/TLS 进行通信：</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmsv51lq3jj30sg0lcq5m.jpg" alt="19"></p>
+<p>（1）TLS 记录协议：位于 TLS 握手协议的下层，是负责使用对称密码对消息进行加密通信的部分，该协议中使用了对称密码和消息认证码，但是具体的算法和共享密钥则是通过后面的握手协议在服务器和客户端之间协商决定的。</p>
+<p>首先消息被分割成多个较短的片段（fragment），然后分别对每个片段进行压缩。压缩算法需要与通讯对象进行协商。</p>
+<p>接下来，经过压缩的片段会被加上消息认证码，这是为了保证完整性，并进行数据的认证，通过附加消息认证码的 MAC 值，可以识别出篡改。与此同时，为了防止重放攻击，在计算消息认证码时，还加上了片段的编号。单向散列函数的算法，以及消息认证码所使用的共享密钥都需要与通信对象协商决定。</p>
+<p>再接下来，经过压缩的片段再加上消息认证码会一起通过对称密码进行加密。加密使用 CBC 模式，CBC 模式 的初始化向量（IV）通过主密码生成，而对称密码的算法以及共享密钥需要与通信对象协商决定。</p>
+<p>最后，上述经过加密的数据加上数据类型、版本号、压缩后的长度组成的报头（header）就是最终的报文数据。其中，数据类型为 TLS 记录协议所承载的 4 个子协议 的其中之一。</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmsv517yjij30sg0lcwi1.jpg" alt="20"></p>
+<p>（2）TLS 握手协议：</p>
+<p>（2.1）握手协议：握手协议负责生成共享密钥以及交换证书，其中生成密钥是为了进行密码通信，交换证书是为了通信双方相互进行认证。由于握手协议中的信息交换是在没有加密的情况下进行的，也就是说协议所收发的数据很有可能被窃听，因此在这一过程中必须使用公钥密码或者 Diffie-Hellman 密钥交换。</p>
+<blockquote>
+<p>握手协议详解：</p>
+</blockquote>
+<blockquote>
+<ol>
+<li>ClientHello（客户端﹣＞服务器）</li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 客户端向服务器发送 ClientHello 消息</p>
+</blockquote>
+<blockquote>
+<p> 客户端：“你好。我能理解的密码套件有 RSA/3DES，或者 DSS/AES，请问我们使用哪一种密码套件进行通信呢？”</p>
+</blockquote>
+<blockquote>
+<p> 客户端会向服务器发送下列消息： </p>
+</blockquote>
+<blockquote>
+<pre><code>可用版本号
+当前时间
+客户端随机数
+会话 ID
+可用的密码套件清单
+可用的压缩方式清单
+</code></pre><p> 之所以发送“可用版本号”“可用的密码套件清单”“可用的压缩方式清单”，是因为不同的客户端所支持的方式不同，具体使用哪一种来通信，需要和服务器来协商。</p>
+</blockquote>
+<blockquote>
+<p> “当前时间”在基本的 TLS 中是不使用的，但上层协议有可能会使用，“客户端随机数”是一个由客户端生成的不可预测的随机数，我们在后面的步骤中需要用到它。</p>
+</blockquote>
+<blockquote>
+<p> “会话 ID”是当客户端和服务器希望重新使用之前建立的会话时所使用的信息。</p>
+</blockquote>
+<blockquote>
+<ol start="2">
+<li>SeverHello（客户端＜﹣服务器）</li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 对于客户端发送的 ClientHello 消息，服务器会返回一个 SeverHello 消息。</p>
+</blockquote>
+<blockquote>
+<p> 服务器：“你好，我们就用 RSA/3DES 来进行通信吧。”</p>
+</blockquote>
+<blockquote>
+<p> 服务器会将下列消息随 SeverHello 消息一起发出去。</p>
+</blockquote>
+<blockquote>
+<pre><code>使用的版本号
+当前时间
+服务器随机数
+会话 ID
+使用的密码套件
+使用的压缩方式
+</code></pre></blockquote>
+<blockquote>
+<p> 服务器会根据客户端在 ClientHello 消息中发送过来的消息确定通信中使用的“版本号”“密码套件”和“压缩方式”。</p>
+</blockquote>
+<blockquote>
+<p> “服务器随机数”是一个服务器生成的不可预测的随机数，这个随机数必须与客户端生成的随机数无关，会在后面的步骤中用到它。</p>
+</blockquote>
+<blockquote>
+<ol start="3">
+<li>Certificate（客户端＜﹣服务器）</li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 服务器会发送 Certificate 消息。</p>
+</blockquote>
+<blockquote>
+<p> 服务器：“好，这是我的证书。”</p>
+</blockquote>
+<blockquote>
+<p> 通过 Certificate 消息，服务器会向客户端发送下列消息。</p>
+</blockquote>
+<blockquote>
+<pre><code>证书清单
+</code></pre></blockquote>
+<blockquote>
+<p> 证书清单是一组 X.509v3 证书序列，首先发送的是服务器（发送方）的证书，然后会按顺序发送服务器证书签名的认证机构的证书。</p>
+</blockquote>
+<blockquote>
+<p> 客户端会对服务器发送过来的证书进行验证，当以匿名方式通信时，不发送 Certificate 消息。</p>
+</blockquote>
+<blockquote>
+<ol start="4">
+<li>ServerKeyExchange（客户端＜﹣服务器） </li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 服务器发送 SeverKeyExchange 消息。</p>
+</blockquote>
+<blockquote>
+<p> 服务器：“我们用这些消息来进行密钥交换吧”</p>
+</blockquote>
+<blockquote>
+<p> 当 Certificate 消息不足以满足需求的时，服务器会通过 ServerKeyExchange 消息向客户端发送一些必要消息。具体所发送的消息内容会根据所使用的密码套件而有所不同。</p>
+</blockquote>
+<blockquote>
+<p> 当不需要这些消息时，将不会发送 ServerKeyExchange 消息。  </p>
+</blockquote>
+<blockquote>
+<ol start="5">
+<li>CertificateRequest (客户端＜﹣服务器）</li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 服务器发送 Certificate 消息。</p>
+</blockquote>
+<blockquote>
+<p> 服务器：“对了，请给我看一下你的证书吧。”</p>
+</blockquote>
+<blockquote>
+<p> CertificateRequest 消息用于服务器向客户端请求证书，这是为了进行客户端认证，通过这一消息，服务器会向客户端发送下列消息</p>
+</blockquote>
+<blockquote>
+<pre><code>服务器能够理解的证书类型清单
+服务器能够理解的认证机构名称清单
+</code></pre></blockquote>
+<blockquote>
+<p> 当不使用客户端认证时，不会发送 CertificateRequest 消息。</p>
+</blockquote>
+<blockquote>
+<ol start="6">
+<li>ServerHelloDone（客户端＜﹣服务器）</li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 服务器发送 SeverHelloDone 消息。</p>
+</blockquote>
+<blockquote>
+<p> 服务器：“问候到此结束。”</p>
+</blockquote>
+<blockquote>
+<p> 这一消息表示从 ServerHello 消息开始的一系列消息的结束。</p>
+</blockquote>
+<blockquote>
+<ol start="7">
+<li>Certificate（客户端﹣＞服务器） </li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 客户端发送 Certificate 消息。</p>
+</blockquote>
+<blockquote>
+<p> 客户端：“这是我的证书。”</p>
+</blockquote>
+<blockquote>
+<p> 当步骤 5 中服务器发送了 CertificateRequest 消息时，客户端会将自己的证书同 Certificate 消息一同发给服务器。</p>
+</blockquote>
+<blockquote>
+<p> 服务器读取客户端的证书并进行验证。 </p>
+</blockquote>
+<blockquote>
+<p> 当服务器没有发送 CertificateRequest 消息时，客户端不会发送 Certificate 消息。</p>
+</blockquote>
+<blockquote>
+<ol start="8">
+<li>ClientExchange（客户端﹣＞服务器） </li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 客户端发送 ClientExchange 消息。</p>
+</blockquote>
+<blockquote>
+<p> 客户端：“这是经过加密的预备主密码。”</p>
+</blockquote>
+<blockquote>
+<p> 当密码套件中包含 RSA 时，会随着 ClientExchange 消息一起发送经过加密的预备主密码。</p>
+</blockquote>
+<blockquote>
+<p> 当密码套件中包含 Diffie-Hellman 密钥交换时，会随着 ClientExchange 消息一起发送 Diffie-Hellman 的公开值。</p>
+</blockquote>
+<blockquote>
+<p> 预备主密码（pre-master secret）是由客户端生成的随机数，之后会被用作生成主密码的种子，这个值会使用服务器的公钥进行加密后发送给服务器。</p>
+</blockquote>
+<blockquote>
+<p> 根据预备主密码，服务器和客户端会计算出相同的主密码，然后再根据主密码生成下列比特序列（密钥素材）。</p>
+</blockquote>
+<blockquote>
+<pre><code>对称密码的密钥
+消息认证码的密钥
+对称密码的 CBC 模式中使用的初始化向量（IV）
+</code></pre></blockquote>
+<blockquote>
+<ol start="9">
+<li>CertificateVerify（客户端﹣＞服务器） </li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 客户端发送 CertificateVerify 消息。</p>
+</blockquote>
+<blockquote>
+<p> 客户端：“我确实是客户端证书的持有者本人。”</p>
+</blockquote>
+<blockquote>
+<p> 客户端只有在服务器发送 CertificateRequest 消息时才会发送 CertificateVerify 消息。这个消息的目的是向服务器证明自己的确持有客户端证书的私钥。</p>
+</blockquote>
+<blockquote>
+<p> 为了实现这一目的，客户端会计算“主密码”和“握手协议中传送的消息”的散列值，并加上自己的数字签名后发送服务器。</p>
+</blockquote>
+<blockquote>
+<ol start="10">
+<li>ChangeCipherSpec（客户端﹣＞服务器）</li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 客户端发送 ChangeCipherSpec 消息。</p>
+</blockquote>
+<blockquote>
+<p> 客户端：“好，现在我要切换密码了。”</p>
+</blockquote>
+<blockquote>
+<p> 实际上，ChangeCipherSpec 消息并不是握手协议的消息，而是密码变更协议的消息。</p>
+</blockquote>
+<blockquote>
+<p> 在 ChangeCipherSpec 消息之前，客户端和服务器之间已经交换了所有关于密码套件的信息，因此在收到这一消息时，客户端和服务器会同时切换密码。</p>
+</blockquote>
+<blockquote>
+<p> 在这一消息之后，TLS 记录协议就开始使用双方协商决定的密码通信方式了。</p>
+</blockquote>
+<blockquote>
+<ol start="11">
+<li>Finished（客户端﹣＞服务器）</li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 客户端发送 Finished 消息。 </p>
+</blockquote>
+<blockquote>
+<p> 客户端：“握手协议到此结束。”</p>
+</blockquote>
+<blockquote>
+<p> 由于已经完成了密码切换，因此 Finished 消息时】是使用切换后的密码套件来发送的。实际负责加密操作的是 TLS 记录协议。</p>
+</blockquote>
+<blockquote>
+<p> Finished 消息的内容是固定的，因此服务器可以将收到的密文解密，来确认所收到的 Finished 消息是否正确，通过这一消息，就可以确认握手协议是否正常结束，密码套件的切换是否正确。</p>
+</blockquote>
+<blockquote>
+<ol start="12">
+<li>ChangeCipherSpec（客户端＜﹣服务器）</li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 这次轮到服务器发送 ChangeCipherSpec 消息了。</p>
+</blockquote>
+<blockquote>
+<p> 服务器：“好，现在我要切换密码了。”</p>
+</blockquote>
+<blockquote>
+<ol start="13">
+<li>Finished（客户端＜﹣服务器） </li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 和客户端一样，服务器也会发送 Finished 消息。</p>
+</blockquote>
+<blockquote>
+<p> 服务器：“握手协议到此结束。”</p>
+</blockquote>
+<blockquote>
+<p> 这一消息会使用切换后的密码套件来发送，实际负责加密操作的是 TLS 记录协议。</p>
+</blockquote>
+<blockquote>
+<ol start="14">
+<li>切换至应用数据协议</li>
+</ol>
+</blockquote>
+<blockquote>
+<p> 在此之后，客户端和服务器会使用应用数据协议和 TLS 记录协议进行密码通信。</p>
+</blockquote>
+<blockquote>
+<p> 从结果上来看，握手协议完成了下列操作：</p>
+</blockquote>
+<blockquote>
+<pre><code>客户端获得了服务器的合法公钥，完成了服务器认证
+服务器获得了客户端的合法公钥，完成了客户端的认证（当需要客户端认证时）
+客户端和服务器生成了密码通信中使用的共享密钥
+客户端和服务器生成了消息认证码中使用共享密钥
+</code></pre></blockquote>
+</li>
+</ul>
+<p> （2.2）密码规格变更协议：用于密码切换的同步。</p>
+<p> （2.3）警告协议：用于当发送错误时通知通信对象，当握手协议的过程中产生异常，或者发生消息认证码错误、压缩数据无法解压缩等问题时，会使用该协议。</p>
+<p> （2.4）应用数据协议：用于和通信对象之间传送应用数据，当 TLS 承载 HTTP 时，HTTP 的请求和响应就会通过 TLS 的应用数据协议和 TLS 记录协议来进行传送。</p>
+<ul>
+<li><p>主密码：主密码是 TLS 客户端和服务器之间协商出来的一个秘密的数值，TLS 密码通信的机密性和数据的认证全部依靠这个数值，主密码是一个 48 字节（384 比特）的数值。</p>
+<p>主密码是客户端和服务器根据下列信息计算出来的：</p>
+<pre><code>预备主密码
+客户端随机数
+服务器随机数
+</code></pre><p>当使用 RSA 公钥密码时，客户端会在发送 ClientKeyExchange 消息时，将经过加密的预备密码一起发送给服务器，当使用 Diffie-Hellman 密钥交换时，客户端会在发送 ClientKeyChange 消息时，将 Diffie-Hellman 的公开值一起发送给服务器。根据这个值，客户端和服务器会各自生成预备主密码。客户端随机数和服务器随机数的作用相当于防止攻击者事先计算出密钥的盐。</p>
+<p>主密码用于生成下列 6 中消息：</p>
+<pre><code>对称密码的密钥（客户端﹣＞服务器）
+对称密码的密钥（客户端＜﹣服务器）
+消息认证码的密钥（客户端﹣＞服务器）
+消息认证码的密钥（客户端＜﹣服务器）
+对称密码的 CBC 模式所使用的初始化向量（客户端﹣＞服务器）
+对称密码的 CBC 模式所使用的初始化向量 （客户端＜﹣服务器）
+</code></pre></li>
+</ul>
+<ul>
+<li>TLS 握手协议中使用的密码技术</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">密码技术</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">公钥密码</td>
+<td style="text-align:center">加密预备主密码</td>
+</tr>
+<tr>
+<td style="text-align:center">单向散列函数</td>
+<td style="text-align:center">构成伪随机数生成器</td>
+</tr>
+<tr>
+<td style="text-align:center">数字签名</td>
+<td style="text-align:center">验证服务器和客户端的证书</td>
+</tr>
+<tr>
+<td style="text-align:center">伪随机数生成器</td>
+<td style="text-align:center">生成预备主密码、根据主密码生成密钥（密码参数）、生成初始化向量</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>TLS 记录协议中使用的密码技术</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">密码技术</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">对称密码（CBC模式）</td>
+<td style="text-align:center">确保片段的机密性</td>
+</tr>
+<tr>
+<td style="text-align:center">消息认证码</td>
+<td style="text-align:center">确保片段的完整性并进行认证</td>
+</tr>
+<tr>
+<td style="text-align:center">认证加密（AEAD）</td>
+<td style="text-align:center">确保片段的完整性和机密性并进行认证</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>对 SSL/TLS 的攻击：</p>
+<p>（1）对各个密码技术的攻击：当然 SSL/TLS 作为框架的特性也被体现，更换密码套件即可。</p>
+<p>（2）OpenSSL 的心脏出血漏洞：2014 年，Goolge 的 Neel Mehta 发现了广泛使用的密码学工具 OpenSSL 中存在一个 bug ,这个漏洞被称为<strong>心脏出血</strong>（HeartBleed） ，心脏出血并不是 SSL/TLS 协议本身的漏洞，而是 OpenSSL 这一实现上的漏洞。具体来说，由于 OpenSSL 在 TLS 心跳拓展功能中对于请求的数据大小没有进行检查，从而导致将内存中于该请求无关的信息返回给了请求者，攻击者通过访问包含该漏洞的 OpenSSL 的服务器，就可以在一定范围内窃取服务器上的信息。</p>
+<p>这一漏洞公布时，全世界有相当多的服务器都收到了影响，据称当时有 17% 的 SSL/TLS 服务器都具有这一漏洞。</p>
+<p>（3）SSL 3.0 的漏洞与 POODLE 攻击：Google 发现了针对 SSL 3.0 漏洞的攻击——POODLE攻击，SSL 3.0 中对 CBC 模式加密时的分组填充操作没有进行严格的规定，而且填充数据的完整性没有收到消息认证码的保护，POODLE攻击正是利用了这一漏洞。POODLE 攻击的本质就是填充提示攻击。</p>
+<p>在某些条件下，攻击者可以将通信协议的版本从 TLS 强制降级到 SSL 3.0，也就是说，导致存在遭受 POODLE 攻击的风险。</p>
+<p>要有效抵御 POODLE 攻击，必须禁用 SSL 3.0。</p>
+<p>（4）FREAK 攻击与密码产品出口管制：FREAK 是 Factoring RSA Export Keys（出口级 RSA 密钥质因数分解）的缩写，从首字母看，并未出现“A”，缩写成 FREAK 是为了和“freak”形成双关，其攻击方式是强制 SSL/TLS 服务器使用一种名为 RSA Export Suites 的强度较低的密码套件。要实现 FREAK 攻击，除了需要 SSL/TLS 服务器具有该漏洞，同时还需要用户的 Web 浏览器（HTTP 客户端）接受使用 RSA Export Suites 来进行通信。</p>
+<p>美国曾经将密码算法和软件作为武器来看待，因此历史上一度禁止将“高强度密码软件”出口到国外（<strong>密码产品出口管制</strong>），直到 20世纪 90年代后半期这一政策才有所缓和，RSA Export Suites 就是一种配合当时的环境而故意弱化的密码套件。</p>
+<p>（5）对伪随机数生成器的攻击：1995年，加州大学的研究生发现了网景浏览器的一个 bug，这个 bug 存在于伪随机数生成器中。由于 SSL 中使用的伪随机数生成器的种子都在时间和进程编号等可预测的范围内，因此所得到的密钥范围实际上非常小。</p>
+<p>（6）利用证书的时间差进行攻击：在 SSL/TLS 中，客户端会使用服务器证书对服务器进行认证，在这个过程中，客户端需要使用合法认证机构的公钥对证书所附带的数字签名进行验证。要验证证书需要使用最新版的 CRL（证书作废清单），如果 Web 浏览器没有获取最新版的 CRL，即便使用 SSL/TLS 也无法保证通信的安全。</p>
+</li>
+<li><p>SSL/TLS 注意事项：</p>
+<p>（1）不要误解证书的含义：<strong>即便对方拥有合法的证书，也不代表你就可以放心地发送信用卡号</strong>，仅通过 SSL/TLS 是无法确认对方是否在从事信用卡诈骗的。</p>
+<p>另外，认证机构所进行的本人身份确认也分为不同的等级，需要仔细确认一下认证机构的业务规则。</p>
+<p>（2）密码通信之前的数据是不受保护的</p>
+<p>（3）密码通信之后的数据是不受保护的 </p>
+</li>
+</ul>
+<h2 id="十五、密码技术与现实社会"><a href="#十五、密码技术与现实社会" class="headerlink" title="十五、密码技术与现实社会"></a>十五、密码技术与现实社会</h2><ul>
+<li><p>密码学家的工具箱</p>
+<p>（1）对称密码：是一种用相同的密钥进行加密和解密的技术，用于确保消息的机密性。在对称密码的算法中，目前主要使用的是 AES 。尽管对称密码能够确保消息的机密性，但需要解决将解密密钥配送给接受者的密钥配送问题。</p>
+<p>（2）公钥密码：是一种用不同的密钥进行加密和解密的技术，和对称密码一样用于确保消息的机密性。使用最广泛的是公钥算法是 RSA ，除此之外，还有 ElGamal 和 Rabin 等算法，以及与其相关 Diffie-Hellman 密钥交换（DH）和椭圆曲线 Diffie-Hellman 密钥交换（ECDH）等技术。和对称密码相比，公钥密钥的速度非常慢，因此一般都会与对称密码一起组成混合密码系统使用。公钥密码能够解决对称密码中的密钥交换问题，但存在通过中间人攻击被伪装的风险，因此需要对带有数字签名的公钥进行认证。</p>
+<p>（3）单向散列函数：是一种将长消息转换为短散列值的技术，用于确保消息的完整性。在单向散列函数的算法方面，SHA-1 曾被广泛使用，但由于人们已经发现了一些针对该算法的理论上可行的攻击方式，因此该算法不应再被用于新的用途，今后我们应该主要使用的算法包括目前已经在广泛使用的 SHA-2（SHA-224、SHA-256、SHA-384、SHA-512），以及具有全新结构的 SHA-3（Keccak）算法。单向散列函数可以单独使用，也可以作为消息认证码、数字签名以及伪随机数生成器等技术的组成元素来使用。</p>
+<p>（4）消息认证码：是一种能够识别通信对象发送的消息是否被篡改的认证技术，用于验证消息的完整性，以及对消息进行认证。消息认证码的算法中，最常用的是利用单向散列函数的 HMAC ，HMAC 的构成不依赖于某一种具体的单向散列函数算法。消息认证码能够对通信对象进行认证，但无法对第三方进行认证，此外也无法防止否认。消息认证码也可以用来实现认证加密。</p>
+<p>（5）数字签名：是一种能够对第三方进行消息认证，并能够防止通信对象作出否认的技术。数字签名的算法包括 RSA 、ElGamal 、DSA 、椭圆曲线 DSA（ECDSA）、爱德华兹曲线 DSA（EDDSA）等。公钥基础设施（PKI）中使用的证书，就是公钥加上认证机构的数字签名所构成的。要验证公钥的数字签名，需要通过某种途径获取认证机构自身的合法公钥。</p>
+<p>（6）伪随机数生成器：是一种能够生成具备不可预测性的比特序列的技术，由密码和单向散列函数等技术构成。用于生成密钥、初始化向量和 nonce 等。</p>
+</li>
+<li><p>密码与认证：认证也是密码技术中重要的组成部分，例如，公钥密码是一种很重要的技术，但如果无法确认自己所持有的公钥的合法性，即是否是经过验证的公钥，公钥密码就无法发挥作用。</p>
+<p>此外，即便在使用高强度的密码算法来确保机密性的情况下，依然存在像填充提示攻击这样通过伪造密文来窃取明文相关信息的攻击方式。在这种情况下，我们需要对接受到的密文进行认证，判断是不是通过合法的加密过程生辰出来的，这样才能有效地确保信息的机密性。</p>
+</li>
+<li><p>密码技术的框架化</p>
+<p>框架的特点就是能够对其中作为组成元素的技术进行替换。例如，消息认证码算法 HMAC 的设计就允许对单向散列函数的算法进行替换，此外，在 PGP 中，对称密码、公钥密码、单向散列函数等都是可以替换的。在 SSL/TLS 中，客户端和服务器可以通过握手协议进行通信，并当场决定所使用的密码套件。</p>
+<p>当然，现实世界中的问题也没有这样单纯，2014 年发现的 POODLE 攻击，就是利用 SSL/TLS 在握手协议中确定密码套件的机制来对协议的版本来进行强制降级的，这可以说是一种针对 SSL/TLS<br>框架本身的攻击。</p>
+</li>
+<li><p>密码技术与压缩技术</p>
+<p>在密码学家的工具箱中，所有的技术都可以看成是一种“压缩技术”。</p>
+<p>无论是对称密码还是公钥密码，密码的作用是确保机密性。通过保护较短的密钥来保护较长的明文，这样的做法被称为<strong>机密性的压缩</strong>。</p>
+<p>单向散列函数是用于确认完整性。通过检查较短的散列值来确认较长的明文的完整性，这样的做法可以称为<strong>完整性的压缩</strong>。</p>
+<p>消息认证码和数字签名都是用于认证的技术，但我们并不是直接对较长的消息本身进行认证，而是通过将较长的消息与密钥结合起来，生成较短的比特序列（认证符号）,再通过认证符号进行认证。在消息认证码中，MAC 值就是认证符号，在数字签名中，签名就是认证符号。通过较短的认证符号来对较长的消息进行认证，这样的做法可以称为<strong>认证的压缩</strong>。</p>
+<p>在伪随机数生成器中，要大量生成具备不可预测性的随机数列非常困难，于是我们通过将种子输入伪随机数生成器，生成具备不可预测性的伪随机数列，这可以被称为<strong>不可预测性的压缩</strong>。反过来说，伪随机数生成器是将种子的不可预测性进行了扩张。</p>
+<p>从另一角度总结：</p>
+<pre><code>密钥是机密性的精华
+散列值是完整性的精华
+认证符号是认证的精华
+种子是不可预测性的精华
+</code></pre></li>
+<li><p>比特币</p>
+<p>比特币于 2009 年被实际运用，随后在世界各国流行起来。2015 年，美国开设了世界上第一家比特币交易所 Coinbase。 </p>
+<p>（1）P2P 网络：比特币体系中没有中央银行，比特币完全依赖于去哪世界所有比特币用户组成的 P2P 网络（Peer to Peer Network）。全世界所有比特币用户的计算机（node 或者 peer）共同保存、验证和使用支撑比特币体系的所有必要信息。</p>
+<p>与其说比特币是一种货币，不如说<strong>比特币是一种基于 P2P 网络的支付结算系统</strong>。</p>
+<p>（2）地址：比特币交易是在<strong>比特币地址</strong>之间完成的，大多数情况下人们会为每一次比特币交易创建不同的地址，当然，在捐赠等场景中，也会反复使用同一个地址。</p>
+<p>比特币使用的地址是由公钥的散列值生成的。具体来说，将椭圆曲线 DSA 的公钥输入 SHA-256 和 RIPEMD-160 两个单项散列函数来求出散列值，为其附加一些信息后再通过 Base58Check 进行编码，转换成字符串。为防止混淆，Base58Check 编码中不使用数字（0）、大写（O）、大写（I）和小写（l）。</p>
+<p>（3）钱包：比特币交易需要客户端，这种客户端叫做钱包。用户可以在自己的计算机和智能手机上安装钱包应用程序，也可以通过提供钱包服务的网站来使用比特币。</p>
+<p>（4）区块链（block chain）：是<strong>保存比特币全部交易记录的公共账薄</strong>，记录了比特币体系中<strong>所有的地址</strong>迄今为止<strong>所有的交易</strong>。</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmsv5011z2j30sg0lc78j.jpg" alt="21"></p>
+<p>（5）区块的添加：比特币的首付款是以交易为单位进行的，若干条交易会被合并为一个区块，并被添加到区块链中，当 P2P 网络确认区块的添加后，相应的交易也就成立了。</p>
+<p>一个区块是由若干条交易以及一个区块头所组成的，区块头保存了“上一个区块的区块头的散列值”，如图所示，其中区块头 2 中保存的散列值 H2 就是根据它前面的区块 1 的区块头 1 计算出来的。此外，区块头中还保存着“本区块所有交易的整体散列值”，如图所示，区块头 2 中的散列值 T2 就是根据区块 2 中记录的所有交易数据计算出的散列值。也就是说，一旦对区块链中的数据进行任何改动，都需要重建所改动的区块之后的所有区块的数据，由此可见，区块头中的两个散列值有效增加了篡改区块链数据的难度。</p>
+<p>区块头中还保存着一个名为 nonce 的任意数值，以及时间戳等信息。</p>
+<p>（6）交易：所谓交易，就是对“从一个地址向另一个地址转移了多少比特币”这一事件的描述。举一个例子，假设 Alice 从 Bob 商店购买了商品，需要向 Bob 商店支付 1 BTC 的贷款。</p>
+<pre><code>Bob 商店创建公钥密钥对（公钥 B 和私钥 b）
+Bob 商店根据公钥 B 生成地址 B，并发送给 Alice
+Alice 创建公钥密钥对（公钥 A 和私钥 a）
+Alice 创建交易：“从地址 A 向地址 B 发送 1 BTC”。此时，Alice 使用私钥 a 对交易签署
+了数字签名。
+Alice将这条交易发送至 P2P 网络，即向全世界广播这条交易。
+随后，Alice 创建的交易与其他一些交易一起被合并为一个区块，并添加到区块链中。
+添加的区块被 P2P 网络确认后，“从地址 A 向地址 B 发送 1 BTC”的交易就成立了。
+</code></pre><p>此时，外界并不知道“A 是 Alice 的地址，B 是 Bob 商店的地址”，但是 Alice 需要向 Bob 商店付款，Bob 商店也需要从 Alice 处收款，因此这条交易到底是谁把钱付给谁，至少 Alice 和 Bob 商店是要知道的。Alice 和 Bob 商店之间的身份确认，需要通过社交网络、电子邮件、网站等比特币系统之外的渠道进行。</p>
+<p>当交易被合并到区块，并被添加到区块链后，地址 A 能够支付的金额就减少了 1 BTC，而地址 B 能够支付的金额则增加了 1 BTC。</p>
+<p>在创建交易时运用了数字签名技术，比特币中使用的数字签名算法为椭圆曲线 DSA，其中使用的椭圆曲线方程为 x<sup>2</sup> = y<sup>3</sup> + 7</p>
+<p>（7）挖矿：随着全世界的比特币不断增加，区块链也会随之不断增长，这就意味着 P2P 网络中的“某个人”在负责将新的区块添加到区块链。“将新的区块添加到区块链”这一行为，正好就相当于“创造新的比特币余额”。向区块链添加区块就好像从金矿中挖出比特币一样，因此称为<strong>挖矿</strong>，而从事挖矿的人则称为<strong>矿工</strong>。</p>
+<p>由于区块链是一条单链，因此在某个特定的时间点只能向其中添加一个区块，按照比特币协议的规定，成功将区块添加到区块链的矿工，将获得挖矿奖励以及该区块所有交易的<strong>手续费</strong>（transaction fee）。</p>
+<p>为了防止比特币被伪造，矿工必须证明自己确实完成了规定量的工作，这种证明被称为<strong>工作量证明</strong>（Proof of Work，PoW），工作量证明是通过散列值来实现的。</p>
+<p>要向区块链添加新的区块，矿工需要生成合法的区块头，而且区块头中“前一区块的散列值”的格式是有规定的，它的前面的若干个比特必须为 0 。上图中的散列值 H2 可能是下面这样的值。</p>
+<pre><code>00000000000000007780B6F7B32254538D2DA45DE67777
+</code></pre><p>区块头中之所以需要一个称为 nonce 的任意数值，就是为了凑出像上面这样前面若干比特都是 0 的散列值，也就是说，矿工需要不断更换 nonce 进行尝试，直到计算出符合要求的散列值为止。</p>
+<p>这个过程实际上和暴力破解单向散列函数十分相似，这只是为了证明某个矿工确实投入了大量的计算资源来完成工作。比特币系统中大约每 10 分钟会添加一个新的区块，为了保持这样的恒定速率，计算的难度会不断地调整。</p>
+<p>（8）确认：由于全世界有大量的矿工在不断尝试添加新的区块，因此如果在某一时间点上有多个矿工同时计算出了符合要求的散列值，区块链就可能产生分支。由于比特币是一个 P2P 网络，因此无法确定是哪一个区块先达到的节点，比如节点 1 可能先收到区块 A，节点 2 可能先收到 区块 B ，这样就会造成节点 1 和节点 2 的区块链产生差异。到底哪个区块才应该被添加到区块中呢？P2P 网络需要对此作出判断，这个动作称为确认。当产生分支时，P2P 网络的各个节点会选择计算量大的分支继续工作，从而抑制区块链继续产生分支。比特币系统假设善意的矿工所拥有的计算资源要大于恶意的矿工所拥有的计算资源，这也就是比特币系统得以正常运转的前提。</p>
+<p>（9）匿名性：我们需要正确理解比特币的匿名性，诚然，在钱包中生成地址时，我们不需要将这个地址和自己的身份进行关联，也没有必要把自己的身份告诉交易对象，从这点来看，比特币交易的确是匿名的。</p>
+<p>然而，之前的讲解有提到，某个地址所进行的交易会公开给全世界所有用户，而且交易记录也会近似永远留在区块链上，因此，通常用户不会同一个地址反复进行交易。</p>
+<p>此外，商品交易中本来就需要一定程度上公开身份信息，不然你也没办法收到商品。而且，P2P 网络的性质决定了某条交易所对应的节点 IP 是需要被记录的，这也产生了一定的风险。</p>
+<p>（10）信任的意义：</p>
+<p>比特币系统具有以下三层含义的信任：</p>
+<pre><code>信任使用比特币进行交易的对象
+信任比特币交易所
+信任比特币系统
+</code></pre><p>“信任使用比特币进行交易的对象”与信任使用现金进行交易的对象是差不多的。</p>
+<p>“信任比特币交易所”与信任存款的银行是差不多的。</p>
+<p>“信任比特币系统”相当于信任比特币所使用的密码技术以及用于实现这些密码技术的钱包等软件。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">比特币</th>
+<th style="text-align:center">单位(缩写)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">bitcoin(BTC)</td>
+</tr>
+<tr>
+<td style="text-align:center">0.01</td>
+<td style="text-align:center">bitcent(cBTC)</td>
+</tr>
+<tr>
+<td style="text-align:center">0.001</td>
+<td style="text-align:center">millibitcoin(mBTC)</td>
+</tr>
+<tr>
+<td style="text-align:center">0.0000001</td>
+<td style="text-align:center">microbitcoin(uBTC)</td>
+</tr>
+<tr>
+<td style="text-align:center">0.00000001</td>
+<td style="text-align:center">satoshi</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>量子密码：是基于量子理论的通信技术，由 Bennett 和 Brassard 与 20 世纪 80 年代提出，严格来说，并没有直接构成一种密码体系，而是一种让通信本身不可窃听的技术，可以理解是一种利用光子的量子特性来实现通信的方法。</p>
+<pre><code>利用了下列两个事实：
+（1）从原理上说，无法准确测出光子的偏振方向
+     根据这一事实，可以让窃听得到的内容变得不正确
+（2）测量行为本身会导致光子的状态发生改变
+     根据这一事实，接受者可以判断通信是否被窃听
+</code></pre><p>一次性密码本的最大问题在于难以发送和明文具有相同长度的大量密钥，然而如果使用量子密码来发送密钥，接受者就可以识别出密钥是否被窃听，量子密码让一次性密码本的实现更进了一步。</p>
+<p>量子密码有很多方法正在研究之中，BB84 协议用 4 个量子状态代表 1 比特的信息，B92 协议用 2 个量子状态代表 1 比特的信息，E91 协议和 BB84 协议等价，但它采用相互纠缠（entangled）的一对光子来实现的，量子纠缠是一种量子现象，只要测定其中一个量子的状态，就可以确定相距很远的另一个光子的状态。</p>
+<p>（1）量子计算机：由英国物理学家 David Deutsch 于 1985 年提出，根据量子理论，粒子可同时具有多种状态，如果使用具有多种状态的粒子进行计算，则可以同时完成多种状态的计算。如果一个粒子能够计算 0 或 1 两种状态，那么 128 个这样的粒子就可以同时计算 2<sup>128</sup> 种状态，换句话说，这就是一台超级并行计算机。目前量子计算机还未达到实用的程度，但相关研究正在如火如荼开展。</p>
+<p>（2）量子密码与量子计算机：如果量子密码比量子计算机先进入实用领域，则可以使用量子密码来实现一次性密码本，从而产生完美的密码技术，由于一次性密码本是无法破译的，因此即便使用量子计算机也无法破译，即便它快速完成暴力破解，也无法判断到底哪一个才是正确的密钥。</p>
+<p>如果量子计算机比量子密码先进入使用领域，则使用目前的密码技术所产生的密文将会全部被破译。</p>
+<p>在量子计算机出现后依然能够抵抗破译的密码称为<strong>耐量子密码</strong>或者<strong>后量子密码</strong>（Post-Quantum Cryptography，PQCrypto ），其中有一种算法叫做<strong>多变量公钥密码</strong>（Multivariate Public Key Cryptosystem），它利用的是 NP 完全问题的复杂度。</p>
+</li>
+<li><p>人是密码技术中最大的弱点：</p>
+<p>（1）采用生物信息的认证技术（<strong>生物识别认证</strong>，biometric authentication）也并不是完美的认证，要进行生物识别认证，就必须在某个时间点上将生物信息转换为比特序列，实际的认证是通过转换后的比特序列来完成的，一旦比特序列被窃取，就会和钥匙被偷产生相同的后果。</p>
+<p>（2）防御必须天衣无缝，攻击只需突破一点。</p>
+<p>（3）社会工程学（social enginneering）攻击，<strong>信息安全在于流程而非产品</strong>，不能因为购买了安全产品就认为可以高枕无忧了，还必须让系统相关的所有人员保持较高的安全意识。</p>
+<p>（4）拒绝服务攻击（Denial of Service Attack），也称为 <strong>DoS 攻击</strong>，拒绝服务攻击是一种针对服务<strong>可用性</strong>（availablility）的攻击方式。拒绝服务攻击并非只是无法使用服务这么简单，当安全性较高的服务瘫痪时，用户往往会自发地转移到安全性较低的服务，通过拒绝服务攻击，可以让窃听等其他攻击更加容易。</p>
+</li>
+</ul>
+<h2 id="附录、椭圆曲线密码"><a href="#附录、椭圆曲线密码" class="headerlink" title="附录、椭圆曲线密码"></a>附录、椭圆曲线密码</h2><ul>
+<li><p>椭圆曲线密码（Elliptic Curve Cryptography，ECC）：是利用椭圆曲线来实现的密码技术的统称，实际上包括以下内容：</p>
+<pre><code>基于椭圆曲线的公钥密码
+基于椭圆曲线的数字签名
+基于椭圆曲线的密钥交换
+</code></pre><p>椭圆曲线目前正被广泛使用，例如在 SSL/TLS 中，就使用了椭圆曲线 Diffie-Hellman 密钥交换（ECDH、ECDHE）和椭圆曲线 DSA（ECDSA），比特币中也是用了椭圆曲线 DSA 。</p>
+<p><strong>椭圆曲线密码密钥短但强度高</strong>。</p>
+<p>椭圆曲线（Elliptic Curve，EC）实际上并不是椭圆形，之所以叫椭圆曲线源自于求椭圆弧长的椭圆积分的反函数。</p>
+<p>一般来说，椭圆曲线可用下列方程式表示，其中 <em>a</em> ，<em>b</em> ，<em>c</em> ，<em>d</em> 为系数。</p>
+<blockquote>
+<p><em>E</em> : <em>y</em> <sup>2</sup> = <em>a**x</em> <sup>3</sup> + <em>b**x</em> <sup>2</sup> + <em>c**x</em> + d</p>
+</blockquote>
+</li>
+<li><p>椭圆曲线运算：</p>
+<p>（1）椭圆曲线上的加法运算：过曲线上两点 <em>A</em>，<em>B</em> 画一条直线，找到直线与椭圆曲线的交点，我们将该交点关于 <em>x</em> 轴对称位置的点定义为 <em>A</em> + <em>B</em> 。</p>
+<p>（2）椭圆曲线上的二倍运算：若出现两点重合的情况，因为无法画出两点的直线，因此我们画出点 <em>A</em> 的切线，然后找到该切线与椭圆曲线的交点，将该点关于 <em>x</em> 轴对称位置的点定义为 <em>A</em> + <em>A</em> 。</p>
+<p>（3）椭圆曲线上的正负取反运算：将点 <em>A</em> 关于 <em>x</em> 轴对称位置的点定义为 -<em>A</em> 。</p>
+<p>将 <em>A</em> 和 -<em>A</em> 相加会怎样，根据椭圆曲线的定义，我们应该找到过点 <em>A</em> 和点 -<em>A</em> 的直线与椭圆曲线的交点，但过点 <em>A</em> 和点 -<em>A</em> 的直线与椭圆曲线之间只有点 <em>A</em> 和点 -<em>A</em> 这两个交点，于是我们认为这条直线与椭圆曲线在“无限远点”的位置相交。这个无限远点在图像上画不出来，我们将其记作 <em>O</em> 。可以发现，无限远点 <em>O</em> 的作用和数字 0 相近，<em>A</em> + (-<em>A</em>) = <em>O</em> 是永远成立的。</p>
+<p>基于上述运算规则，给定椭圆曲线上的某一点 <em>G</em> ，“已知数 <em>x</em> 求点 <em>xG</em> 的问题”并不困难，反过来，“已知点 <em>xG</em> 求数 <em>x</em> 的问题”则非常困难，这就是椭圆曲线密码中利用的离散对数问题。</p>
+</li>
+<li><p>椭圆曲线上的离散对数问题：</p>
+<p>在椭圆曲线密码中，我们首先确定一条椭圆曲线，然后对椭圆曲线上的某一些点（以及无限远点）之间的“运算”进行定义，并用这些“运算”来进行密码技术相关的计算。</p>
+<p>椭圆曲线利用了上述“运算”中“椭圆曲线上的离散对数问题”的复杂度，就像 RSA 利用了“质因数分解”的复杂度，以及 ElGamal 密码和 Diffie-Hellman 密钥交换利用了“有限域上的离散对数问题”的复杂度一样。</p>
+<p>椭圆曲线上的离散对数问题（Elliptic Curve Discrete Logarithm Problem，ECDLP），其本质就是“已知点 <em>xG</em> 求数 <em>x</em> 的问题” 。</p>
+<pre><code>椭圆曲线上的离散对数问题：
+已知：
+椭圆曲线 *E*
+椭圆曲线 *E* 上的一点 *G*（基点）
+椭圆曲线 *E* 上的一点 *xG* （*G* 的 *x* 倍）
+求：
+数 *x*
+</code></pre></li>
+<li><p>有限域上的椭圆曲线运算：</p>
+<p>其实椭圆曲线密码所使用的椭圆曲线运算，并不是在之前所讲的那种光滑曲线上进行的。</p>
+<p>椭圆曲线上的图像要形成一条光滑的曲线，其坐标 <em>x</em>，<em>y</em> 必须都是实数，即“实数域 R 上的椭圆曲线”。</p>
+<p>椭圆曲线密码所使用的椭圆曲线并非是在实数域 R 上，而是在有限域 F<sub>p</sub> 上。有限域 F<sub>p</sub> 是指对于某个给定的质数 <em>p</em> ，由 0，1，…, <em>p</em> -1 共 <em>p</em> 个元素所组成的整数集合中定义的加减乘除运算。有限域中的运算就是之间介绍的时钟运算，更直观一点就是用整数来计算坐标，并将结果除以 <em>p</em> 求余数。</p>
+<blockquote>
+<p>实数域 R 上的光滑椭圆曲线：</p>
+</blockquote>
+<blockquote>
+<p><em>E</em> : <em>y</em> <sup>2</sup> = <em>x</em> <sup>3</sup> + <em>x</em> <sup>2</sup> + 1</p>
+</blockquote>
+<blockquote>
+<p>有限域 F<sub>p</sub> 上的椭圆曲线：</p>
+</blockquote>
+<blockquote>
+<p><em>E</em> : <em>y</em> <sup>2</sup> ≡ <em>x</em> <sup>3</sup> + <em>x</em> <sup>2</sup> + 1（mod 23）</p>
+</blockquote>
+</li>
+<li><p>椭圆曲线 Diffie-Hellman 密钥交换：除了运用椭圆曲线这一点之外，它的流程与 Diffie-Hellman 密钥交换基本上是相同的。</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fmsv50dxwij30sg0lcdjh.jpg" alt="22"></p>
+<p>非椭圆曲线的 Diffie-Hellman 所利用的是：</p>
+<blockquote>
+<p>以 <em>p</em> 为模， 已知 <em>G</em> 和 <em>G</em><sup><em>x</em></sup> mod <em>p</em> 求 <em>x</em> 的复杂度（有限域上的离散对数问题）</p>
+</blockquote>
+<p>椭圆曲线 Diffie-Hellman 所利用的是：</p>
+<blockquote>
+<p>在椭圆曲线上， 已知点 <em>xG</em> 求数 <em>x</em> 的复杂度（椭圆曲线上的离散对数问题）</p>
+</blockquote>
+<p>交换步骤：</p>
+<p>（1）Alice 向 Bob 发送点 <em>G</em> 。点 <em>G</em> 被 Eve 知道也没关系。</p>
+<p>（2）Alice 生成随机数 <em>a</em> 。这个数没有必要告诉 Bob ，也不能让 Eve 知道。我们将数 <em>a</em> 称为 Alice 的私钥。</p>
+<p>（3）Bob 生成随机数 <em>b</em> 。这个数没有必要告诉 Alice ，也不能让 Eve 知道。我们将数 <em>b</em> 称为 Bob 的私钥。</p>
+<p>（4）Alice 向 Bob 发送点 <em>aG</em> 。点 <em>aG</em> 被 Eve 知道也没关系，它是 Alice 的公钥。</p>
+<p>（5）Bob 向 Alice 发送点 <em>bG</em> 。点 <em>bG</em> 被 Eve 知道也没关系，它是 Bob 的公钥。</p>
+<p>（6）<strong>Alice 对 Bob 发送的点 <em>bG</em> 计算其在椭圆曲线上 <em>a</em> 倍的点</strong>。Alice 在椭圆曲线上计算 <em>a(bG)</em> = <em>abG</em> ，它就是 Alice 与 Bob 的共享密钥。</p>
+<p>（7）相对地，<strong>Bob 对 Alice 发送的点 <em>aG</em> 计算其在椭圆曲线上 <em>b</em> 倍的点</strong>。Alice 在椭圆曲线上计算 <em>b(aG)</em> = <em>abG</em> ，它就是 Alice 与 Bob 的共享密钥。</p>
+<p>在椭圆曲线 Diffie-Hellman 密钥交换时，生成共享密钥需要使用随机数 <em>a</em>、<em>b</em>。如果每次通信都使用不同的随机数，则共享密钥也会随之改变。这样依赖，即便某个时间点的通信被破解，也无需担心在此之前的通信内容被破解。这样的特性称为<strong>前向安全性</strong>（Forward Secrecy，FS）或者完全前向安全性（Perfect Forward Secrecy，PFS）。 </p>
+</li>
+<li><p>椭圆曲线 ElGamal 密码：</p>
+<p>通过椭圆曲线 Diffie-Hellman 密钥交换，Alice 和 Bob 能够生成共享密钥 <em>abG</em> 。利用共享密钥 <em>abG</em> 就可以很容易地实现椭圆曲线 EIGamal 密码。</p>
+<p>假设 Alice 要向 Bob 发送一条消息，Alice 可以将自己要发送的消息用椭圆曲线上的一个点 <em>M</em> 来表示（实际上使用的是该点的 <em>x</em> 坐标）。</p>
+<p>加密：</p>
+<p>（1）Alice 用自己的私钥 <em>a</em> 以及 Bob 的公钥 <em>bG</em> ，对消息 <em>M</em> 计算点 <em>M</em> + <em>abG</em> 。此点 <em>M</em> + <em>abG</em> 就是密文。</p>
+<p>（2）Alice 将密文 <em>M</em> + <em>abG</em> 发送给 Bob 。</p>
+<p>解密：</p>
+<p>（1）Bob 接受到密文 <em>M</em> + <em>abG</em> 。</p>
+<p>（2）Bob 用 Alice 的公钥 <em>aG</em> 以及自己的私钥 <em>b</em> 计算出了共享密钥 <em>abG</em> 。</p>
+<p>（3）Bob 将收到的密文 <em>M</em> + <em>abG</em> 减去共享密钥 <em>abG</em> 得到消息 <em>M</em> 。 </p>
+</li>
+<li><p>椭圆曲线 DSA（ECDSA）：使用椭圆曲线还可以实现数字签名。</p>
+<p>假设 Alice 要对消息 <em>m</em> ，而 Bob 需要验证签名。以下写着“计算”的部分都代表以 <em>p</em> 为模的时钟运算。</p>
+<blockquote>
+<p>生成数字签名：</p>
+</blockquote>
+<p>（1）Alice 根据随机数 <em>r</em> 和基点 <em>G</em> 求出点 <em>rG</em> =（x，y）。</p>
+<p>（2）Alice 根据随机数 <em>r</em> 、消息 <em>m</em> 的散列值 <em>h</em> 、私钥 <em>a</em> 计算  $ s=\frac{h+ax}{r} $ 。</p>
+<p>（3）最后，Alice 将消息 <em>m</em> 、点 <em>rG</em> = （x，y）和 s 发送给 Bob，其中点 <em>rG</em> 和 <em>s</em> 就是数字签名</p>
+<blockquote>
+<p>验证数字签名：</p>
+</blockquote>
+<p>（1）Bob 接受到消息 <em>m</em> 、点 <em>rG</em> = （x，y）和 <em>s</em> 。</p>
+<p>（2）Bob 根据消息 <em>m</em> 求出散列值 <em>h</em> 。</p>
+<p>（3）最后，Bob 根据上述消息，用 Alice 的公钥进行一下计算。</p>
+<p>$$\frac{h}{s}G+\frac{x}{s}(aG)$$ </p>
+<p>并将结果与 <em>rG</em> 进行比较。</p>
+<p>如果数字签名正确，则计算结果应如下所示。</p>
+<p>$$\frac{h}{s}G+\frac{x}{s}(aG)=\frac{h+ax}{s}G$$<br>$$=\frac{r(h+ax)}{h+ax}G$$<br>$$=rG$$</p>
+<p>由于攻击者没有 Alice 私钥，因此无法计算出合法的 <em>s</em> ，此外，即便是对于同一条消息，只要改变随机数 <em>r</em> ，所得带的数字签名也会随之改变。</p>
+</li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/02/25/modernArt/" class="prev">PREV</a><a href="/2017/10/24/1501/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
