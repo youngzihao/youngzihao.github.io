@@ -1,0 +1,672 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 初级密码学 · Feng Shui</title><meta name="description" content="初级密码学 - null"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Feng Shui"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.svg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/youngzihao" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">初级密码学</h1><div class="post-info">Dec 26, 2017</div><div class="post-content"><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<blockquote>
+<p>本文整理自《图解密码技术：第3版》</p>
+</blockquote>
+<h2 id="一、概览"><a href="#一、概览" class="headerlink" title="一、概览"></a>一、概览</h2><ul>
+<li><p>六大密码技术：</p>
+<p>（1）对称密码（symmetric cryptography）：加密和解密时使用<strong>同一密钥</strong>的方式。</p>
+<p>（2） 公匙密码（asymmetric cryptography）：加密和解密时使用<strong>不同密钥</strong>的方式，也称为非对称密码，现代计算机和互联网体系很大程度上依赖于公钥密码。</p>
+<p>（3） 单向散列函数（one-way hash function）：为防止软件遭到篡改，软件发布者会在发布软件的      同时发布散列值，散列值就是用单向散列函数计算所得。可保证数据<strong>完整性</strong>，可以检测数据是否被<strong>篡改</strong>过。</p>
+<p>（4）消息认证码（message authentication code）：不但能确认消息是否被<strong>篡改</strong>过，而且能够确认消息是否来自所期待的通信对象，也就是<strong>认证</strong>机制。</p>
+<p>（5） 数字签名（digital signature）：不仅能确保<strong>完整性</strong>、提供<strong>认证</strong>而且能够<strong>防止否认</strong>的密码技术。</p>
+<p>（6） 伪随机数生成器（Pseudo Random Number Generator，PRNG）：一种能够模拟产生随机数的算法，承担着<strong>密钥生成</strong>的职责。</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmsuk5s0euj30sg0lcn0g.jpg" alt="1"></p>
+</li>
+<li><p>隐写术：密码是让消息变得无法解读，而隐写术是能够隐藏消息本身，数字水印技术就采用了隐写术的方法。</p>
+</li>
+<li><p>密码与信息安全常识：</p>
+<p>（1）不要使用保密的密码算法。</p>
+<p>（2）使用低强度的密码比不进行任何加密更危险。</p>
+<p>（3）任何密码总有一天会被破解。</p>
+<p>（4）密码只是信息安全的一部分。</p>
+</li>
+</ul>
+<h2 id="二、简单密码"><a href="#二、简单密码" class="headerlink" title="二、简单密码"></a>二、简单密码</h2><ul>
+<li><p>凯撒密码（Caesar cipher）：通过将明文所使用的字母表按照一定的字数平移来进行加密，可被<strong>暴力破解</strong>（brute-force attack）。</p>
+</li>
+<li><p>简单替换密码（simple substitution cipher）：将明文中所使用的字母表替换成另外一套字母表的密码，很难通过暴力破解，但可以使用<strong>频率分析</strong>来破解。</p>
+</li>
+<li><p>Enigma（谜）：一种由键盘、齿轮、电池和灯泡组成的机器，可完成加密和解密两种操作，使用了<strong>密钥加密密钥</strong>（Key Encrypting Key，KEK），即用通信密码加密消息，用每日密码来加密通信密码，最终被 Alan Turing 破解。</p>
+</li>
+</ul>
+<h2 id="三、对称密码"><a href="#三、对称密码" class="headerlink" title="三、对称密码"></a>三、对称密码</h2><ul>
+<li><p>编码（encoding）：将现实世界中的东西映射为<strong>比特序列</strong>的操作。</p>
+</li>
+<li><p>异或（Exclusive OR，XOR）：如果 a、b 两个值不相同，则异或结果为 1 ，如果 a、b 两个值相同，异或结果为 0 。</p>
+</li>
+<li><p>一次性密码本（one-time pad）：又称<strong>维纳密码</strong>（Vernam cipher），原理是将明文与一串随机的比特序列进行 XOR 运算，在理论上是无法破译的（香农于 1949 年通过数学方法加以证明）就算通过暴力破解，也<strong>无法得知结果是否是正确的明文</strong>。</p>
+</li>
+<li><p>流密码（stream cipher）：一次性密码本孕育出了流密码，流密码使用的并不是真正的随机比特序列，而是伪随机数生成器产生的比特序列，只要使用高性能的伪随机数生成器就能构建出强度较高的密码系统。</p>
+</li>
+<li><p>DES（Data Encryption Standard）：是 1977 年美国联邦信息处理标准（FIPS）中所采用的一种对称密码。DES 以 64 比特的明文（比特序列）为一个单位来进行加密，这个 64 比特的单位称为<strong>分组</strong>，以分组为单位进行处理的密码算法称为<strong>分组密码</strong>（block cipher），DES 每次只能加密 64 比特的数据，如果加密的明文较长，就需要对 DES 加密进行迭代，而迭代的具体方式称为<strong>模式</strong>。</p>
+<p>DES 的基本结构是由 Horst Feistel 设计的，因此也被称为 <strong>Feistel 网络</strong>（结构/密码），在 Feistel 网络中，加密的各个步骤称为<strong>轮</strong>，整个加密过程就是进行若干次轮的循环，DES 是一种 16 轮循环的 Feistel 网络。</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fmsuk5g3jlj30sg0lcac8.jpg" alt="2"></p>
+<p>在 Feistel 网络中，每一轮都需要使用一个不同的子密钥，它只是一个局部密钥，因此才被称为子密钥（subkey）。</p>
+<p>轮函数的作用是根据“右侧”和子密钥生成对“左侧”进行加密的比特序列，是整个密码系统的核心。</p>
+<p>Feistel 网络的特点：</p>
+<p>（1）轮数可以任意增加。</p>
+<p>（2）加密时无论使用任何函数作为轮函数都可以正确解密。</p>
+<p>（3）加密和解密可以用完全相同的结构来实现。</p>
+</li>
+<li><p>三重DES（triple-DES）：是为了增加 DES 的强度，将 DES 重复三次所得到的一种密码算法，也称为 TDEA（Triple Data Encryption Algorithm），通常缩写为 3DES 。</p>
+<p> <img src="https://ws4.sinaimg.cn/large/006tNc79gy1fmsuk56u5ej30sg0lc41h.jpg" alt="3"></p>
+<p> 从图中我们可以发现，三重 DES 并不是进行三次 DES 加密（加密—加密—加密），而是加密-<strong>解密</strong>-加密的过程，在加密算法中加入解密操作目的是为了让三重 DES 能够兼容普通的 DES ，这个方法由 IBM 设计，当三重 DES 中的所有密钥都相同时，三重 DES 也就等于普通的 DES 了，也就是说三重 DES 具有向下兼容性。</p>
+<p> 三重 DES 目前还被银行等机构使用，但其处理速度不高，除了特别重视向下兼容性的情况外，很少被用于新的用途。</p>
+</li>
+<li><p>AES（Advanced Encrying Standard）：是取代前任 DES 而成为新标准的一种对称算法，Rijindael于 2000 年被选为新一代的标准密码算法—— AES 。DES 使用 Feistel 网络作为基本结构，而Rijindael 使用了 <strong>SPN 结构</strong>。</p>
+<p>  加密过程：逐字节替换（SubBytes）——平移行（ShiftRows）——混合列（MixColumns）——与轮密匙进行XOR（AddRoundKey）</p>
+</li>
+</ul>
+<h2 id="四、分组密码的模式"><a href="#四、分组密码的模式" class="headerlink" title="四、分组密码的模式"></a>四、分组密码的模式</h2><ul>
+<li><p>分组密码（block cipher）：每次只能处理特定长度数据的一类密码算法。</p>
+</li>
+<li><p>流密码（stream cipher）：是对数据进行连续处理的一类密码算法，一般以 1 比特、8 比特或 32 比特为单位进行加密和解密的。分组密码处理完一个分组就结束了，因此不需要通过内部状态来记录加密的进度，相对地，流密码是对一串数据流进行连续处理，因此需要<strong>保持内部状态</strong>。</p>
+</li>
+<li><p>模式：分组密码算法只能加密固定长度的分组，但是我们需要加密的明文长度可能会超过分组密码的分组长度，这时就需要对分组密码算法进行迭代，以便将一段很长的明文全部加密，而<strong>迭代的方法</strong>就称为分组密码的模式。</p>
+</li>
+<li><p>电子密码本模式（Electronic CodeBook，ECB）：<strong>在 ECB 模式中，将明文分组加密之后的结果直接成为密文分组</strong>，相同的明文分组会转换为相同的密文分组，我们可以将其理解为一个巨大的“明文分组——密文分组”的对应表，因此被称为<strong>电子密码本模式</strong>。</p>
+<p>   <img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmsuk4wk7gj30sg0lcaep.jpg" alt="4"></p>
+<p>  攻击方式：<strong>无需破译密文就能操纵明文</strong>。</p>
+</li>
+<li><p>密文分组链接模式（Cipher Block Chaining，CBC）：在 CBC 模式中，首先<strong>将明文分组与前一个密文分组进行 XOR 运算，然后再进行加密</strong>。</p>
+<p>  <img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmsuk4hxotj30sg0lcjxi.jpg" alt="5"></p>
+<p>  初始化向量（Initialization Vector，IV）：每次加密时都会产生一个不同的比特序列来作为初始化向量。</p>
+<p>  特点：</p>
+<p>  （1）在 CBC 模式加密过程中，我们无法单独对一个中间的明文分组进行加密，需要<strong>凑齐</strong>之前的明文分组。</p>
+<p>  （2）在 CBC 模式解密过程中，若有一个密文分组<strong>损坏</strong>了，只要密文分组的长度没有发生改变，则解密时最多只有两个分组受到数据损坏的影响。</p>
+<p>  （3）在 CBC 模式解密过程中，若密文文组有一些比特<strong>缺失</strong>了，此时即便缺失了 1 比特，也会导致密文分组的长度发生改变，此后的分组发生错位，缺失比特的位置之后的密文分组也就全部无法解密了。</p>
+<p>  应用实例：确保互联网通信安全的通信协议之一的 SSL/TLS 就是使用 CBC 模式进行加密的。</p>
+<p>  攻击方式：</p>
+<p>  （1）填充式攻击（Padding Oracle Attack）：是一种利用分组密码中的填充部分来进行攻击的方法。在分组密码中，当明文长度不为分组长度的整数倍时，需要在最后一个分组中填充一些数据凑满一个分组长度，攻击者会反复发送一段密文，每次发送都对填充的数据进行少许的改变，由于接收者在无法正确解密时会返回一个错误消息，攻击者通过这一错误消息可以获得一部分与明文有关的消息。</p>
+<p>  （2）对初始化向量进行攻击：初始化向量必须使用不可预测的随机数。然而在 SSL/TLS 的 TLS 1.0 版本协议中 IV 并没有使用不可预测的随机数，而是使用了上一次 CBC 模式加密时的最后一个分组。</p>
+<p>  （3）假设主动攻击者目的是通过修改密文来操纵解密后的明文，攻击者如果能够对初始化向量中的任意比特进行反转，则解密后得到的明文分组中相应的比特也会被反转，因为第一个明文分组会和初始化向量进行 XOR 运算。</p>
+<p>但是如果想要对密文分组也进行同样的攻击就非常困难了，假设主动攻击者将密文分组 1 中的某个比特进行了反转，则明文分组 2 中的相应比特也会被反转，然后这 1 比特的变化却会对解密后的明文分组 1 中的多个比特造成影响，也就是说，只让明文分组 1 中主动攻击者所期待的特定比特发生变化是很困难的。</p>
+</li>
+<li><p>密文反馈模式（Cipher FeedBack，CFB）：在 CFB 模式中，前一个密文分组会被送回密码算法的输入端。在 ECB 模式和 CBC 模式中，明文分组都是通过密码算法进行加密的，而在 CFB 模式中，明文分组并没有通过密码算法加密。</p>
+<p>  <img src="https://ws4.sinaimg.cn/large/006tNc79gy1fmsuk44gxkj30sg0lcgr3.jpg" alt="6"></p>
+<p>CFB 模式与流密码：</p>
+<p>CFB 模式与之前的一次性密码本十分相似，一次性密码本是通过将“明文”与“随机比特序列”进行 XOR 运算来生成“密文”的。CFB 模式则是通过将“明文分组”与“密码算法的输出”进行 XOR 运算来生成“密文分组”的。CFB 模式中由密码算法所生成的比特序列称为<strong>密钥流</strong>，密码算法相当于生成密钥流的伪随机数生成器。</p>
+<p> 在 CFB 模式中，明文数据可以被逐比特加密，因此可以将 CFB 模式看作是一种使用分组密码来实现流密码的方式</p>
+<p> 攻击方式：<strong>重放攻击</strong></p>
+</li>
+<li><p>输出反馈模式（Output-Feedback，OFB）：在 OFB 模式中，密码算法的输出会反馈到密码算法的输入中，因此被称为输出反馈模式。OFB 模式并不是通过密码算法对明文直接进行加密的，而是通过将“明文分组”和“密码算法的输出”进行异或来产生“密文分组”的，这一点上 OFB 模式和 CFB 模式很像。</p>
+<p>  <img src="https://ws3.sinaimg.cn/large/006tNc79gy1fmsuk3ueq5j30sg0lc7a5.jpg" alt="7"></p>
+<p>  OFB 模式与 CFB 模式的区别：在于两者密码算法的输入，前者密码算法的输入是密码算法的前一个输出，后者密码算法的输入是前一个密文分组，两者名称也因此不同。</p>
+</li>
+<li><p>计数器模式（CounTeR，CTR）：<strong>是一种通过将逐次累加的计数器进行加密来生成密匙流的流密码</strong>。</p>
+<p>  <img src="https://ws3.sinaimg.cn/large/006tNc79gy1fmsuk3igkfj30sg0lctes.jpg" alt="8"><br>  CTR 模式中，每个分组对应一个逐次累加的计数器，并通过对计数器进行加密来生成密匙流，最终的密文分组是通过将计数器加密得到的比特序列，与明文分组 XOR 所得到的。</p>
+<p>  由于计数器的值每次都不同，因此每个分组中将计数器进行加密所得到的密钥流也是不同的，也就是说，这种方法就是用分组密码来模拟生成随机的比特序列。</p>
+<p>  特点：</p>
+<p>  （1）加密和解密使用了完全相同的结构，因此在程序上容易实现，这一特点与同为流密码的 OFB 模式是一样的。</p>
+<p>  （2）CTR 模式可以以任意顺序对分组进行加密和解密，因此在加密和解密时需要用到的“计数器”的值可以由 nonce 和分组序号直接计算出来，这一性质是 OFB 不具备的。</p>
+<p>  （3）能够以任意顺序处理分组，意味能够实现并行计算，在支持并行计算的系统中，CTR的速度是最快的。</p>
+<p>  错误与机密性方面：</p>
+<p>  CTR 模式具备和 OFB 模式差不多的性质，假设 CTR 密文分组中有 1 个比特被反转了，则解密之后明文分组中仅有与之对应的比特会被反转，这一错误不会放大。换言之，主动攻击者可以利用通过反转密文分组中的某些比特，来引起解密之后的明文中相应比特发生反转，这一弱点和 OFB 模式是相同的。</p>
+<p>  不过 CTR 模式具备一个比 OFB 模式要好的性质，在 OFB 模式中，如果对密钥流的一个分组进行加密后其结果碰巧和加密前是一样的，那么这一分组之后的密钥流就会变成同一值得不断反复，在 CTR 模式中就不存在这种问题。</p>
+</li>
+</ul>
+<h2 id="五、公钥密码"><a href="#五、公钥密码" class="headerlink" title="五、公钥密码"></a>五、公钥密码</h2><ul>
+<li><p>解决<strong>密钥配送问题</strong>的四个方法</p>
+<p> （1）通过<strong>事先共享密钥</strong>来解决</p>
+<p> （2）通过<strong>密钥分配中心</strong>来解决</p>
+<p> （3）通过 <strong>Diffie-Hellman 密钥交换</strong>来解决</p>
+<p> （4）通过<strong>公钥密码</strong>解决</p>
+</li>
+<li><p>公钥密码（public-key cryptography）：也被称为非对称密码（asymmetric cryptography）在公钥密码中，密钥分为加密密钥（<strong>公钥</strong>，可以公开）和解密密钥（<strong>私钥</strong>，不能公开）两种，发送者用加密密钥对消息进行加密，接受者用解密密钥对密文进行解密。公钥和私钥是一一对应的，一对公钥和私钥统称为密钥对。</p>
+<p>公钥密码无法解决的问题：</p>
+<p>（1）我们需要判断所得到的公钥是否正确合法，也就是<strong>公钥认证</strong>问题。</p>
+<p>（2）处理<strong>速度</strong>只有对称密码的几百分之一。</p>
+</li>
+<li><p>时钟运算：</p>
+<p>（1）加法：时针的指针向右旋转相当于做加法，不过不是单纯的加法，而是“除法求余数（mod）”</p>
+<p>（2）减法：实际上是加法的逆运算，可将减法转换为加法。</p>
+<p>（3）乘法：相当于加法的多次重复。</p>
+<p>（4） 除法：实际上是乘法的逆运算，例如：7 × ■ mod 12 = 1，在乘法中我们的思路是“在 mod 12    的世界里，7 乘以几等于 1 ”。换句话就是“在 mod 12 的世界里，1 ÷ 7 等于几”。</p>
+<p>我们再来看下面这个算式：</p>
+<p>● × ■ mod 12 = 1</p>
+<p>当我们把 mod 12 遮住的时候，我们发现 ● 与 ■ <strong>互为倒数</strong>，当然我们需要加上“在以 12 为模的世界中”这个条件。在 0 到 11 的数字中，有哪些数存在与之相应的倒数呢，实际上，时钟运算中“某个数是否存在倒数”这个问题，与公钥算法 RSA 中“一个公钥是否存在相对应的私钥”这个问题是直接相关的。</p>
+<p>某个数是否存在倒数，可以通过这个数和 12 的最大公约数是否为 1 这个条件来判断，和 12 的最大公约数为 1 的数（5、7、11），在数学上称为“和 12 互质的数”，可以理解为“相对于 12 的质数”。</p>
+<p>（5）乘方：相当于乘法的多次重复。</p>
+<p>（6）对数：时钟运算中的对数称为<strong>离散对数</strong>，例如：7 <sup>■</sup> mod 13 = 8 ，尝试下来我们知道 ■ 为 9 ，当数字很大的时候，求离散对数就非常困难，能够快速求出离散对数的算法现在还没被发现，Diffie-Hellman 密钥交换协议以及 ElGamel 公钥算法中就运用了离散对数。</p>
+</li>
+<li><p>RSA：是目前使用最为广泛的公钥密码算法，名字是由它的三位开发者的姓氏首字母组成的，可被用于公钥密码和数字签名。</p>
+<p>  <img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmsuk37xabj30sg0lcq4y.jpg" alt="9"></p>
+<p>  加密过程：</p>
+<blockquote>
+<p>密文 = 明文<sup><em>E</em></sup> mod <em>N</em></p>
+</blockquote>
+<p>  其中 <em>E</em>（Encryption） 和 <em>N</em>（Number） 是 RSA 加密的密钥，<strong>因此<em>E</em> 和 <em>N</em> 的组合就是公钥</strong>。 </p>
+<p>  解密过程：</p>
+<blockquote>
+<p>明文 = 密文<sup><em>D</em></sup> mod <em>N</em></p>
+</blockquote>
+<p>  这里所使用的 <em>N</em> 与加密时使用的是一致的，<strong>因此<em>D</em>（Decryptio） 和 <em>N</em> 的组合就是私钥</strong>。</p>
+<p>  由于 <em>E</em> 和 <em>N</em> 是公钥，<em>D</em> 和 <em>N</em> 是私钥，因此求 <em>E</em>、<em>N</em>、<em>D</em> 这三个数就是<strong>生成密钥对</strong>，生成步骤如下：</p>
+<blockquote>
+<p>（1）求 <em>N</em> ：</p>
+</blockquote>
+<blockquote>
+<p>首先准备两个很大的质数 <em>p</em> 和 <em>q</em> 。 过小容易被破解，要求出这样大的质数，需要通过伪随机数生成器生成一个 512 比特大小的数，判断是不是质数，如果不是，则重新生成。</p>
+</blockquote>
+<blockquote>
+<p>准备好之后，将这两个数相乘，其结果就是 <em>N</em> ，可用以下公示表达。</p>
+</blockquote>
+<blockquote>
+<p><em>N</em> = <em>p</em> × <em>q</em></p>
+</blockquote>
+<blockquote>
+<p>（2）求 <em>L</em> （只在生成密钥对的过程中出现）：</p>
+</blockquote>
+<blockquote>
+<p><em>L</em> 是 <em>p</em> -1和 <em>q</em> -1的最小公倍数（least common multple，lcm），如果用 lcm(<em>X</em>,<em>Y</em> ) 来表示“ <em>X</em> 与 <em>Y</em> 的最小公倍数”，则 <em>L</em> 可以写成以下形式。</p>
+</blockquote>
+<blockquote>
+<p><em>L</em> = lcm(<em>p</em> -1, <em>q</em> -1)     </p>
+</blockquote>
+<blockquote>
+<p>（3）求 <em>E</em> ：</p>
+</blockquote>
+<blockquote>
+<p><em>E</em> 是一个比 1 大、比 <em>L</em> 小的数，此外 <em>E</em> 和 <em>L</em> 的最大公约数（greatest common divisor，gcd）必须为1。如果用 gcd(<em>X</em>,<em>Y</em> ) 来表示 <em>X</em> 和 <em>Y</em> 的最大公约数，则 <em>E</em> 和 <em>L</em> 存在以下关系。</p>
+</blockquote>
+<blockquote>
+<p>1 &lt; <em>E</em> &lt; <em>L</em></p>
+</blockquote>
+<blockquote>
+<p>gcd(<em>E</em>, <em>L</em>) = 1</p>
+</blockquote>
+<blockquote>
+<p>使用伪随机数生成器，在 1 &lt; <em>E</em> &lt; <em>L</em>范围内生成 <em>E</em> 的候选数，然后再判断是否满足 gcd(<em>E</em>, <em>L</em>) = 1 这个条件。</p>
+</blockquote>
+<blockquote>
+<p>（4）求 <em>D</em> :</p>
+</blockquote>
+<blockquote>
+<p>数 <em>D</em> 是由数 <em>E</em> 计算得到的。<em>D</em> 、 <em>E</em> 、 <em>L</em> 之间必须具备下列关系。</p>
+</blockquote>
+<blockquote>
+<p>1 &lt; <em>D</em> &lt; <em>L</em></p>
+</blockquote>
+<blockquote>
+<p><em>E</em> × <em>D</em> mod <em>L</em> = 1</p>
+</blockquote>
+<blockquote>
+<p>只要满足以上条件，则通过 <em>E</em> 和 <em>N</em> 进行加密的密文，就可以通过 <em>D</em> 和 <em>N</em> 进行解密。</p>
+</blockquote>
+<p>  对 RSA 的攻击：</p>
+<p>  （1）通过密文求得明文：RSA 的加密过程如下，由于密码破译者知道密文、<em>E</em> 、<em>N</em> ，如果没有 mod <em>N</em> 的话就会变成看作是一个求对数的问题，但是加上 mod <em>N</em> 的话，就会变成一个求离散对数的问题，目前还没发现求离散对数的高效算法。</p>
+<blockquote>
+<p>密文 = 明文<sup><em>E</em></sup> mod <em>N</em></p>
+</blockquote>
+<blockquote>
+<p>密文 = 明文<sup><em>E</em></sup> <del>mod <em>N</em></del></p>
+</blockquote>
+<p>  （2）通过暴力破解：只要能知道 <em>D</em> 就能对密文进行破解，因此我们可以逐一尝试有可能作为 <em>D</em> 的数字来破译 RSA ，也就是暴力破解法。但暴力破解的难度会随着 <em>D</em> 长度的增加而变大，当 <em>D</em> 足够长的时候就不可能在现实的时间内通过暴力破解找出 <em>D</em> 。</p>
+<p>   现在，RSA 中使用的 <em>p</em> 和 <em>q</em> 的长度都是 1024 比特以上，<em>N</em> 的长度为 2048 比特以上，由于 <em>E</em> 和 <em>D</em> 的长度可以和 <em>N</em> 差不多，因此要找出 <em>D</em> 就需要进行 2048 比特以上的暴力破解，这样的长度下暴力破解是很困难的。</p>
+<p>   （3）通过 <em>E</em> 和 <em>N</em> 求出 <em>D</em>：密码破译者不知道 <em>D</em> ，但是却知道公钥中的 <em>E</em> 和 <em>N</em> ，回忆一下生成密钥对的方法：</p>
+<blockquote>
+<p><em>E</em> × <em>D</em> mod <em>L</em> = 1</p>
+</blockquote>
+<p>   出现的数字是<em>L</em> ， 而 <em>L</em> 是 = lcm(<em>p</em> -1, <em>q</em> -1)，可以看出由 <em>E</em> 计算 <em>D</em> 需要使用 <em>p</em> 和 <em>q</em> ，因此<strong>质数 <em>p</em> 和 <em>q</em> 不能被密码破译者知道</strong>，把 <em>p</em> 和 <em>q</em> 交给密码破译者与把私钥交给密码破译者是等价的。</p>
+<p>   <em>p</em> 和 <em>q</em> 不能被密码破译者知道，但是 <em>N</em> = <em>p</em> × <em>q</em> ，并且 <em>N</em> 是公开的，因此由 <em>N</em> 求 <em>p</em> 和 <em>q</em> 只能通过将 <em>N</em> 进行<strong>质因数分解</strong>来完成，<strong>一旦发现了对大整数进行质因数分解的高效算法，RSA 就能够被破解</strong>，然而现在还未发现此类高效算法。</p>
+<p>   即使不进行质因数分解，密码破译者还是有可能知道 <em>p</em> 和 <em>q</em> 。由于 <em>p</em> 和 <em>q</em> 是通过伪随机数生成器产生的，一旦伪随机数生成器的算法很差，密码破译者就很有可能推测出来。</p>
+<p>   （4）中间人攻击（man-in-the-middle-attack）：这种方法虽然不能破译 RSA ，但却是一种针对机密性的有效攻击，所谓中间人攻击，就是主动攻击者混入发送者和接受者的中间，对发送者伪装成接受者，对接受者伪装成发送者的攻击方式。要防御中间人攻击我们需要一种手段确认所收到的公钥是否是真正的发送者发来的，也就是公钥的证书。</p>
+<p>   （5）选择密文攻击（Chosen Ciphertext Attack）：我们假设攻击者可以使用这样一种服务，即“发送任意数据，服务器都会将其当做密文来解密并返回解密的结果”，这种服务被称为<strong>解密提示</strong>（Decryption Oracle）。攻击者可以生成不同的数据，并让解密提示来尝试解密，从而获得生成密文时使用的密钥以及和明文有关的信息，反过来说，如果一种密码算法能够抵御选择密文攻击，则我们就可以认为这种算法的强度很高。</p>
+<p>   只要我们在解密时能够判断“密文是否是由知道明文的人通过合法的方式产生的”就可以了，也就是认证。RSA-OAEP（Optimal Asymmetric Encryption Padding，最优非对称加密填充）正是基于上述思路设计的一种 RSA 改良算法。</p>
+<p>   RSA-OAEP在加密时会在明文前面填充一些认证信息，包括明文的散列值以及一定数量的 0 ，然后再对填充后的明文进行 RSA 加密。在 RSA-OAEP 解密过程中，如果在 RSA 解密后的数据的开头没有找到正确的认证信息，则可以判定“这段密文不是由知道明文的人生成的”，并返回错误提示，因此能够抵御选择密文攻击。在实际运用中，还会通过随机数使得每次生成的密文呈现不同的排列方式，从而提高安全性。</p>
+</li>
+<li><p>其他公钥密码算法：</p>
+<p>（1）ElGamal 方式：RSA 利用了质因数分解的困难度，而 ElGamal 则利用了 mod <em>N</em> 下求离散对数的困难度。</p>
+<p>（2）Rabin 方式：利用了 mod <em>N</em> 下求平方根的困难度。</p>
+<p>（3）椭圆曲线密码（Elliptic Curve Cryptography，ECC）：利用了在椭圆曲线上乘法运算的逆运算非常难这一特点。</p>
+</li>
+</ul>
+<h2 id="六、混合密码"><a href="#六、混合密码" class="headerlink" title="六、混合密码"></a>六、混合密码</h2><ul>
+<li><p>公钥密码的两大缺陷：</p>
+<p>（1）处理速度远低于对称密码（解决方法：混合密码）</p>
+<p>（2）难以抵御中间人攻击（解决方法：认证）</p>
+</li>
+<li><p>混合密码系统（hybrid cryptosystem）：用快速的对称密码来加密消息，用公钥密码加密对称密码的密钥。混合密码系统解决了公钥密码速度慢的问题、并通过公钥密码解决了对称密码的密钥配送问题。</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmsuk2xlotj30sg0lcwie.jpg" alt="10"></p>
+</li>
+<li><p>应用实例：著名的密码软件 PGP 、以及网络上的密码通信所使用的 SSL/TLS 都运用了混合密码技术。</p>
+</li>
+</ul>
+<h2 id="七、单向散列函数"><a href="#七、单向散列函数" class="headerlink" title="七、单向散列函数"></a>七、单向散列函数</h2><ul>
+<li><p>单向散列函数（one-way hash function）：有一个输入和输出，输入被称为<strong>消息</strong>，输出被称为<strong>散列值</strong>（hash value），单向散列函数可以根据消息的内容计算出散列值，用来检查消息的<strong>完整性</strong>。</p>
+</li>
+<li><p>单向散列函数的性质：</p>
+<p>（1）根据任意长度的消息计算出固定长度的散列值。</p>
+<p>（2）快速计算散列值。</p>
+<p>（3）消息不同，散列值不同。 </p>
+<p>（4）单向性，无法通过散列值反算出消息的性质。</p>
+</li>
+<li><p>碰撞（collision）：两个不同的消息产生同一个散列值的情况称为“碰撞”。</p>
+</li>
+<li><p>抗碰撞性（collision resistance）：难以发现发现碰撞的性质。</p>
+</li>
+<li><p>弱抗碰撞性：找到和该条消息具有相同散列值的另外一条消息是非常困难的性质。</p>
+</li>
+<li><p>强抗碰撞性：找到散列值相同的两条不同的消息是非常困难的性质。密码技术中所使用的单向散列函数，不仅要具备弱抗碰撞性，还必须具备强抗碰撞性。</p>
+</li>
+<li><p>术语：<strong>单向散列函数</strong>也称<strong>消息摘要函数</strong>（message digest function）、<strong>哈希函数</strong>、<strong>杂凑函数</strong>。<strong>消息</strong>也被称为<strong>原像</strong>（pre-image），<strong>散列值</strong>也被称为<strong>消息摘要</strong>、<strong>指纹</strong>（fingerprint），<strong>完整性</strong>也被称为<strong>一致性</strong>。</p>
+</li>
+<li><p>应用实例：</p>
+<p>（1）检测软件是否被篡改</p>
+<p>（2）用于基于口令的加密（Password Based Encryption，PBE）PBE的原理是将口令和盐（salt，通过伪随机生成器产生的随机值）混合后计算其散列值，然后将这个散列值作为加密的密钥，通过这样的方法能够有效防御针对口令的字典攻击。</p>
+<p>（3）构造消息认证码</p>
+<p>（4）构造数字签名</p>
+<p>（5）构造伪随机数生成器</p>
+<p>（6）构造一次性口令（one-time password），一次性口令被用于服务器对客户端的合法性认证，使用单向散列函数可以保证口令只在通信链路上传送一次，即使被窃听了口令，也无法使用。</p>
+</li>
+</ul>
+<ul>
+<li><p>传统单向散列函数：</p>
+<p> （1）MD4、MD5：两者分别是 Rivest 于 1990、1991 年设计的单向散列函数，能够产生 128 比特的散列值，MD是消息摘要（Message Digest）的缩写，现均已被攻破。</p>
+<p> （2）SHA-1：SHA-1是由NIST（National Institute of Standards and Technology，美国国家标准技术研究所）设计的一种能够产生 160 比特的散列值的单向散列函数，已被攻破。</p>
+<p> （3）SHA-256、SHA-384、SHA-512：由NIST设计的单向散列函数，统称为 SHA-2 ，抗碰撞性尚未攻破。</p>
+<p> （4）RIPEMD-160：是于 1996 年设计的一种能够产生 160 比特散列值的单向散列函数，RIPEMD-160 是欧盟 RIPE 项目所设计的 RIPEMD 单向散列函数的修订版，这一系列的函数还包括RIPEMD-128、RIPEMD-25 、RIPEMD-320 等，RIPEMD 的强抗碰撞性已被攻破，但RIPEMD-160尚未攻破，比特币中使用的就是 RIPEMD-160 。</p>
+</li>
+<li><p>SHA-3（Secure Hash Algorithm-3）：在 2005 年 SHA-1 被攻破的背景下，NIST 开始着手制定下一代单向散列函数 SHA-3，最终于 2012 年正式确定将 Keccak 算法作为 SHA-3 标准。</p>
+<p>Keccak 可以生成任意长度的散列值，但为了配合 SHA-2 的散列长度，SHA-3 标准中共规定了 SHA3-224、SHA3-256、SHA3-384、SHA3-512 这 4 种版本。输入数据方面 SHA-3 无长度限制。</p>
+<p>（1）海绵结构：Keccak 采用了与 SHA-1 、SHA-2 完全不同的<strong>海绵结构</strong>（sponge construction），在海绵结构中，输入的数据在进行填充之后，要经过<strong>吸收阶段</strong>（absorbing phase）和<strong>挤出阶段</strong>（squeezing phase），最终生成输出的散列值。</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmsuk2l3d6j30sg0lc42l.jpg" alt="11"></p>
+<p>函数 <em>f</em> 的作用是将输入的数据进行复杂的搅拌操作并输出结果（输入和输出的长度均为 <em>b</em> = <em>r</em> + <em>c</em> 个比特），其操作对象是长度为 <em>b</em> = <em>r</em> + <em>c</em> 个比特的内部状态，内部状态的初始值为 0 ，也就是说，通过反复将输入分组的内容搅拌进来，整个消息就会被一点一点地吸收到海绵的内部结构中，每次吸收的输入分组长度为 <em>r</em> 个比特，因此 <em>r</em> 被称为<strong>比特率</strong>（bit rate）</p>
+<p>函数 <em>f</em> 的输入长度并不是 <em>r</em> 个比特，而是 <em>r</em> + <em>c</em> 个比特，这意味着内部状态中有 <em>c</em> 个比特是不受输入分组内容的直接影响的（但会受到函数 <em>f</em> 的简介影响），这里的 <em>c</em> 被称为<strong>容量</strong>（capacity）。</p>
+<p>在挤出阶段中，内部状态 <em>r</em> + <em>c</em> 个比特的容量（ <em>c</em> 个比特）部分是不会直接进入输出分组的，这部分数据只会通过函数 <em>f</em> 间接影响输出的内容，因此容量 <em>c</em> 的意义在于防止将输入消息中的一些特征泄漏出去。</p>
+<p>（2）双工结构：作为海绵结构的变形，Keccak 中还提出了一种双工结构。在海绵结构中，只要将输入的消息全部吸收完毕后之后才能输出，但在双工结构中，输入和输出是以相同的速率进行的。</p>
+<p>（3）对 Keccak 的攻击：Keccak 之前的单向散列函数都是通过循环执行压缩函数的方式来生成散列值的，称为 <strong>MD 结构</strong>（Merkle-Damagard construction）。MD4、MD5、RIPEMD、RIPEMD-160、SHA-1、SHA-2 等几乎所有的传统的单向散列函数算法都是基于 MD 结构的。而 Keccak 则采用了和 MD 结构完全不同的海绵结构，因此目前为止还未出现能对 Keccak 算法形成威胁的攻击方法。</p>
+</li>
+<li><p>对单向散列函数的攻击：</p>
+<p>（1）暴力破解：利用文件的<strong>冗余性</strong>生成具有相同散列值的另一个文件，所谓冗余性就是指不改变文档意思的前提下能够对文件的内容进行修改的程度。现在我们需要寻找的是一条具备特定散列值的消息。这相当于<strong>试图破解单向散列函数的“弱抗碰撞性”的攻击</strong>。找出具有指定散列值的消息的攻击分为两种，即“原像攻击“和”第二原像攻击”。<strong>原像攻击</strong>（Pre-Image Attack）是指给定一个散列值，找出具有该散列值的任意消息。<strong>第二原像攻击</strong>（Secend Pre-Image Attack）是指定一条消息 1 ，找出另外一条消息 2 ，消息 2 的散列值和消息 1 相同。</p>
+<p>（2）生日攻击：要找到散列值相同的两条消息，散列值可以是任意的，这样的攻击被称为<strong>生日攻击</strong>或<strong>冲突攻击</strong>（collision attack）”，这是一种<strong>试图破解单向散列函数的“强碰撞性”的攻击</strong>。</p>
+</li>
+<li><p>单向散列函数无法解决的问题：<strong>能够辨认出篡改，并无法辨认出伪装</strong>，因此我们需要认证。</p>
+</li>
+</ul>
+<h2 id="八、消息认证码"><a href="#八、消息认证码" class="headerlink" title="八、消息认证码"></a>八、消息认证码</h2><ul>
+<li><p>消息认证码（Message Authentication Code，MAC）：是一种确认完整性并认证的技术。</p>
+<p>消息认证码的输入包括任意长度的消息和一个发送者与接收者之间的共享的密钥，它可以输出固定长度的数据，这个数据被称为 <strong>MAC 值</strong>。</p>
+<p>根据任意长度的消息输出固定长度的数据，这一点和单向散列函数很像，因此可以理解<strong>消息认证码是一种与密钥相关的单向散列函数</strong>。</p>
+</li>
+<li><p>应用实例：</p>
+<p>（1）SWIFT（Society for Worldwide Interbank Financial Telecommunication，环球银行金融电信协会），1973年成立的国际组织，目的是为国际银行间的交易保驾护航，银行与银行之间就是通过SWIFT 来传递消息，SWIFT 中使用了消息认证码。</p>
+<p>（2）IPsec：是对互联网基本协议——IP 协议（Internet Protocol）增加安全的一种方式，在 IPsec中，对通信内容的认证和完整性校验都是采用消息认证码来完成的。</p>
+<p>（3）SSL / TLS：对通信内容的认证和完整性校验也使用了消息认证码。</p>
+</li>
+<li><p>实现方法：</p>
+<p>（1）使用<strong>单向散列函数</strong>实现：使用 SHA-2 之类的单向散列函数就可以实现消息认证码，其中一种实现方法称为 HMAC 。</p>
+<p>（2）使用<strong>分组密码</strong>实现：使用 AES 之类的分组密码也可以实现消息认证码，将分组密码的密钥作为消息认证码的共享密钥来使用，并用 CBC 模式将消息全部加密，此外初始化向量（IV）是固定的。因为 CBC 模式的最后一个密文分组会受到整个信息以及密钥的双重影响，因此我们可以将它作为消息认证码，将除最后一个分组以外的密文部分全部丢弃。例如：AES-CMAC 就是一种基于 AES 实现的消息认证码。</p>
+</li>
+<li><p>HMAC：是一种使用单向散列函数来构造消息认证码的方法（RFC2104），其中 HMAC 的 H 就是 Hash 的意思。</p>
+<p>  <img src="https://ws3.sinaimg.cn/large/006tNc79gy1fmsuk2b6qfj30sg0lcdi4.jpg" alt="12"></p>
+<p>HMAC 中所使用的单向散列函数并不仅限于一种，任何高强度的单向散列函数都可以被用于 HMAC，使用 SHA1、SHA-224、SHA-256、SHA-384、SHA-512 所构造的 HMAC ，分别被称为HMAC-SHA1、HMAC-SHA-224、HMAC-SHA-256、HMAC-SHA-384、HMAC-SHA-512 。</p>
+<p>实现原理：</p>
+<p>（1）密钥填充：如果密钥比单向散列函数的分组长度要短，就需要在末尾填充 0 ，直到长度达到单向散列函数的分组长度为止。如果密钥比分组长度要长，则要单向散列函数求出密钥的散列值，然后将这个散列值用作 HMAC 的密钥。</p>
+<p>（2）将填充后的密钥与被称为 <strong>ipad</strong> 的比特序列进行 XOR 运算：ipad 是将 00110110 这一比特序列不断循环往复直到达到分组长度所形成的比特序列，其中 ipad 的 i 代表 inner（内部）的意思。</p>
+<p>XOR 运算所得到的值，就是一个和单向散列函数的分组长度相同，且和<strong>密钥相关的比特序列</strong>，称为 ipadkey 。</p>
+<p>（3）与消息组合：也就是将比特序列（ipadkey）依附在消息的开头。</p>
+<p>（4）输入单向散列函数，计算散列值。</p>
+<p>（5）将填充后的密钥与被称为 <strong>opad</strong> 的比特序列进行 XOR 运算：opad 是将 01011100 这一比特序列不断循环往复直到达到分组长度所形成的比特序列，其中 opad 的 o 代表 outer（内部）的意思。</p>
+<p>XOR 运算所得到的值，就是一个和单向散列函数的分组长度相同，且和密钥相关的比特序列，称为 opadkey 。</p>
+<p>（6）将散列值拼在 opadkey 后面。</p>
+<p>（7）输入单向散列函数，计算散列值，这就是最终的 MAC 值，一个和输入的消息和密钥都相关的长度固定的比特序列。</p>
+</li>
+<li><p>认证加密：2000以后，关于认证加密（Authenticated Encryption，AE，Authenticated Encryption with Associated Data，AD）的研究逐渐展开，认证加密是一种将对称密码和消息认证码相结合，同时满足机密性、完整性和认证三大功能的机制。</p>
+<p>有一种认证加密方式叫作 Encrypt-then-MAC ，这种方式是先用对称密码将明文加密，然后计算密文的MAC值，另外还有 Encypt-and-MAC（将明文用对称密码加密，并对明文计算 MAC 值）和 MAC-then-Encrypt（先计算明文的 MAC 值，然后将明文和 MAC 值同时用对称密码加密）。</p>
+<p>GCM（Galois/Counter Mode）是一种认证加密方式，GCM 中使用 AES 等 128 比特分组密码的 CTR 模式，并使用了一个反复进行加法和乘法运算的散列函数来计算 MAC 值，由于 CTR 模式本质是对递增的计数器值进行加密，因此可通过对若凡分组进行并行处理来提高速度，并且 CTR 模式加密与 MAC 值得计算使用的是相同的密钥，因此密钥管理也十分方便。</p>
+</li>
+<li><p>对消息认证码的攻击：</p>
+<p>（1）重放攻击：通过事先保存的正确的 MAC 值不断重放来发动攻击。（可以使用序号、时间戳、nonce 来防御重放攻击）</p>
+<p>（2）密钥推测攻击：和单向散列函数一样，对消息认证码也可以进行<strong>暴力破解</strong>和<strong>生日攻击</strong>，对于消息认证码来说，应该保证<strong>不能根据 MAC 值推测出通信双方所使用的密钥</strong>。此外生成消息认证码所使用的密钥，必须使用高强度的伪随机数生成器。</p>
+</li>
+<li><p>消息认证码无法解决的问题：</p>
+<p>（1）无法对第三方证明</p>
+<p>（2）无法防止否认</p>
+</li>
+</ul>
+<h2 id="九、数字签名"><a href="#九、数字签名" class="headerlink" title="九、数字签名"></a>九、数字签名</h2><ul>
+<li><p>数字签名（digital signature）：在数字签名中出现了两种行为，<strong>生成签名</strong>的行为和<strong>验证签名</strong>的行为。其中使用签名密钥来生成签名，使用验证密钥来验证签名。  数字签名对这两种密钥做了区分，使用验证密钥无法生成签名，此外，<strong>签名密钥只能由签名的人持有，而验证密钥则是任何需要验证签名的人都可以持有</strong>。 </p>
+<p>实际上，数字签名就是通过将公钥密钥反过来实现的。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">私钥</th>
+<th style="text-align:center">公钥</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">公钥密码</td>
+<td style="text-align:center">接受者解密时使用</td>
+<td style="text-align:center">发送者加密时使用</td>
+</tr>
+<tr>
+<td style="text-align:center">数字签名</td>
+<td style="text-align:center">签名者生成签名时使用</td>
+<td style="text-align:center">验证者验证签名时使用</td>
+</tr>
+<tr>
+<td style="text-align:center">谁持有密钥？</td>
+<td style="text-align:center">个人持有</td>
+<td style="text-align:center">只要需要任何人可以持有</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>实现方法：</p>
+<p>（1）直接对消息签名的方法（实际上并不会使用）</p>
+<p>（2）对消息的散列值签名的方法（实际上会使用）</p>
+<p>   <img src="https://ws4.sinaimg.cn/large/006tNc79gy1fmsuk1zccnj30sg0lcq5j.jpg" alt="13"></p>
+</li>
+<li><p>对数字签名的疑问：</p>
+<p>（1）密文为什么能作为签名使用？</p>
+<p>数字签名是利用了“没有私钥的人事实上无法生成使用该私钥所生成的密文”这一性质来实现的，这里所生成的密文并非被用于确保机密性，而是被用于代表一种只有持有该密钥的人才能生成的信息。这样的信息被称为认证符号（authenticator），消息认证码也是认证符号的一种，数字签名也是一样。</p>
+<p>（2）数字签名能保证机密性吗？</p>
+<p>数字签名的作用本来就不是确保机密性。</p>
+<p>（3）数字签名被复制之后，还可以用作签名吗？</p>
+<p>签名可以被复制，并不意味着签名会失去意义，因为签名所表达的意义是特定的签名者对特定的消息进行了签名，即便签名被复制，也并不会改变签名者和消息的内容。并且，签名是不是原件不重要，重要的是特定的签名者与特定的消息绑定在了一起这一事实。</p>
+<p>（4）消息会不会被任意修改？</p>
+<p>数字签名要实现的并不是防止修改，而是识别修改。</p>
+<p>（5）能不能同时修改消息和签名，使得验证签名成功？</p>
+<p>只要消息被修改 1 比特，重新计算散列值就会发生很大的变化，要拼凑出合法的签名，必须在不知道私钥的前提下对新产生的散列值进行加密，事实上这是无法做到的，因为不知道私钥就无法生成用该私钥才能生成的密文。</p>
+<p>（6）签名能不能被重复使用？</p>
+<p>将签名部分提取出来并附加到别的消息后面，验证签名会失败。在数字签名中，签名与消息具有对应关系，因此事实上无法做到将签名提取出来重复使用。</p>
+<p>（7）删除签名也无法作废合同吗？</p>
+<p>带有数字签名的借据即便删除掉也无法作废，因为不知道其他地方是否留有副本，要作废带有数字签名的借据，可以重新创建一份相当于收据的文书，并让对方在这份文书上加上数字签名。</p>
+<p>也可以在消息中声明该消息的有效期并加上数字签名。</p>
+<p>（8）数字签名如何防止否认？</p>
+<p>在数字签名中，能够生成签名的私钥是只有发送者才持有的，因此只有发送者才能够生成签名，无法进行否认，但严格来说，也存在私钥被窃取的情况。</p>
+<p>（9）数字签名能否取代真实的签名与盖章？</p>
+<p>美国于 2001 年颁布了 E-SIGN 法案，日本也于 2001 年颁布了电子签名及其认证业务的相关法律，我国于 2005 年颁布了《中华人民共和国电子签名法》，这些法律为将电子手段实现的签名与手写的签名和盖章同等处理提供了法律基础。数字签名在未来将发挥重要的作用，但是单纯地认为数字签名比普通的盖章或手写签名更可信是很危险的，一种新技术只有被广泛地认知，并对各种问题制定相应的解决方法之后，才能被社会真正地接受。</p>
+</li>
+<li><p>应用实例：</p>
+<p>（1）安全信息公告: 信息发布的目的是尽量让更多的人知道，因此我们没有必要对信息进行加密，但是必须排除有人恶意伪装成该组织来发布假消息的风险，因此我们不加密消息，而只是对消息加上数字签名，这种对明文消息所施加的签名，一般称为明文签名（clearsign）</p>
+<p>（2）软件下载：智能手机上广泛使用的 Android 系统是无法安装没有数字签名的应用软件的，在签署数字签名时，为了识别应用开发者的身份等信息，需要使用证书，这个证书只被用于识别应用开发者的身份等信息，并不是经过认证机构（Certificate Authority）签名的。不过数字签名只是能够检测软件是否被篡改过，无法保证软件本身不做出恶意行为。</p>
+<p>（3）公钥证书：在验证数字签名时我们需要合法的公钥，那么怎么才知道我们的公钥是否合法呢，我们可以将公钥当做消息，对他加上数字签名，像这样对公钥施加数字签名所得到的就是公钥证书。</p>
+<p>（4）SSL/TLS：在认证服务器身份是否合法时会使用服务器证书，它就是加上了数字签名的服务器公钥，相对地，服务器为了客户端进行认证也会使用客户端证书。</p>
+</li>
+</ul>
+<ul>
+<li><p>使用 RSA 实现数字签名：</p>
+<p>用 RSA 生成签名</p>
+<blockquote>
+<p>签名 = 消息<sup><em>D</em></sup> mod <em>N</em></p>
+</blockquote>
+<p>其中 <em>D</em> 和 <em>N</em> 就是签名者的私钥，生成之后，将消息和签名发送给接受者。</p>
+<p>用 RSA 验证签名</p>
+<blockquote>
+<p>由签名求得的消息 = 签名<sup><em>E</em></sup> mod <em>N</em></p>
+</blockquote>
+<p>其中 <em>E</em> 和 <em>N</em> 就是签名者的公钥，将“由签名求得的消息”与发送者直接发送而来的“消息”进行比对，两者一致则签名验证成功。</p>
+</li>
+<li><p>对数字签名的攻击：</p>
+<p>（1）中间人攻击：对发送者伪装成接受者，对接受者伪装成发送者。</p>
+<p>（2）对单向散列函数的攻击：数字签名中所使用的单向散列函数必须具有抗碰撞性，否则攻击者就可以生成另外一条不同的消息，使其与签名所绑定的消息具有相同的散列值。</p>
+<p>（3）利用数字签名攻击公钥密码：</p>
+<p>在 RSA 中，生成签名的公式是：</p>
+<blockquote>
+<p>签名 = 消息<sup><em>D</em></sup> mod <em>N</em></p>
+</blockquote>
+<p>这个公式和公钥密码中解密的操作是一样的，也就是说可以将“请对消息签名”这一请求理解成“请解密消息”。利用这一点攻击者可以发动一种巧妙的攻击，即利用数字签名来破译密文。</p>
+<p>对于这样的攻击所采取的措施：首先不要直接对消息进行签名，对散列值进行签名比较安全。其次，公钥密码和数字签名最好分别使用不同的密钥对。最重要的是<strong>绝对不要对意思不清楚的消息进行签名</strong>。</p>
+<p>（4）潜在伪造：如果攻击者能够生成合法的数字签名（即攻击者生成的签名能够正常通过校验），我们也应该将其当成是对这种签名算法的一种潜在威胁，这种情况被称为对数字签名的潜在伪造。</p>
+<p>在用 RSA 来解密消息的数字签名算法中，潜在伪造是可能的，因为我们只要把随机比特序列 <em>S</em> 用 RSA 的公钥加密生成密文 <em>M</em> ，那么 <em>S</em> 就是 <em>M</em> 的合法数字签名，由于攻击者是可以获取公钥的，因此对数字签名进行潜在伪造也就可以实现。</p>
+<p>为了应对潜在伪造，人们在改良 RSA 的基础上开发了一种签名算法，叫做 RSA-PSS（Probabilistic Signature Scheme）, RSA-PSS并不是对消息本身进行签名，而是对其散列值进行签名，另外为了提高安全性，在计算散列值的时候还要对消息加盐（salt）。</p>
+<p>（5）其他攻击：针对公钥密码的攻击方法大部分都能够被用于攻击数字签名，例如暴力破解找出私钥，或者尝试对 RSA 的 N 进行质因数分解等。</p>
+</li>
+<li><p>其他数字签名：</p>
+<p>（1）ElGamal 方式：利用了 mod <em>N</em> 中求离散对数的困难度，可被用于公钥密钥和数字签名。</p>
+<p>（2）DSA（Digital Signature Algorithm）：是一种数字签名算法，是由 NIST（National Institute of Standards and Technology，美国国家标准技术研究所） 于 1991 年制定的数字签名规范（DSS）。</p>
+<p>（3）ECDSA（Elliptic Curve Digital Signature Algorithm）：是一种利用椭圆曲线密码来实现的数字签名算法。</p>
+<p>（4）Rabin 方式：利用了在 mod <em>N</em> 中求平方根的困难度，可被用于公钥密码和数字签名。 </p>
+</li>
+<li><p>数字签名无法解决的问题：使用数字签名我们同时实现了确认消息的完整性、进行认证以及防止否认，然而要正确使用数字签名，有一大前提就是用于验证签名的公钥必须属于真正的发送者，为了确认自己得到的公钥是否合法，我们需要证书，所谓证书，就是将公钥当作一条消息，由一个可信的第三方对其签名后得到的公钥。当然，这样只是把问题转移了而已，为了对证书上施加的数字签名进行验证，我们必定需要另一个公钥，如何才能构建一个可信的数字签名链条？又由谁来颁发可信的证书？因此我们需要让公钥以及数字签名成为一种社会性的基础设施，即公钥基础设施（Public Key Infrastructure，PKI）。</p>
+</li>
+</ul>
+<h2 id="十、证书"><a href="#十、证书" class="headerlink" title="十、证书"></a>十、证书</h2><ul>
+<li><p>公钥证书（Public-Key Certificate，PKC）：里面记录了姓名、组织、邮箱地址等个人信息，以及属于此人的公钥，并由<strong>认证机构</strong>（Certificate Authority、Certifying Authority，CA）施加数字签名，只要看到公钥证书，我们就可以知道认证机构认定该公钥确属于此人，公钥证书简称为<strong>证书</strong>（certificate）。有名的认证机构包括 <strong>VerSign</strong> 等。</p>
+<p>  <img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmsuk1pf4kj30sg0lctd6.jpg" alt="14"></p>
+</li>
+<li><p>证书标准规范：证书是由认证机构颁发的，使用者需要对证书进行验证，因此如果证书的格式千奇百怪那就不方便了，于是，人们制定了证书的标准规范，其中使用最为广泛的是由 ITU（International Telecommunication Union，国际电信联盟）和 ISO（International Organization for Standardization，国际标准化组织）制定的 X.509 规范，很多应用程序都支持 X.509 并将其作为证书生成和交换的标准规范。</p>
+</li>
+<li><p>公钥基础设施（Public-Key Infrastructure，PKI）：是为了更有效地运用公钥而制定的一系列规范和规格的总称，PKI 只是一个总称，而非指某一个单独的规范和规格。例如。RSA 公司所制定的 <strong>PKCS</strong>（Public-Key Cryptography Standards，公钥密码标准）系列规范也是 PKI 的一种，而互联网规格 <strong>RFC</strong>（Request for Comments）中也有很多与 PKI 相关的文档。此外 X.509 这样的规范也是 PKI 的一种。在开发 PKI 程序时所使用的由各个公司编写的 <strong>API</strong>（Application Programmming Interfere，应用程序编程接口）和规格设计书也可以算是 PKI 的相关规格。</p>
+<p>PKI 的组成要素：</p>
+<p>（1）用户：使用 PKI 的实体（人或计算机）。</p>
+<p>（2）认证机构（Certificate Authority，CA）：是对证书进行管理的人。认证机构的工作中，公钥注册和本人身份认证这一部分可以由<strong>注册机构</strong>（Registration Authority，RA）来分担，这样一来，认证机构就可以将精力集中到颁发证书上，从而减轻了认证机构的负担，但这样也很可能增加攻击目标。</p>
+<p>（3）仓库（repository）：是一个保存证书的数据库，PKI 用户在需要的时候可以从中获取证书，仓库也叫<strong>证书目录</strong>。</p>
+<p>认证机构的工作：</p>
+<p>（1）生成密钥对：有两种方式，一种是由 PKI 用户自行生成，一种是由认证机构来生成（认证机构会将私钥发送给用户）。</p>
+<p>（2）注册证书：在用户自行生成密钥对的情况下，用户会请求认证机构来生成证书。认证机构根据其认证业务准则（Certificate Practice Statement，CPS）对用户的身份进行认证，并生成证书。在生成证书时，需要使用认证机构的私钥来进行数字签名，生成的证书格式是由 X.509 定义的。</p>
+<p>（3）作废证书与 CRL ：当用户的私钥丢失、被盗、员工从公司离职失去使用私钥的使用权限，或者是名称变更导致和证书中记载的内容不一致等情况时，认证机构需要对证书进行<strong>作废</strong>（revoke）。</p>
+<p>要作废证书，认证机构需要制作一张<strong>证书作废清单</strong>（Certificate Revocation List，CRL）。</p>
+<p>CRL 是认证机构宣布作废的证书一览表，具体来说，是一张已作废的证书序列号的清单，并由认证机构加上数字签名，证书序列号是认证机构在颁发证书时所赋予的编号，在证书中会有记载。</p>
+<p>PKI 用户需要从认证机构获取最新的 CRL ，并<strong>查询自己要用于验证签名（或者是用于加密）的公钥证书是否已经作废</strong>，这一步非常重要。</p>
+<p>证书的层级结构：</p>
+<p>对于用来验证数字签名的认证机构的公钥，可以由其他的认证机构施加数字签名，从而对认证机构的公钥进行验证，即生成一张<strong>认证机构的公钥证书</strong>。</p>
+<p>一个认证机构来验证另一个认证机构的公钥，这样的关系可以迭代好几层，我们将最顶层的称之为<strong>根 CA</strong>（Root CA），对于根 CA 来说，则由它自己来颁发证书，这种对自己的公钥进行数字签名的行为称为<strong>自签名</strong>（self-signature）。</p>
+<p>关于公钥基础设施的误解：认证机构只需要对公钥进行数字签名就可以了，因此任何人都可以成为认证机构。国家、地方政府、医院、图书馆等公共组织和团体可以成立认证机构来实现 PKI ，公司也可以在内部实现 PKI ，甚至你和你的朋友也可以。</p>
+</li>
+<li><p>对证书的攻击：</p>
+<p>（1）在公钥注册之前进行攻击：主动攻击者可以在认证机构进行数字签名之前，将公钥替换为自己的（防止这种攻击，可以在将公钥发送给认证机构进行注册时，使用认证机构的公钥对即将发送的公钥进行加密。此外，认证机构在确认发送公钥者的身份的时候，也可以将公钥的指纹一并发送给发送者请他进行确认）</p>
+<p>（2）注册相似人名进行攻击：证书是认证机构对公钥及持有者的信息加上数字签名的产物，对于一些相似的身份信息，计算机可以进行区别，但人类往往很容易认错，而这就可以被用来攻击（防止这种攻击，认证机构必须确认证书中所包含的信息是否真的属于其持有者的个人信息，当个人身份确认失败时则不向其颁发证书）。</p>
+<p>（3）窃取认证机构的私钥进行攻击：认证机构是否妥善保管自己的私钥，是与该认证机构所颁发的证书的可信度密切相关的。由于认证机构记录了自己签发的证书的序列号，因此能够判断某个证书是不是该认证机构自己签发的。一旦认证机构的私钥被窃取，认证机构就需要将私钥泄露一事<strong>通过 CRL 通知用户</strong>。</p>
+<p>（4）攻击者伪装成认证机构进行攻击：<strong>如果认证机构不可信，即便证书合法，其中的公钥也不能使用</strong>。</p>
+<p>（5）钻 CRL 的空子进行攻击：</p>
+<p>① 利用 CRL 的时间差来发动攻击：</p>
+<p>主动攻击者 Mallory 黑掉了 Bob 的电脑，窃取了私钥，伪装成 Bob 给 Alice 发送了一封要求汇款的邮件，并用窃取的私钥进行了数字签名。第二天，Bob 发现电脑被黑，私钥被盗，急忙通知认证机构 Trent 自己的公钥已经失效。Trent 接到消息，将 Bob 密钥失效一事制成 CRL 并发布。然而，在发布 CRL 之前，Alice 收到了邮件，需要验证数字签名，Alice 用 Bob 的公钥进行了验证，结果成功了，而且公钥还带有认证机构 Trent 颁发的证书，于是 Alice 信任了邮件中的内容。</p>
+<p>要防范上述这种攻击是非常困难的，因此对于这种攻击的对策是：</p>
+<pre><code>当公钥失效时尽快通知认证机构 
+尽快发布 CRL 
+尽快更新 CRL 
+在使用公钥前，再次确认公钥是否已经失效。
+</code></pre><p>② 利用 CRL 的时间差来发动攻击：</p>
+<p>Bob 是一个坏人，设想了一个从 Alice 手上骗钱的计划，用假名字开了一个账户，写了一封要求汇款的邮件给 Alice，并用私钥进行了数字签名。紧接着又向认证机构 Trent 发送了一封邮件告知自己的公钥已经失效。在从 Trent 处收到新的 CRL 证书之前，Alice 已经验证了签名并执行了汇款。Bob 赶快从用假名字开设的账户把钱取出来。Alice 收到 Trent 的 CRL 之后，大为震惊，于是尝试联系 Bob，Bob 当即进行否认，借自己的私钥被盗取，数字签名已失效完成否认。</p>
+<p>要防止这种攻击是很困难的，尽管我们可以将签名的时间（timestamp）和发送公钥作废清单请求的时间进行比对，但是私钥泄露之后很久才发现也是很正常的，因此这种比对没什么意义。</p>
+<p>在这个故事中，通过公钥、证书等技术无法是被出 Bob 的犯罪行为，必须依靠刑事侦查才行。为了快速确认证书是否已经失效，人们设计出了一种名为 OCSP 的协议。</p>
+<p>虽然数字签名能够防止否认，但通过钻 CRL 的空子，就有可能<strong>实现否认</strong>。</p>
+</li>
+<li><p>对证书的疑问：</p>
+<p>（1）为什么需要证书？</p>
+<p>从认证机构获取公钥，就可以降低遭到中间人攻击的风险，因为带有证书的公钥是经过认证机构进行数字签名的，事实上无法篡改，但<strong>如果双方能够当面交换公钥则不需要认证机构</strong>。</p>
+<p>（2）通过自己的方法进行认证是不是更安全？</p>
+<p>自己开发保密的方法是犯了典型的<strong>隐蔽式安全</strong>（Security by obscurity）错误。</p>
+<p>（3）为什么要信任认证机构？</p>
+<p>即便认证机构是具有层级结构的，但实际上支撑“信任”关系的也不只是单纯的层级而已。不管证书的链条是否具有层级结构，我们之所以信任某个认证机构，是因为那是我们基于多个可信的情报源所做出的判断。</p>
+</li>
+</ul>
+<h2 id="十一、密钥"><a href="#十一、密钥" class="headerlink" title="十一、密钥"></a>十一、密钥</h2><ul>
+<li><p>密钥：在使用对称密码、公钥密码、消息认证码、数字签名等密码技术时，都需要一个称为<strong>密钥</strong>（key）的巨大数字，然而，数字本身的大小并不重要，重要的是<strong>密钥空间的大小</strong>，也就是可能出现的密钥的总数量，密钥空间越大，进行暴力破解就越困难。密钥空间的大小是由<strong>密钥长度</strong>决定的。</p>
+<p><strong>密钥与明文是等价的</strong>。</p>
+<p>信息的机密性不应该依靠密码算法本身，而更应该依赖于妥善保管的密钥。</p>
+</li>
+<li><p>密钥的分类：</p>
+<p>（1）对称密码的密钥和公钥密码的密钥：在<strong>对称密码</strong>中，加密和解密使用同一个密钥，由于发送者和接受者之间需要共享密钥，因此对称密码又称为<strong>共享密钥密码</strong>。在<strong>公钥密码</strong>中，加密和解密使用的是不同的密钥，用于加密的密钥称为<strong>公钥</strong>，顾名思义可以公开。用于解密的密钥称为<strong>私钥</strong>，只有需要进行解密的接受者才持有，公钥和私钥称为<strong>密钥对</strong>。</p>
+<p>（2）消息认证码的密钥和数字签名的密钥：在<strong>消息认证码</strong>中，发送者和接受者使用共享的密钥来进行认证，消息认证码只有持有合法密钥的人才能计算出来，可以用来识别通信内容是否被篡改或伪装。在<strong>数字签名</strong>中，签名的生成和验证使用不同的密钥。只有持有私钥的本人才能生成签名，但由于验证签名使用的是公钥，因此任何人都可以验证签名。</p>
+<p>（3）用于确保机密性的密钥和用于认证的密钥：对称密码和公钥密码的密钥都是<strong>用于确保机密性的密钥</strong>，相对地，消息认证码和数字签名所使用的密钥，则是<strong>用于认证的密钥</strong>。</p>
+<p>（4）会话密钥和主密钥：当我们访问以 http:// 开头的网页时，Web 服务器和浏览器之间会进行基于 SSL / TLS 的加密通信。在这样的通信中所使用的密钥仅限于本次通信的一次性密钥，下次通信不会再使用，像这样每次通信只能使用一次的密钥称为<strong>会话密钥</strong>（session key）。相对于会话密钥，一直被重复使用的密钥称为<strong>主密钥</strong>（master key）。</p>
+<p>（5）用于加密内容的密钥和用于加密密钥的密钥：加密的对象是用户直接使用的信息，这样的情况下所使用的密钥称为 <strong>CEK</strong>（Contents Encrpyting Key，内容加密密钥），相对地，用于加密密钥的密钥则称为 <strong>KEK</strong>（Key Encrpyting Key，密钥加密密钥）。</p>
+<p>在很多情况下，会话密钥都是作为 CEK 使用的，而主密钥则是被作为 KEK 使用的。</p>
+</li>
+<li><p>密钥的管理：</p>
+<p>（1）生成密钥：</p>
+<p>① 用随机数生成密钥：生成密钥的最好方法就是<strong>使用随机数</strong>，尽管生成伪随机数的算法有很多种，但<strong>密码学用途的伪随机数生成器必须是专门针对密码学用途而设计的</strong>。</p>
+<p>② 用口令生成密钥：使用人类可以记住的<strong>口令</strong>（password / passphrase）来生成密钥。严格来说，我们很少直接用口令来作为密钥使用，一般都是将口令输入单向散列函数，用得到的散列值作为密钥使用。为了防止字典攻击，需要在口令上面附加一串称为<strong>盐</strong>（salt）的随机数，然后再将其输入单向散列函数，这种方法称为<strong>基于口令的密码</strong>（Password Based Encrpytion，PBE）。</p>
+<p>（2）配送密钥：</p>
+<p>① 通过<strong>事先共享密钥</strong>来解决</p>
+<p>② 通过<strong>密钥分配中心</strong>来解决</p>
+<p>③ 通过 <strong>Diffie-Hellman</strong> 密钥交换来解决</p>
+<p>④ 通过<strong>公钥密码</strong>解决</p>
+<p>（3）更新密钥：提高通信机密的技术被称为<strong>密钥更新</strong>（key updating），在使用共享密钥通信的过程中，定期改变密钥，比如用当前密钥的散列值作为下一个密钥，因为单向散列函数具有单向性，因此反算出单向散列函数的输入（即上一个密钥）是很困难的，窃听者无法解密更新密钥这个时间点之前的通信内容，这种防止破译过去的通信内容的机制，称为<strong>后向安全</strong>（backward security）。</p>
+<p>（4）保存密钥：<strong>人类无法记住具有实用长度的密钥</strong>，我们记不住密钥，但如果将密钥保存下来有可能被窃取，因此我们需要将密钥<strong>保存在保险柜等安全的地方</strong>，通过保险柜的机制确保密钥的机密性。但是却无法保证便携性，随身携带又可能会丢失被盗，因此我们可以使用<strong>将密钥加密后保存</strong>的方法，用于加密密钥的密钥称为 KEK 。那么 KEK 又如何保存呢，好像进入了死循环，对密钥进行加密的方法并没有完全解决机密性的问题，但在现实中确是一个非常有效的方法，可以<strong>减少需要保管的密钥数量</strong>。用一个密钥来代替多个密钥进行保管的方法，和认证机构的层级化非常相似，我们不需要信任多个认证机构，而只需要信任一个根 CA 就可以了，同样地，我们也不需要确保多个 CEK 的机密性，而只需要确保一个 KEK 的机密性就可以了。</p>
+<p>（5）作废密钥：密钥的作废和生成是同等重要的，这是因为密钥和明文是等价的。要完全删除密钥，不但要用到密码软件，还需要在设计计算机系统时对信息安全进行充分考虑。</p>
+</li>
+<li><p>Diffie-Hellamn 密钥交换（Diffie-Hellamn key exchange）：是 1976 年由 Whitfield Diffie 和 Martin Hellman 共同发明的一种算法，使用这种算法，通信双方只需要交换一些可以公开的消息就能够生成出共享的秘密数字，而这一秘密数字就可以被用作对称密码的密钥，IPsec 中就使用了经过改良的Diffie-Hellamn 密钥交换。</p>
+<p>虽然这种方法的名字叫做“密钥交换”，但实际上双方并没有真正交换密钥，而是通过计算生成了一个相同的共享密钥，因此这种方法也叫 <strong>Diffie-Hellman 密钥协商</strong>（Diffie-Hellman key agreement）。</p>
+<blockquote>
+<p>密钥交换的步骤：</p>
+</blockquote>
+<blockquote>
+<p>假设 Alice 和 Bob 需要共享一个对称密码的密钥，然而双方之间的通信已被窃听者 Eve 窃听了。</p>
+</blockquote>
+<blockquote>
+<p>（1）Alice 向 Bob 发送两个质数 <em>P</em> 和 <em>G</em> ：</p>
+</blockquote>
+<blockquote>
+<p><em>P</em> 必须是一个非常大的质数，而 <em>G</em> 则是一个和 <em>P</em> 相关的数，称为<strong>生成元</strong>（generator），<em>G</em> 可以是一个较小的数字。</p>
+<blockquote>
+<p>生成元：<em>P</em> 的生成元的乘方结果与 1~ <em>P</em> －1 中的数字是一一对应的，正是因为具有这样一一对应的关系，Alice 才能从 1~ <em>P</em> －2 的范围中随机选择一个数字（之所以不能选择 <em>P</em> －1 是因为<em>G</em><sup><em>P</em> - 1</sup> mod <em>P</em> 的值一定是等于 1 的）。</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p><em>P</em> 和 <em>G</em> 不需要保密，被窃听者 Eve 获取也没关系，此外 <em>P</em> 和 <em>G</em> 可以由 Alice 和 Bob 中任意一方生成。</p>
+</blockquote>
+<blockquote>
+<p>（2）Alice 生成一个随机数 <em>A</em> ：</p>
+</blockquote>
+<blockquote>
+<p><em>A</em> 是一个 1 ~ <em>P</em> — 2 之间的整数，这个数是一个只有 Alice 知道的秘密数字，没有必要告诉 Bob，也不能让 Eve 知道。</p>
+</blockquote>
+<blockquote>
+<p>（3）Bob 生成一个随机数 <em>B</em> ：</p>
+</blockquote>
+<blockquote>
+<p><em>B</em> 是一个 1 ~ <em>P</em> — 2 之间的整数，这个数是一个只有 Bob 知道的秘密数字，没有必要告诉 Alice ，也不能让 Eve 知道。</p>
+</blockquote>
+<blockquote>
+<p>（4）Alice 将 <em>G</em><sup><em>A</em></sup> mod <em>P</em> 这个数发送给 Bob ：</p>
+</blockquote>
+<blockquote>
+<p>这个数让 Eve 知道也没关系。</p>
+</blockquote>
+<blockquote>
+<p>（5）Bob 将 <em>G</em><sup><em>B</em></sup> mod <em>P</em> 这个数发送给 Alice ：</p>
+</blockquote>
+<blockquote>
+<p>这个数让 Eve 知道也没关系。</p>
+</blockquote>
+<blockquote>
+<p>（6）Alice 用 Bob 发过来的数计算 <em>A</em> 次方并求 mod <em>P</em> ：</p>
+</blockquote>
+<blockquote>
+<p>这个数就是共享密钥。</p>
+</blockquote>
+<blockquote>
+<p>Alice 计算的密钥 = (<em>G</em><sup><em>B</em></sup> mod <em>P</em> )<sup><em>A</em></sup> mod <em>P</em></p>
+</blockquote>
+<blockquote>
+<p>Alice 计算的密钥 = <em>G</em><sup><em>B</em> × <em>A</em></sup> mod <em>P</em></p>
+</blockquote>
+<blockquote>
+<p>Alice 计算的密钥 = <em>G</em><sup><em>A</em> × <em>B</em></sup> mod <em>P</em></p>
+</blockquote>
+<blockquote>
+<p>（7）Bob 用 Alice 发过来的数计算 <em>B</em> 次方并求 mod <em>P</em> ：</p>
+</blockquote>
+<blockquote>
+<p>Bob计算的密钥 = (<em>G</em><sup><em>A</em></sup> mod <em>P</em> )<sup><em>B</em></sup> mod <em>P</em></p>
+</blockquote>
+<blockquote>
+<p>Bob 计算的密钥 = <em>G</em><sup><em>A</em> × <em>B</em></sup> mod <em>P</em></p>
+</blockquote>
+<blockquote>
+<p>得出：Alice 计算的密钥 = Bob 计算的密钥</p>
+</blockquote>
+<blockquote>
+<p>在步骤（1）~（7）中，双方交换的数字（能被 Eve 知道的数字）一共有 4 个：<em>P</em> 、<em>G</em> 、<em>G</em><sup><em>A</em></sup> mod <em>P</em> 、<em>G</em><sup><em>B</em></sup> mod <em>P</em> ，根据这四个数计算共享密钥（<em>G</em><sup><em>A</em> × <em>B</em></sup> mod <em>P</em>）是非常困难的。</p>
+</blockquote>
+<blockquote>
+<p>如果 Eve 知道 <em>A</em> 和 <em>B</em> 中的任意一个数，那么要计算 <em>G</em><sup><em>A</em> × <em>B</em></sup> 就很简单了，仅靠上面 4 个数是很难求出 <em>A</em> 和 <em>B</em> 的。</p>
+</blockquote>
+<blockquote>
+<p>举个例子，我们能够根据 <em>G</em><sup><em>A</em></sup> mod <em>P</em> 计算出 <em>A</em> 吗？<em>G</em><sup><em>A</em></sup> mod <em>P</em> 中的 mod <em>P</em> 是这里的关键所在，如果仅仅是 <em>G</em><sup><em>A</em></sup> 的话，要计算出 <em>A</em> 并不难，然而<strong>根据 <em>G</em><sup><em>A</em></sup> mod <em>P</em> 计算出 <em>A</em> 的有效算法到现在还没有出现</strong>，这个问题被称为<strong>有限域（finite field）的离散对数问题</strong>。</p>
+</blockquote>
+</li>
+<li><p>椭圆曲线 Diffie-Hellman 密钥交换：Diffie-Hellman密钥交换是利用“离散对数问题”的复杂度来实现密钥的安全交换的，如果将“离散对数问题”改为“椭圆曲线上的离散对数问题”，这样的算法就称为<strong>椭圆曲线 Diffie-Hellman 密钥交换</strong>。</p>
+</li>
+<li><p>基于口令的密码（Password Based Encryption，PBE）：是一种根据口令生成密钥并用该密钥进行加密的方法，其中加密和解密使用同一个密钥。</p>
+<p>PBE 有很多种实现方法，例如可以通过 Java 的 javax.crypto 包进行实现，此外，通过密码软件 PGP 保存密钥时，也会使用 PBE 。</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fmsuk1d0kdj30sg0lctdu.jpg" alt="15"></p>
+<p>PBE 加密与解密包括下列 3 个步骤：</p>
+<p>（1）生成 KEK —————— 重建 KEK</p>
+<p>（2）生成会话密钥并加密——解密会话密钥</p>
+<p>（3）加密消息———————解密消息</p>
+<p>盐的作用：盐是由伪随机数生成器生成的随机数，在生成密钥（KEK）时会和口令一起被输入单向散列函数。<strong>盐是用来防御字典攻击的</strong>，<strong>字典攻击</strong>是一种事先进行计算并准备好候选密钥列表的方法。</p>
+<p>我们假设在生成 KEK 的时候没有加盐，就意味着主动攻击者可以根据字典数据事先生成大量的候选 KEK 。如果在生成 KEK 的时候加盐，则盐的长度越大，候选 KEK 的数量也随之增大，事先生成候选 KEK 就会变得非常困难。</p>
+<p>口令的作用：具有充足长度的密钥是无法用人脑记忆的，同样，人脑也无法记住充足长度的口令，在PEB中，我们通过口令生成密钥（KEK），再用这密钥来加密会话密钥（CEK）。由于通过口令生成的密钥（KEK）强度不如伪随机数生成器生成的会话密钥（CEK），因此需要将盐和加密后的 CEK <strong>通过物理方式进行保护</strong>，比如保存到存储卡中随身携带。</p>
+<p>通过拉伸来改良 PBE：在生成 KEK 时，通过多次使用单向散列函数就可以提高安全性，例如，如果我们将盐和口令先输入单向散列函数，然后将得到的散列值再次输入单向散列函数……像这样将单向散列函数进行多次迭代的方法称为<strong>拉伸</strong>（stretching）。</p>
+<p>如何生成安全的口令：</p>
+<p>（1）使用只有自己才能知道的信息，不要使用自己重要的事物的名字，不要使用关于自己的信息，不要使用被人见过的信息。</p>
+<p>（2）将多个不同的口令分开使用。</p>
+<p>（3）有效利用笔记。</p>
+<p>（4）理解口令的局限性。</p>
+<p>（5）使用口令生成和管理工具。</p>
+</li>
+</ul>
+<h2 id="十二、随机数"><a href="#十二、随机数" class="headerlink" title="十二、随机数"></a>十二、随机数</h2><ul>
+<li><p>使用随机数的密码技术：</p>
+<p>（1）生成密钥：用于对称密码和消息认证码。</p>
+<p>（2）生成密钥对：用于公钥密码和数字签名。</p>
+<p>（3）生成初始化向量 IV ：用于分组密码的 CBC 、CFB 、OFB 模式。</p>
+<p>（4）生成 nonce：用于防御重放攻击以及分组密码的 CTR 模式。</p>
+<p>（5）生成盐：用于 PBE 等。</p>
+<p>上面的这些用途都很重要，但其中尤为重要的是“生成密钥”和“生成密钥对”这两个，密码算法再高，只要攻击者知道了密钥，就会变得形同虚设。因此我们需要用随机数来生成密钥，使之无法看穿。<strong>为了不让攻击者看穿而使用随机数</strong>这一观点，即不可预测性，正是本章的主题。</p>
+</li>
+<li><p>随机数的性质：</p>
+<p>可将随机数的性质分为以下三类：</p>
+<p>（1）随机性：所谓随机性，简单来说就是看上去杂乱无章的性质，但是<strong>杂乱无章不代表不会被看穿</strong>，因此我们将只具备随机性的伪随机数称为“弱伪随机数”。</p>
+<p>（2）不可预测性：指<strong>攻击者在知道过去生成的伪随机数列的前提下，依然无法预测出下一个生成的伪随机数</strong>的性质，因此我们将具有不可预测性的伪随机数称为<strong>强伪随机数</strong>。事实上，<strong>不可预测性是通过使用其他密码技术来实现的</strong>，例如使用单向散列函数的单向性和密码的机密性来保证伪随机数生成器的不可预测性。</p>
+<p>（3）不可重现性：指无法重现和某一随机数列完全相同的数列的性质，如果除了将随机数列保存下来以外，没有其他方法可以重现该数列，我们就说该随机数列具备不可重现性。仅靠软件是无法生成具备不可重现性的随机数列的，软件只能生成伪随机数列，因为运行软件的计算机本身仅具备有限的内部状态，在内部状态相同的情况下，软件必然只能生成相同的数，因此软件所生成的数列在某一时刻一定会重复出现。首次出现重复之前的数列长度称为<strong>周期</strong>，凡是具有周期的数列，都不具备不可重现性。</p>
+<p> 要生成具备不可重现性的随机数列，需要从不可重现的物理现象中获取信息，例如周围的温度和声音的变化，鼠标移动的位置、键盘输入的事件间隔，根据从这些硬件中所获取的信息而生成的数列，一般可以认为是具备不可重现性的随机数列。我们将具备不可重现性的随机数称为<strong>真随机数</strong>。</p>
+<blockquote>
+<p>英特尔的新型 CPU 中内置了<strong>数字随机数生成器</strong>（Digital Random Number Generator，DRNG），并提供了 RDSEED 和 RDRAND 两条指令。这种 CPU 生成随机数的原料（随机信号源）来自于电路中产生的热噪声。从随机信号源获得的不可重现的比特序列，经过 AES-CBC-MAC 算法之后，形成一串 256 比特的数据，这串数据被称为<strong>调查随机样本</strong>（conditioned entropy sample）。AES-CBC-MAC 是一种基于 AES 分组密码的 CBC 模式的消息验证码算法，在这里它的作用是将一串很长的比特序列压缩到 256 比特。</p>
+</blockquote>
+<blockquote>
+<p>RDSEED 指令直接利用调整随机样本来生成不确定的随机序列，这样的随机序列是具备不可重现性的。这个指令的所输出的结果，一般被用作其他伪随机数生成器的种子。</p>
+</blockquote>
+<blockquote>
+<p>RDRAND 指令则是将调整随机样本输入到 CTR 模式的 AES 分组密码中，快速生成确定的随机数列，这样的数列是具备不可预测性的。</p>
+</blockquote>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">随机性</th>
+<th style="text-align:center">不可预测性</th>
+<th style="text-align:center">不可重现性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">弱伪随机数</td>
+<td style="text-align:center">具有</td>
+<td style="text-align:center">不具有</td>
+<td style="text-align:center">不具有</td>
+</tr>
+<tr>
+<td style="text-align:center">强伪随机数</td>
+<td style="text-align:center">具有</td>
+<td style="text-align:center">具有</td>
+<td style="text-align:center">不具有</td>
+</tr>
+<tr>
+<td style="text-align:center">真随机数</td>
+<td style="text-align:center">具有</td>
+<td style="text-align:center">具有</td>
+<td style="text-align:center">不具有</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>伪随机数生成器：通过硬件生成的随机数列，是根据传感器收集的热量、声音的变化等事实上无法预测和重现的自然信息来生成的，像这样的硬件设备就称为<strong>随机数生成器</strong>（Random Number Generator，RNG），而可以生成随机数的软件就称为<strong>伪随机数生成器</strong>（Pseudo Random Number Generator，PRNG）。</p>
+<p>伪随机数生成器的结构：</p>
+<p>（1）内部状态：是指伪随机数生成器所管理的内存中的数值，为了响应下一个伪随机数请求，伪随机数生成器会改变自己的内部状态，因此将根据内部状态计算伪随机数生成器的方法和改变内部状态的方法结合起来，就是伪随机数生成的算法。由于内部状态决定了下一个生成的伪随机数，因此内部状态不能被攻击者知道。</p>
+</li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/02/25/modernArt/" class="prev">上一篇</a><a href="/2017/10/24/1501/" class="next">下一篇</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
