@@ -1,0 +1,98 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 实习第二周/第三周整理 · Feng Shui</title><meta name="description" content="实习第二周/第三周整理 - null"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Feng Shui"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.svg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/youngzihao" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">实习第二周/第三周整理</h1><div class="post-info">Jul 15, 2018</div><div class="post-content"><h2 id="Wget"><a href="#Wget" class="headerlink" title="Wget"></a>Wget</h2><ul>
+<li><p>GNU Wget（常简称为Wget）是一个在网络上进行下载的简单而强大的自由软件，其本身也是GNU计划的一部分。它的名字是 “World Wide Web” 和 “Get” 的结合，同时也隐含了软件的主要功能。目前它支持通过 HTTP、HTTPS，以及 FTP 这三个最常见的 TCP/IP 协议协议下载。</p>
+</li>
+<li><p><a href="http://pkuwwt.github.io/linux/2015-09-26-all-the-wget-commands-you-should-know/" target="_blank" rel="noopener">你应该了解的所有wget命令</a></p>
+</li>
+<li><p><a href="https://www.gnu.org/software/wget/" target="_blank" rel="noopener">GNU Wget</a></p>
+</li>
+</ul>
+<h2 id="curl"><a href="#curl" class="headerlink" title="curl"></a>curl</h2><ul>
+<li><p>curl 是一个利用 URL 语法在命令行下工作的文件传输工具，1997 年首次发行。它支持文件上传和下载，所以是综合传输工具，但按传统，习惯称cURL为下载工具。</p>
+</li>
+<li><p><a href="https://curl.haxx.se" target="_blank" rel="noopener">curl</a></p>
+</li>
+<li><a href="https://daniel.haxx.se/docs/curl-vs-wget.html" target="_blank" rel="noopener">curl vs Wget</a></li>
+</ul>
+<h2 id="http-amp-https-区别"><a href="#http-amp-https-区别" class="headerlink" title="http &amp; https 区别"></a>http &amp; https 区别</h2><ul>
+<li><a href="https://zh.wikipedia.org/wiki/超文本传输安全协议" target="_blank" rel="noopener">https</a></li>
+</ul>
+<h2 id="MAC-终端如何走代理"><a href="#MAC-终端如何走代理" class="headerlink" title="MAC 终端如何走代理"></a>MAC 终端如何走代理</h2><ul>
+<li>直接在 .bashrc 或者 .zshrc 文件中添加下面内容</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export http_proxy=http://127.0.0.1:1087;</span><br><span class="line">export https_proxy=http://127.0.0.1:1087;</span><br></pre></td></tr></table></figure>
+<h2 id="Git-如何走终端"><a href="#Git-如何走终端" class="headerlink" title="Git 如何走终端"></a>Git 如何走终端</h2><ul>
+<li><a href="https://gist.github.com/evantoli/f8c23a37eb3558ab8765" target="_blank" rel="noopener">Configure Git to use a proxy</a></li>
+</ul>
+<h2 id="Homebrew-如何走代理"><a href="#Homebrew-如何走代理" class="headerlink" title="Homebrew 如何走代理"></a>Homebrew 如何走代理</h2><p>brew 用 curl 下载，所以给 curl 挂上 socks5 的代理即可，在 ~/.curlrc 文件中输入代理地址即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socks5 = &quot;127.0.0.1:1087&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="SwitchyOmega-配置"><a href="#SwitchyOmega-配置" class="headerlink" title="SwitchyOmega 配置"></a>SwitchyOmega 配置</h2><ul>
+<li><a href="https://github.com/FelisCatus/SwitchyOmega" target="_blank" rel="noopener">Github-SwitchyOmega</a></li>
+<li><a href="https://github.com/gfwlist/gfwlist" target="_blank" rel="noopener">Github-gfwlist</a></li>
+<li><a href="http://www.cylong.com/blog/2017/04/09/chrome-SwitchyOmega/" target="_blank" rel="noopener">Chrome 配置 SwitchyOmega</a></li>
+<li><a href="https://eliyar.biz/AutoProxy-By-Shadowsocks-and-SwitchyOmega/" target="_blank" rel="noopener">SS + SwitchyOmega实现代理自动切换</a></li>
+</ul>
+<h2 id="Slack"><a href="#Slack" class="headerlink" title="Slack"></a>Slack</h2><ul>
+<li><a href="https://get.slack.help/hc/en-us" target="_blank" rel="noopener">Help Center</a></li>
+<li><a href="https://slack.com/resources" target="_blank" rel="noopener">resources</a> </li>
+<li><a href="https://slackhq.com" target="_blank" rel="noopener">Blog</a></li>
+</ul>
+<h2 id="PAC"><a href="#PAC" class="headerlink" title="PAC"></a>PAC</h2><ul>
+<li><a href="https://zh.wikipedia.org/wiki/代理自动配置" target="_blank" rel="noopener">代理自动配置</a></li>
+</ul>
+<h2 id="lazyload-惰性载入"><a href="#lazyload-惰性载入" class="headerlink" title="lazyload 惰性载入"></a>lazyload 惰性载入</h2><ul>
+<li><a href="https://www.jianshu.com/p/9241a578b137" target="_blank" rel="noopener">懒加载</a></li>
+</ul>
+<h2 id="id和instancetype的区别"><a href="#id和instancetype的区别" class="headerlink" title="id和instancetype的区别"></a>id和instancetype的区别</h2><ul>
+<li><a href="https://www.jianshu.com/p/0a008d20626a" target="_blank" rel="noopener">Objective-C中id和instancetype的区别</a></li>
+</ul>
+<h2 id="Clang"><a href="#Clang" class="headerlink" title="Clang"></a>Clang</h2><ul>
+<li><p>Low Level Virtual Machine (LLVM) 是一个开源的编译器架构，它已经被成功应用到多个应用领域。Clang ( 发音为 /klæŋ/) 是 LLVM 的一个编译器前端，它目前支持 C, C++, Objective-C 以及 Objective-C++ 等编程语言。Clang 对源程序进行词法分析和语义分析，并将分析结果转换为 Abstract Syntax Tree ( 抽象语法树 ) ，最后使用 LLVM 作为后端代码的生成器。</p>
+</li>
+<li><p><a href="https://clang.llvm.org" target="_blank" rel="noopener">Clang</a></p>
+</li>
+</ul>
+<h2 id="JVFloatLabeledTextField"><a href="#JVFloatLabeledTextField" class="headerlink" title="JVFloatLabeledTextField"></a>JVFloatLabeledTextField</h2><ul>
+<li><a href="https://github.com/jverdi/JVFloatLabeledTextField" target="_blank" rel="noopener">Github-JVFloatLabeledTextField</a></li>
+</ul>
+<h2 id="MRC、ARC"><a href="#MRC、ARC" class="headerlink" title="MRC、ARC"></a>MRC、ARC</h2><ul>
+<li><a href="https://www.jianshu.com/p/48665652e4e4" target="_blank" rel="noopener">OC知识–彻底理解内存管理(MRC、ARC)</a></li>
+</ul>
+<h2 id="离屏渲染"><a href="#离屏渲染" class="headerlink" title="离屏渲染"></a>离屏渲染</h2><ul>
+<li><p><a href="https://github.com/seedante/iOS-Note/wiki/Mastering-Offscreen-Render" target="_blank" rel="noopener">Mastering Offscreen Render</a></p>
+</li>
+<li><p><a href="https://developer.apple.com/videos/play/wwdc2011/121/" target="_blank" rel="noopener">Understanding UIKit Rendering</a></p>
+</li>
+</ul>
+<h2 id="IaaS、PaaS、SaaS-的区别"><a href="#IaaS、PaaS、SaaS-的区别" class="headerlink" title="IaaS、PaaS、SaaS 的区别"></a>IaaS、PaaS、SaaS 的区别</h2><ul>
+<li>基础设施即服务 (IaaS ： Infrastructure as a Service): 把计算基础(服务器、网络技术、存储和数据中心空间)作为一项服务提供给客户。它也包括提供操作系统和虚拟化技术、来管理资源。消费者通过Internet可以从完善的计算机基础设施获得服务。</li>
+<li>平台即服务(PaaS：Platform as a Service): PaaS实际上是指将软件研发的平台作为一种服务，供应商提供超过基础设施的服务，一个作为软件开发和运行环境的整套解决方案，即以SaaS的模式提交给用户。因此，PaaS也是SaaS模式的一种应用。但是，PaaS的出现可以加快SaaS的发展，尤其是加快SaaS应用的开发速度。</li>
+<li>软件即服务 (SaaS：Software as a Service): 是一种交付模式，其中应用作为一项服务托管，通过Internet提供给用户;帮助客户更好地管理它们的IT项目和服务、确保它们IT应用的质量和性能，监控它们的在线业务。</li>
+</ul>
+<div align="center"><br><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1ftab3jyqbdj30go0bgabb.jpg" height="400px"><br></div>
+
+
+<h4 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章:"></a><em>参考文章:</em></h4><blockquote>
+<p><em><a href="https://www.jianshu.com/p/f23d11e87af3" target="_blank" rel="noopener">iOS 开发之给项目添加 PCH 文件</a></em></p>
+</blockquote>
+<blockquote>
+<p><em><a href="https://zh.wikipedia.org/wiki/Wget" target="_blank" rel="noopener">维基百科-Wget</a></em></p>
+</blockquote>
+<blockquote>
+<p><em><a href="https://zh.wikipedia.org/wiki/CURL" target="_blank" rel="noopener">维基百科-CURL</a></em></p>
+</blockquote>
+<blockquote>
+<p><em><a href="https://blog.csdn.net/u011537073/article/details/71125571" target="_blank" rel="noopener">MAC下终端走代理的几种方法</a></em></p>
+</blockquote>
+<blockquote>
+<p><em><a href="https://www.jianshu.com/p/005963a4d843" target="_blank" rel="noopener">homebrew代理设置</a></em></p>
+</blockquote>
+<blockquote>
+<p><em><a href="https://github.com/mrdulin/blog/issues/18" target="_blank" rel="noopener">Mac OSX终端走shadowsocks代理</a></em></p>
+</blockquote>
+<blockquote>
+<p><em><a href="https://blog.fazero.me/2015/09/15/让终端走代理的几种方法/" target="_blank" rel="noopener">让终端走代理的几种方法</a></em></p>
+</blockquote>
+<blockquote>
+<p><em><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-clang/" target="_blank" rel="noopener">结构化编译器前端 Clang 介绍</a></em></p>
+</blockquote>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/07/08/loser/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
