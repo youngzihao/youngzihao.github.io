@@ -36,26 +36,23 @@
 <li>新建 DiceScene.scn ，往其中复制 dice </li>
 </ol>
 <h2 id="Load-3D-objects"><a href="#Load-3D-objects" class="headerlink" title="Load 3D objects"></a>Load 3D objects</h2><blockquote>
-<p>1.创建一个空的 scene</p>
+<p>创建一个空的 scene</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let scene = SCNScene()</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>2.为 AR scene 准备一个 environment map 。现在 scene 已经为 基于 PBR 的 3D 物体准备好了一个合适的 lighting environment map </p>
+<p>为 AR scene 准备一个 environment map 。现在 scene 已经为 基于 PBR 的 3D 物体准备好了一个合适的 lighting environment map </p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scene.lightingEnvironment.contents = </span><br><span class="line">   &quot;PokerDice.scnassets/Textures/Environment_CUBE.jpg&quot;</span><br><span class="line">scene.lightingEnvironment.intensity = 2</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>3.创建一个数组，因为你刚刚创建了五个风格不一的 dice node</p>
+<p>创建一个数组，因为你刚刚创建了五个风格不一的 dice node</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var diceNodes: [SCNNode] = []</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>4.现在需要把这些 dice nodes 加载进入数组</p>
-<pre><code>1. 加载 DiceScene.scn 并存储进 diceScene
-2. 重复五次
-3. childNode() 搜索 diceScene.rootNode scene， 寻找所有的dice，一旦发现，添加 dice node 到 diceNodes 数组
-</code></pre></blockquote>
+<p>现在需要把这些 dice nodes 加载进入数组<br> （1）加载 DiceScene.scn 并存储进 diceScene<br> （2）重复五次<br> （3）childNode() 搜索 diceScene.rootNode scene， 寻找所有的dice，一旦发现，添加 dice node 到 diceNodes 数组</p>
+</blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">func loadModels() &#123;</span><br><span class="line">  // 1      </span><br><span class="line">  let diceScene = SCNScene(</span><br><span class="line">    named: &quot;PokerDice.scnassets/Models/DiceScene.scn&quot;)!</span><br><span class="line">  // 2</span><br><span class="line">  for count in 0..&lt;5 &#123;</span><br><span class="line">    // 3</span><br><span class="line">    diceNodes.append(diceScene.rootNode.childNode(</span><br><span class="line">      withName: &quot;dice\(count)&quot;, </span><br><span class="line">      recursively: false)!)</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>5.在一开始就调用方法</p>
+<p>在一开始就调用方法</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.loadModels()</span><br></pre></td></tr></table></figure>
-<h2 id="Place-3D-objects"><a href="#Place-3D-objects" class="headerlink" title="Place 3D objects"></a>Place 3D objects</h2></div></article></div></main><footer><div class="paginator"><a href="/2018/07/08/loser/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
+<h2 id="Place-3D-objects"><a href="#Place-3D-objects" class="headerlink" title="Place 3D objects"></a>Place 3D objects</h2></div></article></div></main><footer><div class="paginator"><a href="/2018/07/08/loser/" class="next">下一篇</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
