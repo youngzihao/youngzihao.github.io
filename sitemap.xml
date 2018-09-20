@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2018/09/18/ARKitSection1/</loc>
+    
+    <lastmod>2018-09-20T02:57:45.342Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2018/06/30/chineseTypeface/</loc>
     
     <lastmod>2018-09-19T14:23:14.608Z</lastmod>
@@ -12,13 +19,6 @@
     <loc>http://yoursite.com/2017/12/26/primaryCryptography/</loc>
     
     <lastmod>2018-09-19T14:23:06.274Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2018/09/18/ARKitSection1/</loc>
-    
-    <lastmod>2018-09-19T14:20:35.210Z</lastmod>
     
   </url>
   
