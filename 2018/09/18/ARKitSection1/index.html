@@ -109,7 +109,7 @@
 <li>返回给调用者</li>
 </ol>
 <h2 id="Handle-new-plane-anchors"><a href="#Handle-new-plane-anchors" class="headerlink" title="Handle new plane anchors"></a>Handle new plane anchors</h2><ul>
-<li>随着平面侦测的激活，ARKit 会自动开始为每一个它侦测到的水平平面创建 ARPlaneAnchors，对应的<br>renderer(_:didAdd:for) 委托方法将会被调用去通知你新添加的锚。你需要去做的就是等待这个事件被触发，然后为 anchor 创建一个对应的 SceneKit plane</li>
+<li>随着平面侦测的激活，ARKit 会自动开始为每一个它侦测到的水平平面创建 ARPlaneAnchors，renderer(_:didAdd:for) 委托方法将会被调用去通知你新添加的锚。你需要去做的就是等待这个事件被触发，然后为 anchor 创建一个对应的 SceneKit plane</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 1</span><br><span class="line">func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) &#123;</span><br><span class="line">	 // 2</span><br><span class="line">    guard let planeAnchor = anchor as? ARPlaneAnchor else &#123; return &#125;</span><br><span class="line">    // 3</span><br><span class="line">    DispatchQueue.main.async &#123;</span><br><span class="line">      // 4</span><br><span class="line">      let planeNode = self.createARPlaneNode(planeAnchor: planeAnchor,</span><br><span class="line">                                             color: UIColor.yellow.withAlphaComponent(0.5))</span><br><span class="line">      // 5                                                        </span><br><span class="line">      node.addChildNode(planeNode)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <ol>
@@ -170,7 +170,7 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NotificationCenter.default.addObserver(self, </span><br><span class="line">  selector: #selector(ViewController.orientationChanged),</span><br><span class="line">  name: NSNotification.Name.UIDeviceOrientationDidChange,</span><br><span class="line">  object: nil)</span><br></pre></td></tr></table></figure>
 <ul>
-<li>现在每一次设备的朝向改变你都会得到通知，同时你也保持focusPoint 一直更新</li>
+<li>现在每一次设备的朝向改变你都会得到通知，同时你也保持 focusPoint 一直更新</li>
 </ul>
 <h4 id="Update-the-focus-node"><a href="#Update-the-focus-node" class="headerlink" title="Update the focus node"></a>Update the focus node</h4><ul>
 <li>基于屏幕的 focus point 持续地更新 focus node</li>
