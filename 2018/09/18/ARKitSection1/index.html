@@ -138,4 +138,53 @@
 <li>你只能在主线程里更新可视对象</li>
 <li>最后调用updatePlane()，You’re passing in the first child node, along with the associated plane anchor.</li>
 </ol>
-<h2 id="Creating-a-focus-node"><a href="#Creating-a-focus-node" class="headerlink" title="Creating a focus node"></a>Creating a focus node</h2></div></article></div></main><footer><div class="paginator"><a href="/2018/07/08/loser/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
+<h2 id="Creating-a-focus-node"><a href="#Creating-a-focus-node" class="headerlink" title="Creating a focus node"></a>Creating a focus node</h2><ul>
+<li>现在你的 AR 游戏正在侦测平面，当用户掷出筛子时你应该提供用户某样东西可以去参照，之前章节的 focus node 已经被添加进了这个 scene 中，下一步，你需要去找出如何将 focus node 置于平面之上，准确的说是用户所指之处，答案就是 ray casting</li>
+</ul>
+<h4 id="load-focus-node"><a href="#load-focus-node" class="headerlink" title="load focus node"></a>load focus node</h4><blockquote>
+<p>Properties</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var focusNode: SCNNode!</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>loadModels()</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let focusScene = SCNScene(</span><br><span class="line">  named: &quot;PokerDice.scnassets/Models/FocusScene.scn&quot;)!</span><br><span class="line">focusNode = focusScene.rootNode.childNode(</span><br><span class="line">  withName: &quot;focus&quot;, recursively: false)!</span><br><span class="line">sceneView.scene.rootNode.addChildNode(focusNode)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>加载了这个场景，然后保存这个 focus node 到 focusNode 中去</li>
+</ul>
+<h4 id="Ray-casting"><a href="#Ray-casting" class="headerlink" title="Ray casting"></a>Ray casting</h4><ul>
+<li>Ray casting 是在场景中搜寻与 3D 物体的相交点时，用户从屏幕中心投射虚拟的射线进入场景中。在这种特殊情况中，你在场景中的射线和plane nodes之间搜寻相交点，一旦射线和平面相交，相交位置就被用来放置 focus node</li>
+</ul>
+<p><img src="https://ws4.sinaimg.cn/large/006tNbRwgy1fvgx0ii2eqj31kw115kjm.jpg" alt=""></p>
+<h4 id="Create-the-focus-point"><a href="#Create-the-focus-point" class="headerlink" title="Create the focus point"></a>Create the focus point</h4><blockquote>
+<p>Properties</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var focusPoint:CGPoint!</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>initSceneView()</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">focusPoint = CGPoint(x: view.center.x,</span><br><span class="line">  y: view.center.y + view.center.y * 0.25)</span><br></pre></td></tr></table></figure>
+<h4 id="Handle-orientation-changes"><a href="#Handle-orientation-changes" class="headerlink" title="Handle orientation changes"></a>Handle orientation changes</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@objc func orientationChanged() &#123;</span><br><span class="line">  focusPoint = CGPoint(x: view.center.x,</span><br><span class="line">    y: view.center.y + view.center.y * 0.25)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>initSceneView()</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NotificationCenter.default.addObserver(self, </span><br><span class="line">  selector: #selector(ViewController.orientationChanged),</span><br><span class="line">  name: NSNotification.Name.UIDeviceOrientationDidChange,</span><br><span class="line">  object: nil)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>现在每一次设备的朝向改变你都会得到通知，同时你也保持focusPoint 一直更新</li>
+</ul>
+<h4 id="Update-the-focus-node"><a href="#Update-the-focus-node" class="headerlink" title="Update the focus node"></a>Update the focus node</h4><ul>
+<li>基于屏幕的 focus point 持续地更新 focus node</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">func updateFocusNode() &#123;</span><br><span class="line">  // 1</span><br><span class="line">  let results = self.sceneView.hitTest(self.focusPoint, </span><br><span class="line">    types: [.existingPlaneUsingExtent])</span><br><span class="line">  // 2 </span><br><span class="line">  if results.count == 1 &#123;</span><br><span class="line">    if let match = results.first &#123;</span><br><span class="line">      // 3</span><br><span class="line">      let t = match.worldTransform</span><br><span class="line">     // 4</span><br><span class="line">      self.focusNode.position = SCNVector3( x: t.columns.3.x, y: t.columns.3.y,</span><br><span class="line">        z: t.columns.3.z)</span><br><span class="line">      self.gameState = .swipeToPlay</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // 5</span><br><span class="line">    self.gameState = .pointToSurface</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>sceneView.hitTest() 执行一个 ray cast test，你提供一个屏幕位置，也就是发射射线的位置，你也需要提供你正在寻找的对象的类型，在这个例子中，.existingPlaneUsingExtent 具体说明了你只搜寻那些基于范围大小的已侦测到的平面，hits 被保存在 results 中。当然你还可以基于其他类型执行 ray casting，例如 featurePoints，estimatedHorizontalPlane，existingPlane.</li>
+<li>你只需要寻找第一个 hit 结果，因此一旦发现，你要准备去更新 focus node</li>
+<li>你将会使用 hit 结果的 worldTransform，这个矩阵包括位置，朝向，以及范围信息</li>
+<li>你将基于 hit 结果 的 transform matrix来 更新 focus node 的位置，位置信息位于 transform matrix 的第三列</li>
+<li>如果没有结果被发现，游戏将会持续指导玩家去指向已被侦测到的平面</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">renderer(_:updateAtTime)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>你现在应该看见了侦测到的平面，focus node 会立即弹出并且跟随你，随着你的指向而移动</li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/07/08/loser/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
