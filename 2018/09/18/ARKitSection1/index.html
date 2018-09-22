@@ -75,50 +75,88 @@
 <li>COLLDA 格式 –&gt; 转换为 SceneKit scene file format (.scn)</li>
 <li>新建 DiceScene.scn ，在里面复制粘贴出五个 dice  </li>
 </ol>
-<h2 id="Physically-based-rendering-PBR"><a href="#Physically-based-rendering-PBR" class="headerlink" title="Physically based rendering (PBR)"></a>Physically based rendering (PBR)</h2><h4 id="Environment-map（环境贴图）"><a href="#Environment-map（环境贴图）" class="headerlink" title="Environment map（环境贴图）"></a>Environment map（环境贴图）</h4><ul>
-<li>环境贴图有两个目的，第一是与反射贴图类似，在高反射的表面上可以看到映射。第二是为基于物理渲染的物体提供光照信息，给予它们一个真实的光照环境</li>
+<h2 id="Physically-based-rendering-PBR"><a href="#Physically-based-rendering-PBR" class="headerlink" title="Physically based rendering (PBR)"></a>Physically based rendering (PBR)</h2><ul>
+<li>Environment map：环境贴图有两个目的，第一是与反射贴图类似，在高反射的表面上可以看到映射。第二是为基于物理渲染的物体提供光照信息，给予它们一个真实的光照环境</li>
 </ul>
-<h4 id="Diffuse-map-（漫反射贴图）"><a href="#Diffuse-map-（漫反射贴图）" class="headerlink" title="Diffuse map （漫反射贴图）"></a>Diffuse map （漫反射贴图）</h4><h4 id="Normal-map-（法线贴图）"><a href="#Normal-map-（法线贴图）" class="headerlink" title="Normal map （法线贴图）"></a>Normal map （法线贴图）</h4><h4 id="Height-map"><a href="#Height-map" class="headerlink" title="Height map"></a>Height map</h4><h4 id="Occlusion-map-（闭塞贴图）"><a href="#Occlusion-map-（闭塞贴图）" class="headerlink" title="Occlusion map （闭塞贴图）"></a>Occlusion map （闭塞贴图）</h4><h4 id="Emission-map"><a href="#Emission-map" class="headerlink" title="Emission map"></a>Emission map</h4><h4 id="Self-illumination-map"><a href="#Self-illumination-map" class="headerlink" title="Self-illumination map"></a>Self-illumination map</h4><h4 id="Displacement-map-（置换贴图）"><a href="#Displacement-map-（置换贴图）" class="headerlink" title="Displacement map （置换贴图）"></a>Displacement map （置换贴图）</h4><h4 id="Metalness-map-（金属贴图）"><a href="#Metalness-map-（金属贴图）" class="headerlink" title="Metalness map （金属贴图）"></a>Metalness map （金属贴图）</h4><h4 id="roughness-map"><a href="#roughness-map" class="headerlink" title="roughness map"></a>roughness map</h4><h2 id="Load-3D-objects"><a href="#Load-3D-objects" class="headerlink" title="Load 3D objects"></a>Load 3D objects</h2><blockquote>
-<p>创建一个新的场景 ，使得骰子进入增强现实场景</p>
+<h2 id="Load-3D-objects"><a href="#Load-3D-objects" class="headerlink" title="Load 3D objects"></a>Load 3D objects</h2><ul>
+<li>创建一个新的场景 ，使得骰子进入增强现实场景</li>
+</ul>
+<blockquote>
+<p>initScene()</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let scene = SCNScene()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>为 AR scene 准备一个 environment map 。现在 scene 已经为基于 PBR 的 3D 物体准备好了一个合适的 lighting environment map </li>
+</ul>
 <blockquote>
-<p>为 AR scene 准备一个 environment map 。现在 scene 已经为基于 PBR 的 3D 物体准备好了一个合适的 lighting environment map </p>
+<p>initScene()</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scene.lightingEnvironment.contents = </span><br><span class="line">   &quot;PokerDice.scnassets/Textures/Environment_CUBE.jpg&quot;</span><br><span class="line">scene.lightingEnvironment.intensity = 2</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建一个数组，因为你刚刚创建了五个风格不一的 dice node</li>
+</ul>
 <blockquote>
-<p>创建一个数组，因为你刚刚创建了五个风格不一的 dice node</p>
+<p>Properties</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var diceNodes: [SCNNode] = []</span><br></pre></td></tr></table></figure>
+<ul>
+<li>现在需要把这些 dice nodes 加载进入数组</li>
+</ul>
+<ol>
+<li>加载 DiceScene.scn 并存储进 diceScene</li>
+<li>循环五次</li>
+<li>childNode() 搜索 diceScene.rootNode scene， 寻找所有的 dice，一旦发现，添加 dice node 到 diceNodes 数组</li>
+</ol>
 <blockquote>
-<p>现在需要把这些 dice nodes 加载进入数组<br> （1）加载 DiceScene.scn 并存储进 diceScene<br> （2）循环五次<br> （3）childNode() 搜索 diceScene.rootNode scene， 寻找所有的 dice，一旦发现，添加 dice node 到 diceNodes 数组</p>
+<p>Load Models</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">func loadModels() &#123;</span><br><span class="line">  // 1      </span><br><span class="line">  let diceScene = SCNScene(</span><br><span class="line">    named: &quot;PokerDice.scnassets/Models/DiceScene.scn&quot;)!</span><br><span class="line">  // 2</span><br><span class="line">  for count in 0..&lt;5 &#123;</span><br><span class="line">    // 3</span><br><span class="line">    diceNodes.append(diceScene.rootNode.childNode(</span><br><span class="line">      withName: &quot;dice\(count)&quot;, </span><br><span class="line">      recursively: false)!)</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在一开始就调用方法</li>
+</ul>
 <blockquote>
-<p>在一开始就调用方法</p>
+<p>viewDidLoad()</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.loadModels()</span><br></pre></td></tr></table></figure>
-<h2 id="Place-3D-objects"><a href="#Place-3D-objects" class="headerlink" title="Place 3D objects"></a>Place 3D objects</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var diceCount: Int = 5</span><br><span class="line">var diceStyle: Int = 0</span><br><span class="line">var diceOffset: [SCNVector3] = [SCNVector3(0.0,0.0,0.0),</span><br><span class="line">                           SCNVector3(-0.05, 0.00, 0.0),</span><br><span class="line">                           SCNVector3(0.05, 0.00, 0.0),</span><br><span class="line">                           SCNVector3(-0.05, 0.05, 0.02),</span><br><span class="line">                           SCNVector3(0.05, 0.05, 0.02)]</span><br></pre></td></tr></table></figure>
+<h2 id="Place-3D-objects"><a href="#Place-3D-objects" class="headerlink" title="Place 3D objects"></a>Place 3D objects</h2><ul>
+<li>dice nodes 已被加载，准备放入 AR 场景中 </li>
+</ul>
+<blockquote>
+<p>Properties</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var diceCount: Int = 5</span><br><span class="line">var diceStyle: Int = 0</span><br><span class="line">var diceOffset: [SCNVector3] = [SCNVector3(0.0,0.0,0.0),</span><br><span class="line">                           SCNVector3(-0.05, 0.00, 0.0),</span><br><span class="line">                           SCNVector3(0.05, 0.00, 0.0),</span><br><span class="line">                           SCNVector3(-0.05, 0.05, 0.02),</span><br><span class="line">                           SCNVector3(0.05, 0.05, 0.02)]</span><br></pre></td></tr></table></figure>
 <ul>
 <li>diceCount：计数手中还有多少 dice</li>
 <li>diceStyle：代表不同风格的 dice</li>
 <li>diceOffset：一组位置偏移</li>
 </ul>
+<blockquote>
+<p>Helper Functions</p>
+</blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">func throwDiceNode(transform: SCNMatrix4, offset: SCNVector3) &#123;</span><br><span class="line">    // 1</span><br><span class="line">    let position = SCNVector3(transform.m41 + offset.x,</span><br><span class="line">                              transform.m42 + offset.y,</span><br><span class="line">                              transform.m43 + offset.z)</span><br><span class="line">    // 2</span><br><span class="line">    let diceNode = diceNodes[diceStyle].clone()</span><br><span class="line">    diceNode.name = &quot;dice&quot;</span><br><span class="line">    diceNode.position = position</span><br><span class="line">    //3</span><br><span class="line">    sceneView.scene.rootNode.addChildNode(diceNode)</span><br><span class="line">    //diceCount -= 1</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>将转换后的数据和传入函数的数据联合创建了一个位置偏移量</li>
 <li>克隆了一个被选中的 dice node，重新命名为 dice ，并且设置它的位置</li>
-<li>克隆的 dice node 被放置于 AR scene 中，diceCount 自减表示手中少了一个 dice</li>
+<li>克隆的 dice node 被放置于 AR 场景中，diceCount 自减表示手中少了一个 dice</li>
 </ol>
-<h2 id="Add-a-swipe-gesture"><a href="#Add-a-swipe-gesture" class="headerlink" title="Add a swipe gesture"></a>Add a swipe gesture</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@IBAction func swipeUpGestureHandler(_ sender: Any) &#123;</span><br><span class="line">    // 1</span><br><span class="line">    guard let frame = self.sceneView.session.currentFrame else &#123; return &#125;</span><br><span class="line">    // 2</span><br><span class="line">    for count in 0..&lt;diceCount &#123;</span><br><span class="line">      throwDiceNode(transform: SCNMatrix4(frame.camera.transform),</span><br><span class="line">                    offset: diceOffset[count])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Add-a-swipe-gesture"><a href="#Add-a-swipe-gesture" class="headerlink" title="Add a swipe gesture"></a>Add a swipe gesture</h2><blockquote>
+<p>Actions</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@IBAction func swipeUpGestureHandler(_ sender: Any) &#123;</span><br><span class="line">    // 1</span><br><span class="line">    guard let frame = self.sceneView.session.currentFrame else &#123; return &#125;</span><br><span class="line">    // 2</span><br><span class="line">    for count in 0..&lt;diceCount &#123;</span><br><span class="line">      throwDiceNode(transform: SCNMatrix4(frame.camera.transform),</span><br><span class="line">                    offset: diceOffset[count])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>currentFrame 是一个 ARFrame 对象，连接着AR scene，它包含最近捕捉的视频帧图像的，同时还有捕捉的深度数据，AR 相机，当前的环境估计光，锚，特征点，这行代码确保这有一个可用的画面</li>
 <li>遍历了五个 dice，使用 AR 相机的转换矩阵，它包含关于相机位置和旋转的信息，一次抛出一个 dice 进入 AR scene ，最后将会抛出你手中所有的 dice </li>
 </ol>
-<h2 id="Change-dice-styles"><a href="#Change-dice-styles" class="headerlink" title="Change dice styles"></a>Change dice styles</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@IBAction func styleButtonPressed(_ sender: Any) &#123;</span><br><span class="line">    diceStyle = diceStyle &gt;= 4 ? 0 : diceStyle + 1</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<h1 id="Chapter-5-Detect-Surface"><a href="#Chapter-5-Detect-Surface" class="headerlink" title="Chapter 5: Detect Surface"></a>Chapter 5: Detect Surface</h1><h2 id="Define-game-states"><a href="#Define-game-states" class="headerlink" title="Define game states"></a>Define game states</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">enum GameState: Int16 &#123;</span><br><span class="line">  case detectSurface  </span><br><span class="line">  case pointToSurface   </span><br><span class="line">  case swipeToPlay</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Change-dice-styles"><a href="#Change-dice-styles" class="headerlink" title="Change dice styles"></a>Change dice styles</h2><blockquote>
+<p>Actions</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@IBAction func styleButtonPressed(_ sender: Any) &#123;</span><br><span class="line">    diceStyle = diceStyle &gt;= 4 ? 0 : diceStyle + 1</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Chapter-5-Detect-Surface"><a href="#Chapter-5-Detect-Surface" class="headerlink" title="Chapter 5: Detect Surface"></a>Chapter 5: Detect Surface</h1><h2 id="Define-game-states"><a href="#Define-game-states" class="headerlink" title="Define game states"></a>Define game states</h2><blockquote>
+<p>Game State</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">enum GameState: Int16 &#123;</span><br><span class="line">  case detectSurface  </span><br><span class="line">  case pointToSurface   </span><br><span class="line">  case swipeToPlay</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <ul>
-<li>detectSurface：ARKit 需要花费一小会儿去理解它的环境，然后开始检测平面。只要游戏处于这个状态中，玩家就必须去扫描他们的环境以寻找合适的水平平面,一旦玩家对于 ARKit 所侦测到的平面满意，他们就可以进入下一阶段。</li>
+<li>detectSurface：ARKit 需要花费一点时间去理解它的环境，然后开始检测平面。只要游戏处于这个状态中，玩家就必须去扫描他们的环境以寻找合适的水平平面,一旦玩家对于 ARKit 所侦测到的平面满意，就可以进入下一阶段。</li>
 <li>pointToSurface：玩家现在将设备指向侦测到的平面，出现一个准心光标，准心光标表示目标点，也就是骰子将会掷向的地方</li>
 <li>swipeToPlay：一旦目标点出现，玩家向准心光标掷出骰子</li>
 </ul>
@@ -144,6 +182,7 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">func initARSession() &#123;</span><br><span class="line">    guard ARWorldTrackingConfiguration.isSupported else &#123;</span><br><span class="line">      print(&quot;*** ARConfig: AR World Tracking Not Supported&quot;)</span><br><span class="line">      return</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    let config = ARWorldTrackingConfiguration()</span><br><span class="line">    config.worldAlignment = .gravity</span><br><span class="line">    config.providesAudioData = false</span><br><span class="line">    config.planeDetection = .horizontal</span><br><span class="line">    sceneView.session.run(config)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <ul>
+<li>ARKit 将会开始侦测水平平面，并且为每一个侦测到的平面自动生成 ARPlaneAnchor</li>
 <li>通过使用.vertical instead，你还可以侦测垂直的平面</li>
 </ul>
 <h2 id="Create-new-planes"><a href="#Create-new-planes" class="headerlink" title="Create new planes"></a>Create new planes</h2><ul>
