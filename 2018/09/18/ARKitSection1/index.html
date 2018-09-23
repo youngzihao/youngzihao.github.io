@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> ARKit by Tutorials 野生笔记 · Feng Shui</title><meta name="description" content="ARKit by Tutorials 野生笔记 - null"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Feng Shui"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.svg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/youngzihao" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">ARKit by Tutorials 野生笔记</h1><div class="post-info">Sep 18, 2018</div><div class="post-content"><h1 id="Chapter-3-Basic-Session-Management"><a href="#Chapter-3-Basic-Session-Management" class="headerlink" title="Chapter 3: Basic Session Management"></a>Chapter 3: Basic Session Management</h1><h2 id="Mark-out-sections"><a href="#Mark-out-sections" class="headerlink" title="Mark out sections"></a>Mark out sections</h2><p><img src="https://i.loli.net/2018/09/22/5ba5ae2c6c97c.png" alt=""></p>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> ARKit by Tutorials Section Ⅰ 野生笔记 · Feng Shui</title><meta name="description" content="ARKit by Tutorials Section Ⅰ 野生笔记 - null"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Feng Shui"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.svg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/youngzihao" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">ARKit by Tutorials Section Ⅰ 野生笔记</h1><div class="post-info">Sep 18, 2018</div><div class="post-content"><h1 id="Chapter-3-Basic-Session-Management"><a href="#Chapter-3-Basic-Session-Management" class="headerlink" title="Chapter 3: Basic Session Management"></a>Chapter 3: Basic Session Management</h1><h2 id="Mark-out-sections"><a href="#Mark-out-sections" class="headerlink" title="Mark out sections"></a>Mark out sections</h2><p><img src="https://i.loli.net/2018/09/22/5ba5ae2c6c97c.png" alt=""></p>
 <h4 id="View-Management"><a href="#View-Management" class="headerlink" title="View Management"></a>View Management</h4><ul>
 <li>这里面都是与 View 有关联的，不会修改过多，除了 <code>viewDidLoad()</code>，一直在添加各种初始化函数</li>
 </ul>
@@ -200,15 +200,16 @@
 <p>第三步详解：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 1 </span><br><span class="line">let planeNode = SCNNode(geometry: planeGeometry)</span><br><span class="line">// 2</span><br><span class="line">planeNode.position = SCNVector3Make(</span><br><span class="line">  planeAnchor.center.x, 0, planeAnchor.center.z)</span><br><span class="line">// 3</span><br><span class="line">planeNode.transform = SCNMatrix4MakeRotation(-Float.pi / 2, 1, 0, 0)</span><br><span class="line">// 4        </span><br><span class="line">return planeNode</span><br></pre></td></tr></table></figure>
 </blockquote>
-</li>
-<li><p>通过传入之前生成的 plane geometry，创建了一个新的 plane node</p>
-</li>
+<ol>
+<li>通过传入之前生成的 plane geometry，创建了一个新的 plane node</li>
 <li>基于锚的中心点设置了 plane node 的位置</li>
 <li>通过 SCNPlane 生成的几何形状默认是垂直的，所以你需要绕 X 轴顺时针旋转 90 度，使得 plane 平躺，当你直接创建垂直平面的时候，你可以直接忽略这一步</li>
 <li>返回给调用者</li>
 </ol>
+</li>
+</ol>
 <h2 id="Handle-new-plane-anchors"><a href="#Handle-new-plane-anchors" class="headerlink" title="Handle new plane anchors"></a>Handle new plane anchors</h2><ul>
-<li>随着平面侦测的激活，ARKit 会自动开始为每一个它侦测到的水平平面创建 ARPlaneAnchors，renderer(_:didAdd:for) 委托方法将会通知你新添加锚。你需要去做的就是等待这个事件被触发，然后为 anchor 创建一个对应的 SceneKit plane</li>
+<li>随着平面侦测的激活，ARKit 会自动为每一个它侦测到的水平平面创建 ARPlaneAnchors，当添加新的锚时，renderer(_:didAdd:for) 方法被调用。你需要去做的就是等待这个事件被触发，然后为锚创建一个对应的 SceneKit plane</li>
 </ul>
 <blockquote>
 <p>Plane Management</p>
@@ -230,21 +231,21 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">func updateARPlaneNode(planeNode: SCNNode, planeAchor: ARPlaneAnchor) &#123;</span><br><span class="line">  	let planeGeometry = planeNode.geometry as! SCNPlane</span><br><span class="line">  	// 1</span><br><span class="line">  	planeGeometry.width = CGFloat(planeAchor.extent.x)</span><br><span class="line">  	planeGeometry.height = CGFloat(planeAchor.extent.z)</span><br><span class="line">  	// 2</span><br><span class="line">  	planeNode.position = SCNVector3Make(planeAchor.center.x, 0, planeAchor.center.z)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
-<li>从 plane node 那取回了之前生成的 plane geometry，然后基于之前的 plane anchor 更新了它的宽度和高度信息</li>
-<li>基于之前 plane anchor 的位置信息更新 plane node 的位置</li>
+<li>从 plane node 那取回了之前生成的 planeGeometry，然后基于之前的 planeAnchor 更新了它的宽度和高度信息</li>
+<li>基于之前 planeAnchor 的位置信息更新 planeNode 的位置</li>
 </ol>
 <ul>
 <li>如果之前侦测的平面有新的信息更新，ARKit 将会触发 renderer(_:didUpdate:for) 方法，</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 1</span><br><span class="line">func renderer(_ renderer: SCNSceneRenderer, </span><br><span class="line">  didUpdate node: SCNNode, for anchor: ARAnchor) &#123;</span><br><span class="line">  // 2</span><br><span class="line">  guard let planeAnchor = anchor as? ARPlaneAnchor else &#123; return &#125;</span><br><span class="line">    // 3</span><br><span class="line">    DispatchQueue.main.async &#123;</span><br><span class="line">      // 4</span><br><span class="line">      self.updateARPlaneNode(planeNode: node.childNodes[0],</span><br><span class="line">        planeAchor: planeAnchor)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
-<li>注意这个代理方法接受了一个 SCNNode，这是一个一直存在的 node，之前添你将 plane node 添加到此 node 中</li>
+<li>注意这个代理方法接受了一个 SCNNode，这是一个一直存在的 node，之前添你将 planeNode 添加到此 node 中</li>
 <li>再一次，你只感兴趣 ARPlaneAnchors，所以将会筛选出此类的锚</li>
 <li>你只能在主线程里更新可视对象</li>
 <li>最后调用 updatePlane()，你正在传入第一个子 node，以及一个相关联的 plane anchor</li>
 </ol>
-<h2 id="Creating-a-focus-node"><a href="#Creating-a-focus-node" class="headerlink" title="Creating a focus node"></a>Creating a focus node</h2><ul>
-<li>现在你的 AR 游戏正在侦测平面，当用户掷出骰子时你应该提供用户某样东西可以去参照，你需要去找出如何将 focus node 置于平面之上，准确的说是用户所指之处，答案就是 ray casting</li>
+<h2 id="Create-a-focus-node"><a href="#Create-a-focus-node" class="headerlink" title="Create a focus node"></a>Create a focus node</h2><ul>
+<li>现在你的 AR 游戏正在侦测平面，当用户掷出骰子时你应该提供用户某样东西可以去参照，如何将 focus node 置于平面之上，也就是用户所指之处，答案就是 ray casting</li>
 </ul>
 <h4 id="load-focus-node"><a href="#load-focus-node" class="headerlink" title="load focus node"></a>load focus node</h4><blockquote>
 <p>Properties</p>
@@ -255,10 +256,10 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let focusScene = SCNScene(</span><br><span class="line">  named: &quot;PokerDice.scnassets/Models/FocusScene.scn&quot;)!</span><br><span class="line">focusNode = focusScene.rootNode.childNode(</span><br><span class="line">  withName: &quot;focus&quot;, recursively: false)!</span><br><span class="line">sceneView.scene.rootNode.addChildNode(focusNode)</span><br></pre></td></tr></table></figure>
 <ul>
-<li>加载了这个场景，然后保存到 focusNode 中去</li>
+<li>加载了新场景，然后保存到 focusNode 中去</li>
 </ul>
 <h4 id="Ray-casting"><a href="#Ray-casting" class="headerlink" title="Ray casting"></a>Ray casting</h4><ul>
-<li>Ray casting 是当用户在场景中搜寻与 3D 物体的相交点时，从屏幕中心开始投射虚拟射线进入场景中。在这种特殊情况中，你在场景中的射线和 plane nodes 之间搜寻相交点，一旦射线和平面相交，相交位置就被用来放置 focus node</li>
+<li>Ray casting 是当玩家搜寻 3D 物体时，从屏幕中心投射虚拟射线进入场景中。在这种特殊情况中，场景中的射线与 plane nodes 产生相交点，一旦相交，相交位置就被用来放置 focus node</li>
 </ul>
 <p><img src="https://ws4.sinaimg.cn/large/006tNbRwgy1fvgx0ii2eqj31kw115kjm.jpg" alt=""></p>
 <h4 id="Create-the-focus-point"><a href="#Create-the-focus-point" class="headerlink" title="Create the focus point"></a>Create the focus point</h4><blockquote>
@@ -269,24 +270,31 @@
 <p>initSceneView()</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">focusPoint = CGPoint(x: view.center.x,</span><br><span class="line">  y: view.center.y + view.center.y * 0.25)</span><br></pre></td></tr></table></figure>
-<h4 id="Handle-orientation-changes"><a href="#Handle-orientation-changes" class="headerlink" title="Handle orientation changes"></a>Handle orientation changes</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@objc func orientationChanged() &#123;</span><br><span class="line">  focusPoint = CGPoint(x: view.center.x,</span><br><span class="line">    y: view.center.y + view.center.y * 0.25)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Handle-orientation-changes"><a href="#Handle-orientation-changes" class="headerlink" title="Handle orientation changes"></a>Handle orientation changes</h4><blockquote>
+<p>View Management</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@objc func orientationChanged() &#123;</span><br><span class="line">  focusPoint = CGPoint(x: view.center.x,</span><br><span class="line">    y: view.center.y + view.center.y * 0.25)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>initSceneView()</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NotificationCenter.default.addObserver(self, </span><br><span class="line">  selector: #selector(ViewController.orientationChanged),</span><br><span class="line">  name: NSNotification.Name.UIDeviceOrientationDidChange,</span><br><span class="line">  object: nil)</span><br></pre></td></tr></table></figure>
 <ul>
+<li>当用户改变设备朝向的时候，NSNotification.Name.UIDeviceOrientationDidChange 被触发</li>
 <li>现在每一次设备的朝向改变你都会得到通知，同时你也保持 focusPoint 一直更新</li>
 </ul>
 <h4 id="Update-the-focus-node"><a href="#Update-the-focus-node" class="headerlink" title="Update the focus node"></a>Update the focus node</h4><ul>
 <li>基于屏幕的 focus point 持续地更新 focus node</li>
 </ul>
+<blockquote>
+<p>Helper Functions</p>
+</blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">func updateFocusNode() &#123;</span><br><span class="line">  // 1</span><br><span class="line">  let results = self.sceneView.hitTest(self.focusPoint, </span><br><span class="line">    types: [.existingPlaneUsingExtent])</span><br><span class="line">  // 2 </span><br><span class="line">  if results.count == 1 &#123;</span><br><span class="line">    if let match = results.first &#123;</span><br><span class="line">      // 3</span><br><span class="line">      let t = match.worldTransform</span><br><span class="line">     // 4</span><br><span class="line">      self.focusNode.position = SCNVector3( x: t.columns.3.x, y: t.columns.3.y,</span><br><span class="line">        z: t.columns.3.z)</span><br><span class="line">      self.gameState = .swipeToPlay</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // 5</span><br><span class="line">    self.gameState = .pointToSurface</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
-<li>sceneView.hitTest() 执行一个 ray cast test，你提供一个屏幕位置，也就是发射射线的位置，你也需要提供你正在寻找的对象的类型，在这个例子中，.existingPlaneUsingExtent 具体说明了你只搜寻那些基于范围大小的已侦测到的平面，hits 被保存在 results 中。当然你还可以基于其他类型执行 ray casting，例如 featurePoints，estimatedHorizontalPlane，existingPlane.</li>
+<li>sceneView.hitTest() 执行一个 ray cast，你提供一个屏幕位置，也就是发射射线的位置，你也需要提供你正在寻找的对象的类型，.existingPlaneUsingExtent 具体说明了你只搜寻那些基于自身范围大小的已侦测到的平面，hits 被保存在 results 中。当然你还可以基于其他类型执行 ray cast，例如 featurePoints，estimatedHorizontalPlane，existingPlane.</li>
 <li>你只需要寻找第一个 hit 结果，因此一旦发现，你要准备去更新 focus node</li>
-<li>你将会使用 hit 结果的 worldTransform，这个矩阵包括位置，朝向，以及范围信息</li>
-<li>你将基于 hit 结果 的 transform matrix来 更新 focus node 的位置，位置信息位于 transform matrix 的第三列</li>
-<li>如果没有结果被发现，游戏将会持续指导玩家去指向已被侦测到的平面</li>
+<li>你将会使用 hit 结果的 worldTransform，这个矩阵包括位置，朝向，以及范围大小信息</li>
+<li>你将基于 hit 结果 的 transform matrix 来更新 focus node 的位置，位置信息位于 transform matrix 的第三列</li>
+<li>如果结果未被发现，游戏将会持续指导玩家去指向已被侦测到的平面</li>
 </ol>
 <blockquote>
 <p>SceneKit Management</p>
@@ -295,8 +303,19 @@
 <ul>
 <li>你现在应该看见了侦测到的平面，focus node 会立即弹出并且跟随你，随着你的指向而移动</li>
 </ul>
+<h4 id="Challenge"><a href="#Challenge" class="headerlink" title="Challenge"></a>Challenge</h4><ul>
+<li>你可能会注意到有时候你的平面会部分重叠，ARKit 有时会合并多个侦测到的平面为一个平面，为了做到这个，ARKit 在创建新的之前需要去删除旧的平面，问题在于你还未执行 renderer(_:didRemove:for) 方法</li>
+</ul>
+<blockquote>
+<p>Helper Functions</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">func removeARPlaneNode(node: SCNNode) &#123;</span><br><span class="line">    for childNode in node.childNodes &#123;</span><br><span class="line">      childNode.removeFromParentNode()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Plane Management</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) &#123;</span><br><span class="line">    guard anchor is ARPlaneAnchor else &#123; return &#125;</span><br><span class="line">    DispatchQueue.main.async &#123;</span><br><span class="line">      self.removeARPlaneNode(node: node)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <h1 id="Chapter-6-Add-Physics"><a href="#Chapter-6-Add-Physics" class="headerlink" title="Chapter 6: Add Physics"></a>Chapter 6: Add Physics</h1><h2 id="The-physics-body"><a href="#The-physics-body" class="headerlink" title="The physics body"></a>The physics body</h2><ul>
-<li><p>为了使对象能够参与到 SceneKit 内置的物理模拟环境中，你必须要为你对象的SCNode 新增SCNPhysicsBody</p>
+<li><p>为了使对象能够参与到 SceneKit 内置的物理模拟环境中，你必须要为对象的 SCNode 新增SCNPhysicsBody</p>
 </li>
 <li><p>这里有三种基本的物理形态：</p>
 </li>
@@ -322,9 +341,9 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">func updateDiceNodes() &#123;       </span><br><span class="line">   // 1</span><br><span class="line">   for node in sceneView.scene.rootNode.childNodes &#123;</span><br><span class="line">     // 2</span><br><span class="line">     if node.name == &quot;dice&quot; &#123;</span><br><span class="line">       if  node.presentation.position.y &lt; -2 &#123;</span><br><span class="line">         // 3</span><br><span class="line">         node.removeFromParentNode()</span><br><span class="line">         diceCount += 1</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
-<li>你遍历了所有场景中可用的结点</li>
+<li>你遍历了场景中所有可用的结点</li>
 <li>你只对名字为 dice，并且低于地面两米的骰子感兴趣</li>
-<li>一旦你发现了符合条件的筛子结点，你将会把它从场景中移除掉，然后为 diceCountOnce 增加 1 ，本质上就是骰子重新回到了玩家手中</li>
+<li>一旦你发现了符合条件的骰子结点，你将会把它从场景中移除掉，然后 diceCountOnce 增加 1 ，本质上就是骰子重新回到了玩家手中</li>
 </ol>
 <blockquote>
 <p>SceneKit Management</p>
@@ -336,7 +355,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">func createARPlanePhysics(geometry: SCNGeometry) -&gt; SCNPhysicsBody &#123;</span><br><span class="line">    // 1</span><br><span class="line">    let physicsBody = SCNPhysicsBody(</span><br><span class="line">        type: .kinematic,</span><br><span class="line">        // 2</span><br><span class="line">        shape: SCNPhysicsShape(geometry: geometry,</span><br><span class="line">          options: nil))</span><br><span class="line">    // 3</span><br><span class="line">    physicsBody.restitution = 0.5</span><br><span class="line">    physicsBody.friction = 0.5</span><br><span class="line">    // 4</span><br><span class="line">    return physicsBody</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>创建了一个运动态，除了你可以移动它之外，其他都与静态非常类似</li>
-<li>第二个参数是一个物理形状，SCNPhysicsShape() 非常聪明，如果你提供对象的几何信息，它将会自动地为 3D 物体创建一个合适的形状，还有一个为 nil 的附加选项，由于你都是使用简单的平面，物理性状都会非常简单</li>
+<li>第二个参数是一个物理形状，SCNPhysicsShape() 非常聪明，如果你提供对象的几何信息，它将会自动地为 3D 物体创建一个合适的形状，还有一个为 nil 的附加选项，由于你都是使用简单的平面，物理形状都会非常简单</li>
 <li>调整平面的弹性和粗糙程度</li>
 <li>返回结果给调用者</li>
 </ol>
@@ -473,7 +492,7 @@
 <ol>
 <li>获得用户触摸屏幕的位置</li>
 <li>使用被触摸的点作为 hit test 的开始点</li>
-<li>你只感兴趣玩家是否触摸的是一个骰子</li>
+<li>你只感兴趣玩家触摸的是否是骰子</li>
 <li>如果玩家确实触摸的是一个骰子，把它从场景中移除掉，并且通过增加 diceCount 来达到返回到玩家的手中的目的</li>
 </ol>
-</div></article></div></main><footer><div class="paginator"><a href="/2018/07/08/loser/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/07/08/loser/" class="next">下一篇</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
