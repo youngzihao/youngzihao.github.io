@@ -12,22 +12,22 @@
 </li>
 </ul>
 <h4 id="The-ARSCNViewDelegate-protocol-extension"><a href="#The-ARSCNViewDelegate-protocol-extension" class="headerlink" title="The ARSCNViewDelegate protocol extension"></a>The ARSCNViewDelegate protocol extension</h4><ul>
-<li>这个协议被移动到自己的扩展中，这将会清晰地隔离开来，并且使得功能相近的协议在一起，最后提高整个代码的可读性</li>
+<li>这个协议被移动到自己的扩展中，清晰地隔离开来，并且使得功能相近的协议在一起，最后提高整个代码可读性</li>
 </ul>
 <h2 id="Create-the-configuration"><a href="#Create-the-configuration" class="headerlink" title="Create the configuration"></a>Create the configuration</h2><ul>
-<li><p>ARSCNView view 本质上就是 SceneKit view，它包括一个 ARSession ，负责 ARKit 的运动追踪和图像处理，这是基于 session 的，意味着你必须创建一个 ARSession 实例，通过 “run” 来开启 AR 追踪的过程</p>
+<li><p>ARSCNView view 本质上就是 SceneKit view，它包括一个 ARSession ，负责 ARKit 的运动追踪和图像处理，这是基于 session 的，意味着你必须创建一个 ARSession 实例，通过 “run” 来开启 AR 的追踪过程</p>
 </li>
-<li><p>在开启 AR session 之前，你必须去创建一个 AR session 配置，这个配置被用于建立现实世界和虚拟世界的联系，也就是你的设备位置和虚拟内容的位置关系</p>
+<li><p>在开启 ARSession 之前，你必须去创建一个 ARSession 配置，这个配置被用于建立现实世界和虚拟世界的联系，也就是你的设备位置和虚拟内容的位置关系</p>
 </li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">func initARSession() &#123;</span><br><span class="line">    guard ARWorldTrackingConfiguration.isSupported else &#123;</span><br><span class="line">      print(&quot;*** ARConfig: AR World Tracking Not Supported&quot;)</span><br><span class="line">      return</span><br><span class="line">    &#125;</span><br><span class="line">    // 1</span><br><span class="line">    let config = ARWorldTrackingConfiguration()</span><br><span class="line">    // 2</span><br><span class="line">    config.worldAlignment = .gravity</span><br><span class="line">    // 3</span><br><span class="line">    config.providesAudioData = false</span><br><span class="line">    // 4</span><br><span class="line">    sceneView.session.run(config)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>创建一个 ARWorldTrackingConfiguration 实例，分配给了 config </li>
 <li>设置 worldAlignment 的属性，也就是具体说明虚拟的内容将如何与现实世界相关联</li>
-<li>不允许 AR session 捕捉声音，还有一个属性 isLightEstimationEnabled 之后会学到</li>
-<li>运行 AR session ，并使用你刚刚设置好的配置，现在实时追踪 6DOF 维度的数据</li>
+<li>不允许 ARSession 捕捉声音，还有一个属性 isLightEstimationEnabled 之后会学到</li>
+<li>运行 ARSession ，并使用你刚刚设置好的配置，现在实时追踪 6DOF 维度的数据</li>
 </ol>
-<h2 id="Controll-an-AR-session"><a href="#Controll-an-AR-session" class="headerlink" title="Controll an AR session"></a>Controll an AR session</h2><ol>
+<h2 id="Controll-an-ARSession"><a href="#Controll-an-ARSession" class="headerlink" title="Controll an ARSession"></a>Controll an ARSession</h2><ol>
 <li>Pause:<br><code>ARSession.pause()</code></li>
 <li>Resume:<br><code>ARSession.run()</code></li>
 <li>Update:<br><code>ARSession.run(ARSessionConfig)</code></li>
@@ -41,25 +41,29 @@
 <p>SceneKit Management</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">func renderer(_ renderer: SCNSceneRenderer, </span><br><span class="line">   updateAtTime time: TimeInterval) &#123;</span><br><span class="line">   DispatchQueue.main.async &#123;</span><br><span class="line">     self.statusLabel.text = self.trackingStatus</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>注意：当更新 UI 中的元素时，例如 status bar label，你必须在主线程  DispatchQueue.main.async { … } 中进行更新</li>
+</ul>
 <h2 id="Handle-AR-session-errors"><a href="#Handle-AR-session-errors" class="headerlink" title="Handle AR session errors"></a>Handle AR session errors</h2><blockquote>
 <p>Session Error Management</p>
 </blockquote>
 <ol>
-<li><p>Session 失败</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">func session(_ session: ARSession, didFailWithError error: Error) &#123;</span><br><span class="line">  trackingStatus = &quot;AR Session Failure: \(error)&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Session 中断</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">func sessionWasInterrupted(_ session: ARSession) &#123;</span><br><span class="line">  trackingStatus = &quot;AR Session Was Interrupted!&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Session 中断结束</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">func sessionInterruptionEnded(_ session: ARSession) &#123;</span><br><span class="line">  trackingStatus = &quot;AR Session Interruption Ended&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
+<li>Session 失败</li>
 </ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">func session(_ session: ARSession, didFailWithError error: Error) &#123;</span><br><span class="line">  trackingStatus = &quot;AR Session Failure: \(error)&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Session 中断</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">func sessionWasInterrupted(_ session: ARSession) &#123;</span><br><span class="line">  trackingStatus = &quot;AR Session Was Interrupted!&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>Session 中断结束</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">func sessionInterruptionEnded(_ session: ARSession) &#123;</span><br><span class="line">  trackingStatus = &quot;AR Session Interruption Ended&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="Handle-AR-session-state-changes"><a href="#Handle-AR-session-state-changes" class="headerlink" title="Handle AR session state changes"></a>Handle AR session state changes</h2><blockquote>
 <p>Session State Management</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">func session(_ session: ARSession,</span><br><span class="line">               cameraDidChangeTrackingState camera: ARCamera) &#123;</span><br><span class="line">    switch camera.trackingState &#123;</span><br><span class="line">    // 1</span><br><span class="line">    case .notAvailable:</span><br><span class="line">      trackingStatus = &quot;Tacking:  Not available!&quot;</span><br><span class="line">      break</span><br><span class="line">    // 2</span><br><span class="line">    case .normal:</span><br><span class="line">      trackingStatus = &quot;Tracking: All good!&quot;</span><br><span class="line">      break</span><br><span class="line">    // 3</span><br><span class="line">    case .limited(let reason):</span><br><span class="line">      switch reason &#123;</span><br><span class="line">      case .excessiveMotion:</span><br><span class="line">        trackingStatus = &quot;Tracking: Limited due to excessive motion!&quot;</span><br><span class="line">      // 3.1</span><br><span class="line">      case .insufficientFeatures:</span><br><span class="line">        trackingStatus = &quot;Tracking: Limited due to insufficient features!&quot;</span><br><span class="line">      // 3.2</span><br><span class="line">      case .initializing:</span><br><span class="line">        trackingStatus = &quot;Tracking: Initializing...&quot;</span><br><span class="line">      // 3.3</span><br><span class="line">      case .relocalizing:</span><br><span class="line">        trackingStatus = &quot;Tracking: Relocalizing...&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<p>当 AR session 正在运行时，session 受到外部的条件影响会改变追踪状态，每一次状态改变，该方法就会被触发，我们需要监视所有的 ARCamera.trackingStatus 的状态改变。</p>
+<p>当 ARSession 正在运行时，session 受到外部的条件影响会改变追踪状态，每一次状态改变，该方法就会被触发，我们需要监视所有的 ARCamera.trackingStatus 的状态改变。</p>
 <ol>
 <li>notAvailable</li>
 <li>normal</li>
@@ -69,12 +73,16 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sceneView.debugOptions = [</span><br><span class="line">      ARSCNDebugOptions.showFeaturePoints,</span><br><span class="line">      ARSCNDebugOptions.showWorldOrigin,</span><br><span class="line">      SCNDebugOptions.showBoundingBoxes,</span><br><span class="line">      SCNDebugOptions.showWireframe</span><br><span class="line">    ]</span><br></pre></td></tr></table></figure>
 <h1 id="Chapter-4-Add-3D-Objects-and-Textures"><a href="#Chapter-4-Add-3D-Objects-and-Textures" class="headerlink" title="Chapter 4: Add 3D Objects and Textures"></a>Chapter 4: Add 3D Objects and Textures</h1><h2 id="Create-the-dice-scene"><a href="#Create-the-dice-scene" class="headerlink" title="Create the dice scene"></a>Create the dice scene</h2><ul>
-<li>COLLADA 是一种 3D 物体流行的文件格式，Xcode 完全兼容这种格式，你只需要插入这种格式的文件，使用 Xcode 将它们转换为本地的 SceneKit 模型</li>
-</ul>
+<li><p>COLLADA 是一种 3D 物体流行的文件格式，Xcode 完全兼容这种格式，你只需要插入这种格式的文件，使用 Xcode 将它们转换为本地的 SceneKit 模型</p>
+<blockquote>
+<p>步骤：</p>
 <ol>
 <li>COLLDA 格式 –&gt; 转换为 SceneKit scene file format (.scn)</li>
 <li>新建 DiceScene.scn ，在里面复制粘贴出五个 dice  </li>
 </ol>
+</blockquote>
+</li>
+</ul>
 <h2 id="Physically-based-rendering-PBR"><a href="#Physically-based-rendering-PBR" class="headerlink" title="Physically based rendering (PBR)"></a>Physically based rendering (PBR)</h2><ul>
 <li>Environment map：环境贴图有两个目的，第一是与反射贴图类似，在高反射的表面上可以看到映射。第二是为基于物理渲染的物体提供光照信息，给予它们一个真实的光照环境</li>
 </ul>
@@ -102,15 +110,15 @@
 <ul>
 <li>现在需要把这些 dice nodes 加载进入数组</li>
 </ul>
-<ol>
-<li>加载 DiceScene.scn 并存储进 diceScene</li>
-<li>循环五次</li>
-<li>childNode() 搜索 diceScene.rootNode scene， 寻找所有的 dice，一旦发现，添加 dice node 到 diceNodes 数组</li>
-</ol>
 <blockquote>
 <p>Load Models</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">func loadModels() &#123;</span><br><span class="line">  // 1      </span><br><span class="line">  let diceScene = SCNScene(</span><br><span class="line">    named: &quot;PokerDice.scnassets/Models/DiceScene.scn&quot;)!</span><br><span class="line">  // 2</span><br><span class="line">  for count in 0..&lt;5 &#123;</span><br><span class="line">    // 3</span><br><span class="line">    diceNodes.append(diceScene.rootNode.childNode(</span><br><span class="line">      withName: &quot;dice\(count)&quot;, </span><br><span class="line">      recursively: false)!)</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>加载 DiceScene.scn 并存储进 diceScene</li>
+<li>循环五次</li>
+<li>childNode() 搜索 diceScene.rootNode scene， 寻找所有的骰子，一旦发现，添加 dice node 到 diceNodes 数组</li>
+</ol>
 <ul>
 <li>在一开始就调用方法</li>
 </ul>
@@ -119,15 +127,15 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.loadModels()</span><br></pre></td></tr></table></figure>
 <h2 id="Place-3D-objects"><a href="#Place-3D-objects" class="headerlink" title="Place 3D objects"></a>Place 3D objects</h2><ul>
-<li>dice nodes 已被加载，准备放入 AR 场景中 </li>
+<li>dice nodes 已被加载，准备放入增强现实场景中 </li>
 </ul>
 <blockquote>
 <p>Properties</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var diceCount: Int = 5</span><br><span class="line">var diceStyle: Int = 0</span><br><span class="line">var diceOffset: [SCNVector3] = [SCNVector3(0.0,0.0,0.0),</span><br><span class="line">                           SCNVector3(-0.05, 0.00, 0.0),</span><br><span class="line">                           SCNVector3(0.05, 0.00, 0.0),</span><br><span class="line">                           SCNVector3(-0.05, 0.05, 0.02),</span><br><span class="line">                           SCNVector3(0.05, 0.05, 0.02)]</span><br></pre></td></tr></table></figure>
 <ul>
-<li>diceCount：计数手中还有多少 dice</li>
-<li>diceStyle：代表不同风格的 dice</li>
+<li>diceCount：计数手中还有多少骰子</li>
+<li>diceStyle：代表不同风格的骰子</li>
 <li>diceOffset：一组位置偏移</li>
 </ul>
 <blockquote>
@@ -136,16 +144,16 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">func throwDiceNode(transform: SCNMatrix4, offset: SCNVector3) &#123;</span><br><span class="line">    // 1</span><br><span class="line">    let position = SCNVector3(transform.m41 + offset.x,</span><br><span class="line">                              transform.m42 + offset.y,</span><br><span class="line">                              transform.m43 + offset.z)</span><br><span class="line">    // 2</span><br><span class="line">    let diceNode = diceNodes[diceStyle].clone()</span><br><span class="line">    diceNode.name = &quot;dice&quot;</span><br><span class="line">    diceNode.position = position</span><br><span class="line">    //3</span><br><span class="line">    sceneView.scene.rootNode.addChildNode(diceNode)</span><br><span class="line">    //diceCount -= 1</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>将转换后的数据和传入函数的数据联合创建了一个位置偏移量</li>
-<li>克隆了一个被选中的 dice node，重新命名为 dice ，并且设置它的位置</li>
-<li>克隆的 dice node 被放置于 AR 场景中，diceCount 自减表示手中少了一个 dice</li>
+<li>克隆了一个被选中的 dice node，重新命名为 “dice” ，并且设置它的位置</li>
+<li>克隆的 dice node 被放置于增强现实场景中，diceCount 自减表示手中少了一个骰子</li>
 </ol>
 <h2 id="Add-a-swipe-gesture"><a href="#Add-a-swipe-gesture" class="headerlink" title="Add a swipe gesture"></a>Add a swipe gesture</h2><blockquote>
 <p>Actions</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@IBAction func swipeUpGestureHandler(_ sender: Any) &#123;</span><br><span class="line">    // 1</span><br><span class="line">    guard let frame = self.sceneView.session.currentFrame else &#123; return &#125;</span><br><span class="line">    // 2</span><br><span class="line">    for count in 0..&lt;diceCount &#123;</span><br><span class="line">      throwDiceNode(transform: SCNMatrix4(frame.camera.transform),</span><br><span class="line">                    offset: diceOffset[count])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <ol>
-<li>currentFrame 是一个 ARFrame 对象，连接着AR scene，它包含最近捕捉的视频帧图像的，同时还有捕捉的深度数据，AR 相机，当前的环境估计光，锚，特征点，这行代码确保这有一个可用的画面</li>
-<li>遍历了五个 dice，使用 AR 相机的转换矩阵，它包含关于相机位置和旋转的信息，一次抛出一个 dice 进入 AR scene ，最后将会抛出你手中所有的 dice </li>
+<li>currentFrame 是一个 ARFrame 对象，连接着增强现实场景，它包含最近捕捉的视频帧图像的，同时还有捕捉的深度数据，AR 相机，当前的环境估计光，锚，特征点，这行代码确保这有一个可用的画面</li>
+<li>遍历了五个骰子，使用 AR 相机的转换矩阵，它包含关于相机位置和旋转的信息，一次抛出一个骰子进入 AR scene ，最后将会抛出你手中所有的骰子 </li>
 </ol>
 <h2 id="Change-dice-styles"><a href="#Change-dice-styles" class="headerlink" title="Change dice styles"></a>Change dice styles</h2><blockquote>
 <p>Actions</p>
@@ -495,4 +503,4 @@
 <li>你只感兴趣玩家触摸的是否是骰子</li>
 <li>如果玩家确实触摸的是一个骰子，把它从场景中移除掉，并且通过增加 diceCount 来达到返回到玩家的手中的目的</li>
 </ol>
-</div></article></div></main><footer><div class="paginator"><a href="/2018/09/23/arkitSection2/" class="prev">上一篇</a><a href="/2018/07/08/loser/" class="next">下一篇</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/09/23/arkitSection2/" class="prev">PREV</a><a href="/2018/07/08/loser/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
