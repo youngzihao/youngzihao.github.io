@@ -182,7 +182,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) &#123;</span><br><span class="line">    DispatchQueue.main.async &#123;</span><br><span class="line">      //self.statusLabel.text = self.trackingStatus</span><br><span class="line">      self.updateStatus()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <h2 id="Anchors"><a href="#Anchors" class="headerlink" title="Anchors"></a>Anchors</h2><ul>
 <li>ARKit 使用一个虚拟的锚去固定你的 3D 物体，当玩家在现实世界移动设备时，可以保持 3D 物体的位置</li>
-<li><strong>ARAnchor 包含一个真实世界中的位置和朝向，并且不可见，它只是一个 ARKit scene 中的一个对象。ARKit 会默认给每一个 ARAnchor 配对一个空的 SCNNode，你要做的就是添加你的 3D 物体作为这个 node 的子对象</strong></li>
+<li><strong>ARAnchor 包含一个真实世界中的位置和朝向，并且不可见，它只是一个 ARKit 场景中的一个对象。ARKit 会默认给每一个 ARAnchor 配对一个空的 SCNNode，你要做的就是添加你的 3D 物体作为这个 node 的子对象</strong></li>
 <li>ARPlaneAnchor 是一种特殊类型的锚，包含了一个真实世界的位置和朝向，并且还附加了平面信息，包括中心点，朝向，以及范围大小，你能够使用这些信息去创造一个 SceneKit plane node</li>
 </ul>
 <h2 id="Detect-surfaces"><a href="#Detect-surfaces" class="headerlink" title="Detect surfaces"></a>Detect surfaces</h2><blockquote>
@@ -191,19 +191,20 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">func initARSession() &#123;</span><br><span class="line">    guard ARWorldTrackingConfiguration.isSupported else &#123;</span><br><span class="line">      print(&quot;*** ARConfig: AR World Tracking Not Supported&quot;)</span><br><span class="line">      return</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    let config = ARWorldTrackingConfiguration()</span><br><span class="line">    config.worldAlignment = .gravity</span><br><span class="line">    config.providesAudioData = false</span><br><span class="line">    config.planeDetection = .horizontal</span><br><span class="line">    sceneView.session.run(config)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>ARKit 将会开始侦测水平平面，并且为每一个侦测到的平面自动生成 ARPlaneAnchor</li>
-<li>通过使用.vertical instead，你还可以侦测垂直的平面</li>
+<li>通过使用 <code>.vertical</code> 代替，你还可以侦测垂直的平面</li>
 </ul>
 <h2 id="Create-new-planes"><a href="#Create-new-planes" class="headerlink" title="Create new planes"></a>Create new planes</h2><ul>
-<li>当一个新的 plane anchor 被添加时，此函数可以创建一个对应的可视对象，这个函数接受了 ARPlaneAnchor 以及 UIColor，现在我们可以生成一个 SceneKit Plane node</li>
+<li>当一个新的 plane anchor 被添加时，此函数可以创建一个对应的可视对象，这个函数接受 ARPlaneAnchor 以及 UIColor 作为参数，现在我们可以生成一个 SceneKit Plane node</li>
 </ul>
 <blockquote>
 <p>Helper Functions</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">func createARPlaneNode(planeAnchor: ARPlaneAnchor, color: UIColor) -&gt; SCNNode &#123;</span><br><span class="line">    </span><br><span class="line">    // 1 </span><br><span class="line">    let planeGeometry = SCNPlane(width: CGFloat(planeAnchor.extent.x),</span><br><span class="line">                                 height: CGFloat(planeAnchor.extent.z))</span><br><span class="line">    </span><br><span class="line">    // 2</span><br><span class="line">    let planeMaterial = SCNMaterial()</span><br><span class="line">    planeMaterial.diffuse.contents = &quot;PokerDice.scnassets/Textures/Surface_DIFFUSE.png&quot; //color</span><br><span class="line">    planeGeometry.materials = [planeMaterial]</span><br><span class="line">    </span><br><span class="line">    // 3</span><br><span class="line">    let planeNode = SCNNode(geometry: planeGeometry)</span><br><span class="line">    planeNode.position = SCNVector3Make(planeAnchor.center.x, 0, planeAnchor.center.z)</span><br><span class="line">    planeNode.transform = SCNMatrix4MakeRotation(-Float.pi / 2, 1, 0, 0)</span><br><span class="line">    </span><br><span class="line">    return planeNode</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <ol>
-<li>使用 anchor 的范围大小来生成 plane 的几何形状</li>
+<li>使用锚的范围大小来生成 plane 的几何形状</li>
 <li>创建一个新的材质，然后设置它的 diffuse.contents 属性</li>
-<li><p>创建 plane node</p>
+<li>创建 plane node</li>
+</ol>
 <blockquote>
 <p>第三步详解：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 1 </span><br><span class="line">let planeNode = SCNNode(geometry: planeGeometry)</span><br><span class="line">// 2</span><br><span class="line">planeNode.position = SCNVector3Make(</span><br><span class="line">  planeAnchor.center.x, 0, planeAnchor.center.z)</span><br><span class="line">// 3</span><br><span class="line">planeNode.transform = SCNMatrix4MakeRotation(-Float.pi / 2, 1, 0, 0)</span><br><span class="line">// 4        </span><br><span class="line">return planeNode</span><br></pre></td></tr></table></figure>
@@ -213,8 +214,6 @@
 <li>基于锚的中心点设置了 plane node 的位置</li>
 <li>通过 SCNPlane 生成的几何形状默认是垂直的，所以你需要绕 X 轴顺时针旋转 90 度，使得 plane 平躺，当你直接创建垂直平面的时候，你可以直接忽略这一步</li>
 <li>返回给调用者</li>
-</ol>
-</li>
 </ol>
 <h2 id="Handle-new-plane-anchors"><a href="#Handle-new-plane-anchors" class="headerlink" title="Handle new plane anchors"></a>Handle new plane anchors</h2><ul>
 <li>随着平面侦测的激活，ARKit 会自动为每一个它侦测到的水平平面创建 ARPlaneAnchors，当添加新的锚时，renderer(_:didAdd:for) 方法被调用。你需要去做的就是等待这个事件被触发，然后为锚创建一个对应的 SceneKit plane</li>
@@ -245,7 +244,7 @@
 <ul>
 <li>如果之前侦测的平面有新的信息更新，ARKit 将会触发 renderer(_:didUpdate:for) 方法，</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 1</span><br><span class="line">func renderer(_ renderer: SCNSceneRenderer, </span><br><span class="line">  didUpdate node: SCNNode, for anchor: ARAnchor) &#123;</span><br><span class="line">  // 2</span><br><span class="line">  guard let planeAnchor = anchor as? ARPlaneAnchor else &#123; return &#125;</span><br><span class="line">    // 3</span><br><span class="line">    DispatchQueue.main.async &#123;</span><br><span class="line">      // 4</span><br><span class="line">      self.updateARPlaneNode(planeNode: node.childNodes[0],</span><br><span class="line">        planeAchor: planeAnchor)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 1</span><br><span class="line">func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) &#123;</span><br><span class="line">  // 2</span><br><span class="line">  guard let planeAnchor = anchor as? ARPlaneAnchor else &#123; return &#125;</span><br><span class="line">    // 3</span><br><span class="line">    DispatchQueue.main.async &#123;</span><br><span class="line">      // 4</span><br><span class="line">      self.updateARPlaneNode(planeNode: node.childNodes[0],</span><br><span class="line">        planeAchor: planeAnchor)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>注意这个代理方法接受了一个 SCNNode，这是一个一直存在的 node，之前添你将 planeNode 添加到此 node 中</li>
 <li>再一次，你只感兴趣 ARPlaneAnchors，所以将会筛选出此类的锚</li>
@@ -277,11 +276,11 @@
 <blockquote>
 <p>initSceneView()</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">focusPoint = CGPoint(x: view.center.x,</span><br><span class="line">  y: view.center.y + view.center.y * 0.25)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">focusPoint = CGPoint(x: view.center.x, y: view.center.y + view.center.y * 0.25)</span><br></pre></td></tr></table></figure>
 <h4 id="Handle-orientation-changes"><a href="#Handle-orientation-changes" class="headerlink" title="Handle orientation changes"></a>Handle orientation changes</h4><blockquote>
 <p>View Management</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@objc func orientationChanged() &#123;</span><br><span class="line">  focusPoint = CGPoint(x: view.center.x,</span><br><span class="line">    y: view.center.y + view.center.y * 0.25)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@objc func orientationChanged() &#123;</span><br><span class="line">  focusPoint = CGPoint(x: view.center.x, y: view.center.y + view.center.y * 0.25)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>initSceneView()</p>
 </blockquote>
@@ -323,7 +322,7 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) &#123;</span><br><span class="line">    guard anchor is ARPlaneAnchor else &#123; return &#125;</span><br><span class="line">    DispatchQueue.main.async &#123;</span><br><span class="line">      self.removeARPlaneNode(node: node)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <h1 id="Chapter-6-Add-Physics"><a href="#Chapter-6-Add-Physics" class="headerlink" title="Chapter 6: Add Physics"></a>Chapter 6: Add Physics</h1><h2 id="The-physics-body"><a href="#The-physics-body" class="headerlink" title="The physics body"></a>The physics body</h2><ul>
-<li><p>为了使对象能够参与到 SceneKit 内置的物理模拟环境中，你必须要为对象的 SCNode 新增SCNPhysicsBody</p>
+<li><p>为了使对象能够参与到 SceneKit 内置的物理模拟环境中，你必须要为 SCNode 新增SCNPhysicsBody</p>
 </li>
 <li><p>这里有三种基本的物理形态：</p>
 </li>
@@ -350,7 +349,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">func updateDiceNodes() &#123;       </span><br><span class="line">   // 1</span><br><span class="line">   for node in sceneView.scene.rootNode.childNodes &#123;</span><br><span class="line">     // 2</span><br><span class="line">     if node.name == &quot;dice&quot; &#123;</span><br><span class="line">       if  node.presentation.position.y &lt; -2 &#123;</span><br><span class="line">         // 3</span><br><span class="line">         node.removeFromParentNode()</span><br><span class="line">         diceCount += 1</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>你遍历了场景中所有可用的结点</li>
-<li>你只对名字为 dice，并且低于地面两米的骰子感兴趣</li>
+<li>你只对名字为 “dice”，且低于地面两米的骰子感兴趣</li>
 <li>一旦你发现了符合条件的骰子结点，你将会把它从场景中移除掉，然后 diceCountOnce 增加 1 ，本质上就是骰子重新回到了玩家手中</li>
 </ol>
 <blockquote>
