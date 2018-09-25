@@ -41,7 +41,7 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sceneView?.delegate = self</span><br></pre></td></tr></table></figure>
 <ul>
-<li>ARPlaneAnchors 被自动添加给了 ARSession 锚数组，ARSCNView 自动将 ARPlaneAnchor 对象转换成为 SCNNode nodes，为了去提供这些平面，你需要去执行 delegate 方法在 ARSCNViewDelegate 扩展中</li>
+<li>ARPlaneAnchors 被自动添加给了 ARSession 的锚数组，ARSCNView 自动将 ARPlaneAnchor 对象转换成为 SCNNode nodes，为了去提供这些平面，你需要在 ARSCNViewDelegate 扩展中去执行 delegate 方法</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// 1</span><br><span class="line">func renderer(_ renderer: SCNSceneRenderer,</span><br><span class="line">              didAdd node: SCNNode,</span><br><span class="line">              for anchor: ARAnchor) &#123;</span><br><span class="line">  // 2</span><br><span class="line">  DispatchQueue.main.async &#123;</span><br><span class="line">    // 3</span><br><span class="line">    if let planeAnchor = anchor as? ARPlaneAnchor &#123;</span><br><span class="line">        // 4</span><br><span class="line">      #if DEBUG</span><br><span class="line">        // 5</span><br><span class="line">        let debugPlaneNode = createPlaneNode(</span><br><span class="line">          center: planeAnchor.center,</span><br><span class="line">          extent: planeAnchor.extent)</span><br><span class="line">        // 6  </span><br><span class="line">        node.addChildNode(debugPlaneNode)</span><br><span class="line">      #endif</span><br><span class="line">      // 7</span><br><span class="line">      self.messageLabel?.text =</span><br><span class="line">      &quot;Tap on the detected horizontal plane to place the portal&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
@@ -61,13 +61,80 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">import SceneKit</span><br><span class="line"></span><br><span class="line">  // 1</span><br><span class="line">func createPlaneNode(center: vector_float3,</span><br><span class="line">                     extent: vector_float3) -&gt; SCNNode &#123;</span><br><span class="line">  // 2</span><br><span class="line">  let plane = SCNPlane(width: CGFloat(extent.x),</span><br><span class="line">                      height: CGFloat(extent.z))</span><br><span class="line">  // 3</span><br><span class="line">  let planeMaterial = SCNMaterial()</span><br><span class="line">  planeMaterial.diffuse.contents = UIColor.yellow.withAlphaComponent(0.4)</span><br><span class="line">  // 4</span><br><span class="line">  plane.materials = [planeMaterial]</span><br><span class="line">  // 5</span><br><span class="line">  let planeNode = SCNNode(geometry: plane)</span><br><span class="line">  // 6</span><br><span class="line">  planeNode.position = SCNVector3Make(center.x, 0, center.z)</span><br><span class="line">  // 7</span><br><span class="line">  planeNode.transform = SCNMatrix4MakeRotation(-Float.pi / 2, 1, 0, 0)</span><br><span class="line">  // 8</span><br><span class="line">  return planeNode</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
-<li>createPlaneNode 方法有两个参数， 将提供的平面的中心和范围大小，都是 vector_float3 类型， 表示了点坐标，这个函数返回一个SCNNode object </li>
-<li>你实例化了这个 SCNPlane 通过具体说明平面的宽度和广度，你从 extent 的 x 坐标中得到了宽度，从 z 坐标中得到了高度 </li>
+<li>createPlaneNode 方法有两个参数， 将提供的平面的中心和范围大小，都是 vector_float3 类型， 表示点坐标，返回一个 SCNNode object </li>
+<li>通过具体说明平面的宽度和广度实例化了 SCNPlane ，你从 extent 的 x 坐标中得到了宽度，从 z 坐标中得到了高度 </li>
 <li>你初始化了 SCNMaterial 并为它配置了 diffuse content，diffuse layer color 被设置为半透明的黄色</li>
 <li>SCNMaterial 被添加给了平面的 materials 数组，定义了平面的材质和颜色</li>
-<li>使用 plane 的几何大小创建了一个 SCNNode，SCNPlane 继承自 SCNGeometry 类，它提供了可视对象的形状，并由 SceneKit 负责生成，. You specify the position and orientation of the geometry by attaching it to an SCNNode object. Multiple nodes can reference the same geometry object, allowing it to appear at different positions in a scene.</li>
+<li>使用 plane 的几何大小创建了一个 SCNNode，SCNPlane 继承自 SCNGeometry 类，这个类提供了可视对象的形状，并由 SceneKit 负责生成，. 你通过将几何图形依附在 SCNNode object 进而规定了它的位置和朝向，多个 nodes 可以指向同一个几何大小，允许它出现在一个场景的不同位置</li>
 <li>设置 planeNode 的位置，注意 node 被翻译为了 coordinates (center.x, 0, center.z) ，通过 ARPlaneAnchor instance</li>
 <li>SceneKit 中的平面默认都是垂直的，因此你需要去旋转 90°使之水平</li>
 <li>返回一个 planeNode 对象</li>
 </ol>
-<h1 id="Chapter-8-Add-Objects-to-your-World"><a href="#Chapter-8-Add-Objects-to-your-World" class="headerlink" title="Chapter 8: Add Objects to your World"></a>Chapter 8: Add Objects to your World</h1><h1 id="Chapter-9-Geomtry-Textrues-and-lighting"><a href="#Chapter-9-Geomtry-Textrues-and-lighting" class="headerlink" title="Chapter 9: Geomtry, Textrues, and lighting"></a>Chapter 9: Geomtry, Textrues, and lighting</h1></div></article></div></main><footer><div class="paginator"><a href="/2018/09/18/arkitSection1/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
+<ul>
+<li>ARKit 基于新发现的特征点持续更新平面的位置和范围大小，新增委托方法去接受这些更新</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 1</span><br><span class="line">func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode,</span><br><span class="line">              for anchor: ARAnchor) &#123;</span><br><span class="line">  // 2              </span><br><span class="line">  DispatchQueue.main.async &#123;</span><br><span class="line">    // 3</span><br><span class="line">    if let planeAnchor = anchor as? ARPlaneAnchor,</span><br><span class="line">      node.childNodes.count &gt; 0 &#123;</span><br><span class="line">      // 4  </span><br><span class="line">      updatePlaneNode(node.childNodes[0],</span><br><span class="line">                      center: planeAnchor.center,</span><br><span class="line">                      extent: planeAnchor.extent)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>当对应的锚更新时，renderer(_:didUpdate:for:) 方法被调用</li>
+<li>UI 元素的更新应该在主线程中 </li>
+<li>检查 ARAnchor 是一个 ARPlaneAnchor，然后确认至少它有一个子结点，与 plane’s SCNNode 相符</li>
+<li>updatePlaneNode(_:center:extent:) 是一个不久将执行的方法，它通过 ARPlaneAnchor 中的更新值来更新平面的坐标和大小</li>
+</ol>
+<blockquote>
+<p>SCNNodeHelpers.swift</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">func updatePlaneNode(_ node: SCNNode,</span><br><span class="line">                     center: vector_float3,</span><br><span class="line">                     extent: vector_float3) &#123;</span><br><span class="line">  // 1                    </span><br><span class="line">  let geometry = node.geometry as? SCNPlane</span><br><span class="line">  // 2</span><br><span class="line">  geometry?.width = CGFloat(extent.x)</span><br><span class="line">  geometry?.height = CGFloat(extent.z)</span><br><span class="line">  // 3</span><br><span class="line">  node.position = SCNVector3Make(center.x, 0, center.z)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>检查是否 node 含有 SCNPlane geometry</li>
+<li>使用传入的新值更新 node geometry，也就是使用 ARPlaneAnchor 的范围或大小去更新 plane 的宽度和高度</li>
+<li>使用新的位置来更新 plane 的位置</li>
+</ol>
+<ul>
+<li>运行时你将会看到平面的大小和位置随着侦测到新的特征点而改变，仍然有一个问题需要去解决，一旦侦测到平面，如果你离开应用在进来，你将会看到之前侦测到的平面现在在其他对象的顶部，不再匹配它之前侦测的平面，为了解决这个问题，你需要去移除 plane node 当 ARSession 中断时</li>
+</ul>
+<h1 id="Chapter-8-Add-Objects-to-your-World"><a href="#Chapter-8-Add-Objects-to-your-World" class="headerlink" title="Chapter 8: Add Objects to your World"></a>Chapter 8: Add Objects to your World</h1><h2 id="Get-started-1"><a href="#Get-started-1" class="headerlink" title="Get started"></a>Get started</h2><ul>
+<li><p>现在你可能去侦测并生成水平平面，如果有任何中断你则需要去调整会话的状态，当应用切换到后台或者多个应用在前台时，ARSession 会中断，一旦中断，视频捕捉将会失败，ARSession 将不可能做任何追踪，也将不再接受任何传感器数据，当应用返回前台时，生成的平面仍然会在场景中，然而，如果你的设备改变了位置和角度，ARSession 追踪将不再继续，因此你需要去重启会话</p>
+</li>
+<li><p>ARSCNViewDelegate 执行 ARSessionObserver 协议，这个协议包括当 ARSession 侦测中断或者会话出错时调用的方法</p>
+</li>
+</ul>
+<blockquote>
+<p>extension</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// 1</span><br><span class="line">func session(_ session: ARSession, didFailWithError error: Error) &#123;</span><br><span class="line">  // 2</span><br><span class="line">  guard let label = self.sessionStateLabel else &#123; return &#125;</span><br><span class="line">  showMessage(error.localizedDescription, label: label, seconds: 3)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 3</span><br><span class="line">func sessionWasInterrupted(_ session: ARSession) &#123;</span><br><span class="line">  guard let label = self.sessionStateLabel else &#123; return &#125;</span><br><span class="line">  showMessage(&quot;Session interrupted&quot;, label: label, seconds: 3)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 4</span><br><span class="line">func sessionInterruptionEnded(_ session: ARSession) &#123;</span><br><span class="line">  // 5</span><br><span class="line">  guard let label = self.sessionStateLabel else &#123; return &#125;</span><br><span class="line">  showMessage(&quot;Session resumed&quot;, label: label, seconds: 3)</span><br><span class="line"></span><br><span class="line">  // 6</span><br><span class="line">  DispatchQueue.main.async &#123;</span><br><span class="line">    self.removeAllNodes()</span><br><span class="line">    self.resetLabels()</span><br><span class="line">  &#125;</span><br><span class="line">  // 7</span><br><span class="line">  runSession()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>会话失败时，<code>session(_:, didFailWithError:)</code> 方法被调用。会话会终止并且不会收到任何传感器数据</li>
+<li>因为会话失败，设置 sessionStateLabel 文本为错误信息。在规定的时间内， <code>showMessage(_:, label:, seconds:)</code> 在特定的标签上显示信息</li>
+<li>切换到后台视频捕捉中断时，<code>sessionWasInterrupted(_:)</code> 方法被调用，直到中断结束也没有额外的 frame updates 被发送，在标签中显示 “Session interrupted” 三秒</li>
+<li>会话中断已经结束时 <code>sessionInterruptionEnded(_:)</code> 方法被调用，一旦中断结束，会话将会从最后一个已知的状态开始，如果设备移动，任何锚都会错位，为了避免这种情况，你需要重新开启会话</li>
+<li>显示 “Session resumed” 三秒</li>
+<li>移除之前的生成对象并且重置所有标签，不久后你将执行这些方法，因这些方法更新 UI，因此需要在主线程中调用</li>
+<li>重启会话</li>
+</ol>
+<ul>
+<li>debugPlanes 是一组 SCNNode 对象，在排错模式中能够持续追踪所有生成的水平平面</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var debugPlanes: [SCNNode] = []</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">// 1</span><br><span class="line">func showMessage(_ message: String, label: UILabel, seconds: Double) &#123;</span><br><span class="line">  label.text = message</span><br><span class="line">  label.alpha = 1</span><br><span class="line"></span><br><span class="line">  DispatchQueue.main.asyncAfter(deadline: .now() + seconds) &#123;</span><br><span class="line">    if label.text == message &#123;</span><br><span class="line">      label.text = &quot;&quot;</span><br><span class="line">      label.alpha = 0</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 2</span><br><span class="line">func removeAllNodes() &#123;</span><br><span class="line">  removeDebugPlanes()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 3</span><br><span class="line">func removeDebugPlanes() &#123;</span><br><span class="line">  for debugPlaneNode in self.debugPlanes &#123;</span><br><span class="line">    debugPlaneNode.removeFromParentNode()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  self.debugPlanes = []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>在标签中展示信息，一旦规定的时间过去，重新设置标签能见度和文本</li>
+<li><code>removeAllNodes()</code> 移除场景中存在的所有 SCNNode objects，目前你只能移除生成的水平平面</li>
+<li>移除场景中所有生成的水平平面，并重置 debugPlanes 数组</li>
+</ol>
+<blockquote>
+<p>renderer(_:, didAdd:, for:) 添加到 #if DEBUG 预处理程序末尾</p>
+</blockquote>
+<ul>
+<li>将添加到场景中的水平平面增加到 debugPlanes 数组中去</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.debugPlanes.append(debugPlaneNode)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>替换 <code>sceneView?.session.run(configuration)</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sceneView?.session.run(configuration,</span><br><span class="line">                       options: [.resetTracking, .removeExistingAnchors])</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>通过传入配置和一组 ARSession.RunOptions 来开启会话, 有以下几种 run options：</p>
+<ol>
+<li>resetTracking：会话不会继续之前配置中的设备位置和运动追踪</li>
+<li>removeExistingAnchors：之前配置中任何与会话相关联的锚都会被移除</li>
+</ol>
+<h1 id="Chapter-9-Geomtry-Textrues-and-lighting"><a href="#Chapter-9-Geomtry-Textrues-and-lighting" class="headerlink" title="Chapter 9: Geomtry, Textrues, and lighting"></a>Chapter 9: Geomtry, Textrues, and lighting</h1></div></article></div></main><footer><div class="paginator"><a href="/2018/09/18/arkitSection1/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
