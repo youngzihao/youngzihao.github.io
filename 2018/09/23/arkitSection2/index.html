@@ -140,14 +140,17 @@
 <ul>
 <li>打开应用然后切换到后台，重新打开应用，注意场景中之前生成的水平平面已被移除，应用重置了标签显示正确的指令给用户</li>
 </ul>
-<h2 id="Hit-testing"><a href="#Hit-testing" class="headerlink" title="Hit testing"></a>Hit testing</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var viewCenter: CGPoint &#123;</span><br><span class="line">  let viewBounds = view.bounds</span><br><span class="line">  return CGPoint(x: viewBounds.width / 2.0, y: viewBounds.height / 2.0)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Hit-testing"><a href="#Hit-testing" class="headerlink" title="Hit testing"></a>Hit testing</h2><ul>
+<li>你现在准备将物体放置与被侦测到的水平平面上，你将会使用 ARSCNView 的 hit testing 来侦测屏幕上的用户触摸去找到虚拟场景中他们准备放置物体的地方，屏幕上坐标系中的 2D 点能够通过线段指向 3D 坐标系的任何一点，Hit-testing 就是利用线段找到世界中的物体的过程</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var viewCenter: CGPoint &#123;</span><br><span class="line">  let viewBounds = view.bounds</span><br><span class="line">  return CGPoint(x: viewBounds.width / 2.0, y: viewBounds.height / 2.0)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 1</span><br><span class="line">override func touchesBegan(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?) &#123;</span><br><span class="line">  // 2</span><br><span class="line">  if let hit = sceneView?.hitTest(viewCenter, types: [.existingPlaneUsingExtent]).first &#123;</span><br><span class="line">    // 3</span><br><span class="line">    sceneView?.session.add(anchor: ARAnchor.init(transform: hit.worldTransform))      </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>ARSCNView 使得触控有效，当用户点击场景时，touchesBegan() 方法被调用伴随一系列的 UITouch 对象和一个定义 touch 时间的 UIEvent，使此方法优先给 sceneView 增加一个 ARAnchor</li>
-<li><p>你调用了 sceneVIew 的 <code>hitTest(_:, types:)</code>，这个 hitTest 方法有两个参数，首先取了一个 view 坐标系中的 CGPoint，也就是屏幕的中心， 之后是 ARHitTestResult 要去搜索的类型。这里你使用 existingPlaneUsingExtent 类型，只考虑有限范围大小的平面。</p>
+<li><p>你调用了 sceneVIew 的 <code>hitTest(_:, types:)</code>，这个 hitTest 方法有两个参数，首先取了一个 view 坐标系中的 CGPoint，也就是屏幕的中心，之后是 ARHitTestResult 要去搜索的类型。这里你使用 existingPlaneUsingExtent 类型，只考虑有限范围大小的平面。</p>
 <p><code>hitTest(_:, types:)</code> 的结果是一组所有的 hit test，从最近到最远的，你选择第一个射线相交的第一个 plane，你将从 <code>hitTest(_:, types:)</code>得到结果任何时候，只要屏幕中心落在生成的水平平面上 </p>
 </li>
-<li>在你对象将要被放置的位置增加一个 ARAnchor，ARAnchor 被一个transformation 矩阵所初始化，这个矩阵定义了锚在世界坐标系中的旋转，角度，转化以及大小</li>
+<li>在你对象将要被放置的位置增加一个 ARAnchor，ARAnchor 被一个 transformation 矩阵所初始化，这个矩阵定义了锚在世界坐标系中的旋转，角度，转化以及大小</li>
 </ol>
 <p>当锚被添加时，在委托方法 <code>renderer(_:didAdd:for:)</code> 中 ARSCNView 接受了一个回调，这就是你生成出入口的地方</p>
 <h2 id="Add-crosshairs"><a href="#Add-crosshairs" class="headerlink" title="Add crosshairs"></a>Add crosshairs</h2><ul>
