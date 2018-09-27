@@ -201,4 +201,28 @@
 <ul>
 <li>运行应用，让应用侦测一个水平平面，当 crosshair view 变为绿色时，点击屏幕，你将会看到一个一个巨大的白色立方体</li>
 </ul>
-<h1 id="Chapter-9-Geomtry-Textrues-and-lighting"><a href="#Chapter-9-Geomtry-Textrues-and-lighting" class="headerlink" title="Chapter 9: Geomtry, Textrues, and lighting"></a>Chapter 9: Geomtry, Textrues, and lighting</h1></div></article></div></main><footer><div class="paginator"><a href="/2018/09/25/designPatternSection1/" class="prev">PREV</a><a href="/2018/09/18/arkitSection1/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
+<h1 id="Chapter-9-Geomtry-Textrues-and-lighting"><a href="#Chapter-9-Geomtry-Textrues-and-lighting" class="headerlink" title="Chapter 9: Geomtry, Textrues, and lighting"></a>Chapter 9: Geomtry, Textrues, and lighting</h1><h2 id="The-SceneKit-coordinate-system"><a href="#The-SceneKit-coordinate-system" class="headerlink" title="The SceneKit coordinate system"></a>The SceneKit coordinate system</h2><ul>
+<li>SceneKit 被用于添加 3D 物体到你的场景中去，SceneKit 的内容视图由树形等级制度的结点构成，也被称为 scene graph，一个 scene 由一个根结点组成，它为这个 scene 定义了坐标空间，其他的结点则用可视内容占据空间。每一个结点或者 3D 对象都是 SCNNode 类型的。SCNNode 相较于它的父结点定义了坐标空间的 transform (位置，朝向，大小)。SCNNode 自身没有任何的可视内容</li>
+<li>场景中的根结点定义了 SceneKit 所生成世界的坐标系统，每一个你添加给根结点的子结点都创造了它自己的坐标系统，并且依次被他们的子结点继承。每一个 SceneKit 使用右手定则的坐标系统，默认视野的方向是负 Z 轴 </li>
+</ul>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fvnua4qnhnj31kw1daago.jpg" alt=""></p>
+<ul>
+<li>SCNNode 的位置使用一个 SCNVector3 来进行定义，它能够在父结点的坐标系统中准备定位自己，默认的位置是 zero vector，表示结点被放置于父节点坐标系统的原始位置，SCNVector3 由三组分矢量组成，每一个分矢量是浮点值，代表每一个轴上的坐标</li>
+<li>SCNNode 的朝向，也就是 pitch, yaw, 以及被 eulerAngles 属性定义的 roll angles，这些被一个 SCNVector3 struct 所表达，其中的每一个分矢量都是弧度中的一个角度</li>
+</ul>
+<h2 id="Textures"><a href="#Textures" class="headerlink" title="Textures"></a>Textures</h2><ul>
+<li>SCNNode 它自己没有任何的可视对象，通过给结点增加 SCNGeometry 你才向场景中新添 2D 和 3D 对象</li>
+<li>Geometries 附上可以决定对象外表的 SCNMaterial</li>
+<li>一个 SCNMaterial 中有几个可视的属性，每一个可视属性是一个 SCNMaterialProperty 类的实例，提供了一个纯色，材质，或者其他的 2D 内容。这有许多的可视属性关于基本的阴影，基于环境光的阴影，以及特效，能够使 material 变得更加真实</li>
+<li>With SceneKit, you can also use nodes with attached SCNLight objects to shade the geometries in a scene with light and shadow effects. </li>
+</ul>
+<h2 id="Building-the-portal"><a href="#Building-the-portal" class="headerlink" title="Building the portal"></a>Building the portal</h2><blockquote>
+<p>SCNNodeHelpers.swift</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 1</span><br><span class="line">let SURFACE_LENGTH: CGFloat = 3.0</span><br><span class="line">let SURFACE_HEIGHT: CGFloat = 0.2</span><br><span class="line">let SURFACE_WIDTH: CGFloat = 3.0</span><br><span class="line"></span><br><span class="line">// 2</span><br><span class="line">let SCALEX: Float = 2.0</span><br><span class="line">let SCALEY: Float = 2.0</span><br><span class="line"></span><br><span class="line">// 3</span><br><span class="line">let WALL_WIDTH:CGFloat = 0.2</span><br><span class="line">let WALL_HEIGHT:CGFloat = 3.0</span><br><span class="line">let WALL_LENGTH:CGFloat = 3.0</span><br></pre></td></tr></table></figure>
+<ol>
+<li>You define constants for the dimensions of the floor and ceiling of your portal. The height of the roof and ceiling corresponds to the thickness.</li>
+<li>These are constants to scale and repeat the textures over the surfaces.</li>
+<li>These define the width, height and length of the wall nodes.</li>
+</ol>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/09/25/designPatternSection1/" class="prev">PREV</a><a href="/2018/09/18/arkitSection1/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
