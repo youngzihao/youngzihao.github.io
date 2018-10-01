@@ -11,21 +11,44 @@
 </ol>
 </li>
 </ul>
-<h1 id="Chapter-2-How-to-Read-a-Class-Diagram"><a href="#Chapter-2-How-to-Read-a-Class-Diagram" class="headerlink" title="Chapter 2: How to Read a Class Diagram"></a>Chapter 2: How to Read a Class Diagram</h1><h2 id="class-diagram"><a href="#class-diagram" class="headerlink" title="class diagram"></a>class diagram</h2><ul>
+<h1 id="Chapter-2-How-to-Read-a-Class-Diagram"><a href="#Chapter-2-How-to-Read-a-Class-Diagram" class="headerlink" title="Chapter 2: How to Read a Class Diagram"></a>Chapter 2: How to Read a Class Diagram</h1><h2 id="class-diagram"><a href="#class-diagram" class="headerlink" title="class diagram"></a>class diagram</h2><p><img src="" width="60%" height="60%"></p>
+<ul>
 <li>类图中包含类，协议，属性，方法以及关系</li>
-<li>方框表示一个类<br><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvof9a4w34j31kw0y7qdl.jpg" alt=""></li>
-<li>空心箭头表示类的继承<br><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvof9ru0fuj30ze1dmgt5.jpg" alt=""></li>
-<li>实心箭头表示一个属性<br><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvofa5lj45j30xm1dmtfr.jpg" alt=""></li>
+<li>方框表示一个类</li>
+</ul>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvof9a4w34j31kw0y7qdl.jpg" width="30%" height="30%"></p>
+<ul>
+<li>空心箭头表示类的继承</li>
+</ul>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvof9ru0fuj30ze1dmgt5.jpg" width="30%" height="30%"></p>
+<ul>
+<li>实心箭头表示一个属性</li>
+</ul>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvofa5lj45j30xm1dmtfr.jpg" width="30%" height="30%"></p>
+<ul>
 <li>继承箭头总是指向一个父类，属性箭头总是指向属性</li>
-<li>通过在实心箭头旁边设置范围来表示一对多的关系<br><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fvofi7idb2j318a1dk475.jpg" alt=""></li>
-<li>空心箭头加上虚线表示类遵守协议<br><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvoflw830uj312w1dqdq4.jpg" alt=""></li>
+<li>通过在实心箭头旁边设置范围来表示一对多的关系</li>
+</ul>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fvofi7idb2j318a1dk475.jpg" width="30%" height="30%"></p>
+<ul>
+<li>空心箭头加上虚线表示类遵守协议</li>
+</ul>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvoflw830uj312w1dqdq4.jpg" width="30%" height="30%"></p>
+<ul>
 <li>实心箭头加上虚线表示依赖，通常你能够使用依赖来表现下列以下情况<ol>
-<li>A weak property or delegate.</li>
-<li>An object that’s passed into a method as a parameter, but not held as a property.</li>
-<li>A loose coupling or callback, such as an IBAction from a view to a controller.<br><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fvofq4wgwxj31kw0deail.jpg" alt=""></li>
+<li>一个弱连接的 property 或者 delegate.</li>
+<li>一个对象作为一个参数被传进一个方法中，但本身并不是 property</li>
+<li>一个松散的连接或调用，例如从一个 view 到一个 controller 的IBAction</li>
 </ol>
 </li>
-<li>你可以在类图中声明属性和方法<br><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fvofsjxzwvj31g01dek7q.jpg" alt=""></li>
-<li>Here’s the complete class diagram for a Farmer that has a SheepDog, which is a Dog that delegates to a PetOwning object:<br><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fvoftgoqu0j31kw0z7qk1.jpg" alt=""></li>
 </ul>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fvofq4wgwxj31kw0deail.jpg" width="60%" height="60%"></p>
+<ul>
+<li>你可以在类图中声明属性和方法</li>
+</ul>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fvofsjxzwvj31g01dek7q.jpg" width="30%" height="30%"></p>
+<ul>
+<li>这里是一张完成的类图，一个 Farmer 有一只 SheepDog，它是委托给 which PetOwning 的一种狗</li>
+</ul>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fvoftgoqu0j31kw0z7qk1.jpg" width="50%" height="50%"></p>
 </div></article></div></main><footer><div class="paginator"><a href="/2018/09/23/arkitSection2/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
