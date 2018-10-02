@@ -1,4 +1,31 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> ARKit by Tutorials Section Ⅰ 野生笔记 · Autobiography</title><meta name="description" content="ARKit by Tutorials Section Ⅰ 野生笔记 - null"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Autobiography"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.svg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/youngzihao" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">ARKit by Tutorials Section Ⅰ 野生笔记</h1><div class="post-info">Sep 18, 2018</div><div class="post-content"><h1 id="Chapter-3-Basic-Session-Management"><a href="#Chapter-3-Basic-Session-Management" class="headerlink" title="Chapter 3: Basic Session Management"></a>Chapter 3: Basic Session Management</h1><h2 id="Mark-out-sections"><a href="#Mark-out-sections" class="headerlink" title="Mark out sections"></a>Mark out sections</h2><p><img src="https://i.loli.net/2018/09/22/5ba5ae2c6c97c.png" alt=""></p>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> ARKit by Tutorials Section Ⅰ 野生笔记 · Autobiography</title><meta name="description" content="ARKit by Tutorials Section Ⅰ 野生笔记 - null"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Autobiography"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.svg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/youngzihao" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">ARKit by Tutorials Section Ⅰ 野生笔记</h1><div class="post-info">Sep 18, 2018</div><div class="post-content"><h1 id="Chapter-2-Creat-a-Basic-ARkit-Application"><a href="#Chapter-2-Creat-a-Basic-ARkit-Application" class="headerlink" title="Chapter 2: Creat a Basic ARkit Application"></a>Chapter 2: Creat a Basic ARkit Application</h1><h2 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a>ARSCNView</h2><p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fvtmajg2d7j31kw0r4184.jpg" alt=""></p>
+<ul>
+<li><p>它使你能够将 3D 物体覆盖于摄像头返回的实时视频流，它提供 ARKit 和 SceneKit 无缝的整合 </p>
+</li>
+<li><p>这里同样有另一个提供 ARKit 和 SpriteKit 的整合，也就是 ARSKView，如果使用的是 2D SpriteKit 内容 而不是 3D SceneKit 内容</p>
+</li>
+</ul>
+<h2 id="View-Controller"><a href="#View-Controller" class="headerlink" title="View Controller"></a>View Controller</h2><ul>
+<li>ViewController 直接继承自标准的 UIViewController，提供了很多基础设施，可以管理基于 UIKit 应用的各种视图</li>
+<li>同样采用了ARKit 中的 ARSCNViewDelegate 协议，其中包含了很多方法使你的 SceneKit content 和你的 AR session 同步</li>
+</ul>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fvtmi50w9sj31kw0qh7t5.jpg" alt=""></p>
+<h2 id="Creat-an-asset-catalog"><a href="#Creat-an-asset-catalog" class="headerlink" title="Creat an asset catalog"></a>Creat an asset catalog</h2><ul>
+<li><p>这是一个专门设计给 SceneKit assets 的特殊文件夹，SceneKit 是一个强大的，高端的图形框架，有能力创建和管理所有的图像和声音内容。这个文件夹就是你放置 scenes，textures， 3D models，animation，sound effects 和 music 的地方</p>
+</li>
+<li><p>创建流程</p>
+</li>
+</ul>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fvtn6befp3j31kw0zjnpd.jpg" alt=""></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvtn6p4ha8j31kw0yyngv.jpg" alt=""></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvtn7rt7krj31kw0v5azj.jpg" alt=""></p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fvtn8h3jgtj31kw0z11e8.jpg" alt=""></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvtn8x1p6fj31kw0gbare.jpg" alt=""></p>
+<ul>
+<li>.scnassets 文件扩展名类型告诉 Xcode 文件夹的内容包括与 SceneKit 有关的文件，这个文件夹，以及它的内容，都会成为你应用包的一部分，将会被部署给设备</li>
+</ul>
+<h2 id="Creat-an-new-SceneKit-scene"><a href="#Creat-an-new-SceneKit-scene" class="headerlink" title="Creat an new SceneKit scene"></a>Creat an new SceneKit scene</h2><p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fvtnihmnwoj30qs0w41kx.jpg" alt=""></p>
+<h2 id="Load-SceneKit-scenes"><a href="#Load-SceneKit-scenes" class="headerlink" title="Load SceneKit scenes"></a>Load SceneKit scenes</h2><h1 id="Chapter-3-Basic-Session-Management"><a href="#Chapter-3-Basic-Session-Management" class="headerlink" title="Chapter 3: Basic Session Management"></a>Chapter 3: Basic Session Management</h1><h2 id="Mark-out-sections"><a href="#Mark-out-sections" class="headerlink" title="Mark out sections"></a>Mark out sections</h2><p><img src="https://i.loli.net/2018/09/22/5ba5ae2c6c97c.png" alt=""></p>
 <h4 id="View-Management"><a href="#View-Management" class="headerlink" title="View Management"></a>View Management</h4><ul>
 <li>这里面都是与 View 有关联的，不会修改过多，除了 <code>viewDidLoad()</code>，一直在添加各种初始化函数</li>
 </ul>

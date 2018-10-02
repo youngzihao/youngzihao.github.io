@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2018/09/18/arkitSection1/</loc>
+    
+    <lastmod>2018-10-02T02:07:08.492Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2018/09/25/designPatternSection1/</loc>
     
     <lastmod>2018-10-01T14:08:25.880Z</lastmod>
@@ -12,13 +19,6 @@
     <loc>http://yoursite.com/2018/09/23/arkitSection2/</loc>
     
     <lastmod>2018-10-01T13:29:16.152Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2018/09/18/arkitSection1/</loc>
-    
-    <lastmod>2018-09-25T00:20:27.714Z</lastmod>
     
   </url>
   
