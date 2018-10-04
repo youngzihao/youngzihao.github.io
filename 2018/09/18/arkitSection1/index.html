@@ -6,7 +6,7 @@
 </li>
 </ul>
 <h2 id="View-Controller"><a href="#View-Controller" class="headerlink" title="View Controller"></a>View Controller</h2><ul>
-<li>ViewController 直接继承自标准的 UIViewController，提供了很多基础设施，可以管理基于 UIKit 应用的各种视图</li>
+<li>ViewController 直接继承自标准的 UIViewController，提供了很多基础设施，可用于管理基于 UIKit 应用的各种视图</li>
 <li>同样采用了ARKit 中的 ARSCNViewDelegate 协议，其中包含了很多方法使你的 SceneKit content 和你的 AR session 同步</li>
 </ul>
 <p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fvtmi50w9sj31kw0qh7t5.jpg" alt=""></p>
@@ -19,13 +19,15 @@
 <p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fvtn6befp3j31kw0zjnpd.jpg" alt=""></p>
 <p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvtn6p4ha8j31kw0yyngv.jpg" alt=""></p>
 <p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvtn7rt7krj31kw0v5azj.jpg" alt=""></p>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fvtn8h3jgtj31kw0z11e8.jpg" alt=""></p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvtn8x1p6fj31kw0gbare.jpg" alt=""></p>
 <ul>
 <li>.scnassets 文件扩展名类型告诉 Xcode 文件夹的内容包括与 SceneKit 有关的文件，这个文件夹，以及它的内容，都会成为你应用包的一部分，将会被部署给设备</li>
 </ul>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fvtn8h3jgtj31kw0z11e8.jpg" alt=""></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fvtn8x1p6fj31kw0gbare.jpg" alt=""></p>
 <h2 id="Creat-an-new-SceneKit-scene"><a href="#Creat-an-new-SceneKit-scene" class="headerlink" title="Creat an new SceneKit scene"></a>Creat an new SceneKit scene</h2><p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fvtnihmnwoj30qs0w41kx.jpg" alt=""></p>
-<h2 id="Load-SceneKit-scenes"><a href="#Load-SceneKit-scenes" class="headerlink" title="Load SceneKit scenes"></a>Load SceneKit scenes</h2><h1 id="Chapter-3-Basic-Session-Management"><a href="#Chapter-3-Basic-Session-Management" class="headerlink" title="Chapter 3: Basic Session Management"></a>Chapter 3: Basic Session Management</h1><h2 id="Mark-out-sections"><a href="#Mark-out-sections" class="headerlink" title="Mark out sections"></a>Mark out sections</h2><p><img src="https://i.loli.net/2018/09/22/5ba5ae2c6c97c.png" alt=""></p>
+<h2 id="Load-SceneKit-scenes"><a href="#Load-SceneKit-scenes" class="headerlink" title="Load SceneKit scenes"></a>Load SceneKit scenes</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let scene = SCNScene(named: &quot;PokerDice.scnassets/SimpleScene.scn&quot;)!</span><br></pre></td></tr></table></figure>
+<h2 id="Get-rid-of-status-bar"><a href="#Get-rid-of-status-bar" class="headerlink" title="Get rid of status bar"></a>Get rid of status bar</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">override var prefersStatusBarHidden: Bool &#123;</span><br><span class="line">    return true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Chapter-3-Basic-Session-Management"><a href="#Chapter-3-Basic-Session-Management" class="headerlink" title="Chapter 3: Basic Session Management"></a>Chapter 3: Basic Session Management</h1><h2 id="Mark-out-sections"><a href="#Mark-out-sections" class="headerlink" title="Mark out sections"></a>Mark out sections</h2><p><img src="https://i.loli.net/2018/09/22/5ba5ae2c6c97c.png" alt=""></p>
 <h4 id="View-Management"><a href="#View-Management" class="headerlink" title="View Management"></a>View Management</h4><ul>
 <li>这里面都是与 View 有关联的，不会修改过多，除了 <code>viewDidLoad()</code>，一直在添加各种初始化函数</li>
 </ul>
@@ -54,11 +56,14 @@
 <li>不允许 ARSession 捕捉声音，还有一个属性 isLightEstimationEnabled 之后会学到</li>
 <li>运行 ARSession ，并使用你刚刚设置好的配置，现在实时追踪 6DOF 维度的数据</li>
 </ol>
-<h2 id="Controll-an-ARSession"><a href="#Controll-an-ARSession" class="headerlink" title="Controll an ARSession"></a>Controll an ARSession</h2><ol>
-<li>Pause:<br><code>ARSession.pause()</code></li>
-<li>Resume:<br><code>ARSession.run()</code></li>
-<li>Update:<br><code>ARSession.run(ARSessionConfig)</code></li>
-<li>Reset:<br><code>ARSession.run(_:options:)</code></li>
+<h2 id="Controll-an-ARSession"><a href="#Controll-an-ARSession" class="headerlink" title="Controll an ARSession"></a>Controll an ARSession</h2><ul>
+<li>虽然 ARSession 已经在运行了，但是你需要根据你的应用内发生了什么来管理它的行为</li>
+</ul>
+<ol>
+<li>Pause：暂停 ARSession 的捕捉，可以用于用户切换应用时<br><code>ARSession.pause()</code></li>
+<li>Resume：将会继续一个中断的 session,它将会使用已经存在的配置去重新继续捕捉过程<br><code>ARSession.run()</code></li>
+<li>Update：用于更新配置，也许你想要启用声音采样，首先你需要得到当前的 session，修改它的配置，之后重新用新配置开启会话<br><code>ARSession.run(ARSessionConfig)</code></li>
+<li>Reset：重启 ARSession<br><code>ARSession.run(_:options:)</code></li>
 </ol>
 <h2 id="Update-the-status-message"><a href="#Update-the-status-message" class="headerlink" title="Update the status message"></a>Update the status message</h2><blockquote>
 <p>Properties</p>
@@ -86,15 +91,13 @@
 <li>Session 中断结束</li>
 </ol>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">func sessionInterruptionEnded(_ session: ARSession) &#123;</span><br><span class="line">  trackingStatus = &quot;AR Session Interruption Ended&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="Handle-AR-session-state-changes"><a href="#Handle-AR-session-state-changes" class="headerlink" title="Handle AR session state changes"></a>Handle AR session state changes</h2><blockquote>
+<h2 id="Handle-AR-session-state-changes"><a href="#Handle-AR-session-state-changes" class="headerlink" title="Handle AR session state changes"></a>Handle AR session state changes</h2><ul>
+<li>当 ARSession 运行时，会话能够根据外部条件和事件来改变捕捉状态，每一次会话的状态改变，<code>session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera)</code>方法都会被触发，我们需要监视所有的 ARCamera.trackingStatus 的状态改变。</li>
+</ul>
+<blockquote>
 <p>Session State Management</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">func session(_ session: ARSession,</span><br><span class="line">               cameraDidChangeTrackingState camera: ARCamera) &#123;</span><br><span class="line">    switch camera.trackingState &#123;</span><br><span class="line">    // 1</span><br><span class="line">    case .notAvailable:</span><br><span class="line">      trackingStatus = &quot;Tacking:  Not available!&quot;</span><br><span class="line">      break</span><br><span class="line">    // 2</span><br><span class="line">    case .normal:</span><br><span class="line">      trackingStatus = &quot;Tracking: All good!&quot;</span><br><span class="line">      break</span><br><span class="line">    // 3</span><br><span class="line">    case .limited(let reason):</span><br><span class="line">      switch reason &#123;</span><br><span class="line">      case .excessiveMotion:</span><br><span class="line">        trackingStatus = &quot;Tracking: Limited due to excessive motion!&quot;</span><br><span class="line">      // 3.1</span><br><span class="line">      case .insufficientFeatures:</span><br><span class="line">        trackingStatus = &quot;Tracking: Limited due to insufficient features!&quot;</span><br><span class="line">      // 3.2</span><br><span class="line">      case .initializing:</span><br><span class="line">        trackingStatus = &quot;Tracking: Initializing...&quot;</span><br><span class="line">      // 3.3</span><br><span class="line">      case .relocalizing:</span><br><span class="line">        trackingStatus = &quot;Tracking: Relocalizing...&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<p>当 ARSession 正在运行时，session 受到外部的条件影响会改变追踪状态，每一次状态改变，该方法就会被触发，我们需要监视所有的 ARCamera.trackingStatus 的状态改变。</p>
-<ol>
-<li>notAvailable</li>
-<li>normal</li>
-</ol>
 <h2 id="Show-debug-options"><a href="#Show-debug-options" class="headerlink" title="Show debug options"></a>Show debug options</h2><blockquote>
 <p>initSceneView()</p>
 </blockquote>
@@ -529,4 +532,4 @@
 <li>你只感兴趣玩家触摸的是否是骰子</li>
 <li>如果玩家确实触摸的是一个骰子，把它从场景中移除掉，并且通过增加 diceCount 来达到返回到玩家的手中的目的</li>
 </ol>
-</div></article></div></main><footer><div class="paginator"><a href="/2018/09/23/arkitSection2/" class="prev">PREV</a><a href="/2018/07/08/loser/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/09/23/arkitSection2/" class="prev">上一篇</a><a href="/2018/07/08/loser/" class="next">下一篇</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
