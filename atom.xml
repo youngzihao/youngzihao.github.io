@@ -6,10 +6,31 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-10-05T02:03:49.408Z</updated>
+  <updated>2018-10-07T01:01:05.005Z</updated>
   <id>http://yoursite.com/</id>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ARKit by Tutorials Section Ⅲ 野生笔记</title>
+    <link href="http://yoursite.com/2018/10/05/arkitSection3/"/>
+    <id>http://yoursite.com/2018/10/05/arkitSection3/</id>
+    <published>2018-10-04T16:00:00.000Z</published>
+    <updated>2018-10-07T01:01:05.005Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Chapter-10-Detecting-Placeholders"><a href="#Chapter-10-Detecting-Placeholders" class="headerlink" title="Chapter 10: Detecting Placeholders"></a>Chapter 10: Detecting Placeholders</h1><h2 id="Get-started"><a href="#Get-started" class="headerlink" title="Get started"></a>Get started</h2>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;Chapter-10-Detecting-Placeholders&quot;&gt;&lt;a href=&quot;#Chapter-10-Detecting-Placeholders&quot; class=&quot;headerlink&quot; title=&quot;Chapter 10: Detecting Plac
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>Design Patterns by Tutorials Section Ⅱ 野生笔记</title>
