@@ -1,17 +1,17 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> ARKit by Tutorials Section Ⅰ 野生笔记 · Autobiography</title><meta name="description" content="ARKit by Tutorials Section Ⅰ 野生笔记 - null"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Autobiography"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.svg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/youngzihao" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">ARKit by Tutorials Section Ⅰ 野生笔记</h1><div class="post-info">Sep 18, 2018</div><div class="post-content"><h1 id="Chapter-2-Creat-a-Basic-ARkit-Application"><a href="#Chapter-2-Creat-a-Basic-ARkit-Application" class="headerlink" title="Chapter 2: Creat a Basic ARkit Application"></a>Chapter 2: Creat a Basic ARkit Application</h1><h2 id="ARSCNView"><a href="#ARSCNView" class="headerlink" title="ARSCNView"></a>ARSCNView</h2><p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fvtmajg2d7j31kw0r4184.jpg" alt=""></p>
 <ul>
-<li><p>它使你能够将 3D 物体覆盖于摄像头返回的实时视频流，它提供 ARKit 和 SceneKit 无缝的整合 </p>
+<li><p>使你将 3D 物体覆盖于摄像头返回的实时视频流，并提供 ARKit 和 SceneKit 无缝的整合 </p>
 </li>
-<li><p>这里同样有另一个提供 ARKit 和 SpriteKit 的整合，也就是 ARSKView，如果使用的是 2D SpriteKit 内容 而不是 3D SceneKit 内容</p>
+<li><p>ARSKView，也可以提供 ARKit 和 SpriteKit 的整合，只不过显示的是 2D SpriteKit 内容 而不是 3D SceneKit 内容</p>
 </li>
 </ul>
 <h2 id="View-Controller"><a href="#View-Controller" class="headerlink" title="View Controller"></a>View Controller</h2><ul>
-<li>ViewController 直接继承自标准的 UIViewController，提供了很多基础设施，可用于管理基于 UIKit 应用的各种视图</li>
-<li>同样采用了ARKit 中的 ARSCNViewDelegate 协议，其中包含了很多方法使你的 SceneKit content 和你的 AR session 同步</li>
+<li>ViewController 直接继承自标准的 UIViewController，提供很多基础设施，用于管理基于 UIKit 应用的各种视图</li>
+<li>同样遵循 ARKit 中的 ARSCNViewDelegate 协议，其中很多方法可使你的 SceneKit content 和你的 AR session 同步</li>
 </ul>
 <p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fvtmi50w9sj31kw0qh7t5.jpg" alt=""></p>
 <h2 id="Creat-an-asset-catalog"><a href="#Creat-an-asset-catalog" class="headerlink" title="Creat an asset catalog"></a>Creat an asset catalog</h2><ul>
-<li><p>这是一个专门设计给 SceneKit assets 的特殊文件夹，SceneKit 是一个强大的，高端的图形框架，有能力创建和管理所有的图像和声音内容。这个文件夹就是你放置 scenes，textures， 3D models，animation，sound effects 和 music 的地方</p>
+<li><p>这是一个专门用于 SceneKit assets 的特殊文件夹，SceneKit 是一个强大的的高级图形框架，可以创建和管理所有的图像和声音内容。这个文件夹就是你放置 scenes，textures， 3D models，animation，sound effects 和 music 的地方</p>
 </li>
 <li><p>创建流程</p>
 </li>
@@ -41,7 +41,7 @@
 </li>
 </ul>
 <h4 id="The-ARSCNViewDelegate-protocol-extension"><a href="#The-ARSCNViewDelegate-protocol-extension" class="headerlink" title="The ARSCNViewDelegate protocol extension"></a>The ARSCNViewDelegate protocol extension</h4><ul>
-<li>这个协议被移动到自己的扩展中，清晰地隔离开来，并且使得功能相近的协议在一起，最后提高整个代码可读性</li>
+<li>这个协议被移到自己的扩展中，提高整个代码可读性</li>
 </ul>
 <h2 id="Create-the-configuration"><a href="#Create-the-configuration" class="headerlink" title="Create the configuration"></a>Create the configuration</h2><ul>
 <li><p>ARSCNView view 本质上就是 SceneKit view，它包括一个 ARSession ，负责 ARKit 的运动追踪和图像处理，这是基于 session 的，意味着你必须创建一个 ARSession 实例，通过 “run” 来开启 AR 的追踪过程</p>
@@ -51,18 +51,18 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">func initARSession() &#123;</span><br><span class="line">    guard ARWorldTrackingConfiguration.isSupported else &#123;</span><br><span class="line">      print(&quot;*** ARConfig: AR World Tracking Not Supported&quot;)</span><br><span class="line">      return</span><br><span class="line">    &#125;</span><br><span class="line">    // 1</span><br><span class="line">    let config = ARWorldTrackingConfiguration()</span><br><span class="line">    // 2</span><br><span class="line">    config.worldAlignment = .gravity</span><br><span class="line">    // 3</span><br><span class="line">    config.providesAudioData = false</span><br><span class="line">    // 4</span><br><span class="line">    sceneView.session.run(config)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <ol>
-<li>创建一个 ARWorldTrackingConfiguration 实例，分配给了 config </li>
+<li>创建一个 ARWorldTrackingConfiguration 实例，分配给 config </li>
 <li>设置 worldAlignment 的属性，也就是具体说明虚拟的内容将如何与现实世界相关联</li>
-<li>不允许 ARSession 捕捉声音，还有一个属性 isLightEstimationEnabled 之后会学到</li>
+<li>不允许 ARSession 捕捉声音，还有一个属性 <code>isLightEstimationEnabled 之后会学到</code></li>
 <li>运行 ARSession ，并使用你刚刚设置好的配置，现在实时追踪 6DOF 维度的数据</li>
 </ol>
 <h2 id="Controll-an-ARSession"><a href="#Controll-an-ARSession" class="headerlink" title="Controll an ARSession"></a>Controll an ARSession</h2><ul>
-<li>虽然 ARSession 已经在运行了，但是你需要根据你的应用内发生了什么来管理它的行为</li>
+<li>虽然 ARSession 已经在运行了，但是你需要根据你的应用内的具体情况来管理 ARSession</li>
 </ul>
 <ol>
 <li>Pause：暂停 ARSession 的捕捉，可以用于用户切换应用时<br><code>ARSession.pause()</code></li>
-<li>Resume：将会继续一个中断的 session,它将会使用已经存在的配置去重新继续捕捉过程<br><code>ARSession.run()</code></li>
-<li>Update：用于更新配置，也许你想要启用声音采样，首先你需要得到当前的 session，修改它的配置，之后重新用新配置开启会话<br><code>ARSession.run(ARSessionConfig)</code></li>
+<li>Resume：继续一个中断的 session，使用已经存在的配置去重新继续捕捉过程<br><code>ARSession.run()</code></li>
+<li>Update：用于更新配置，也许你想要启用声音捕捉，首先你需要得到当前的 session，修改它的配置，之后重新用新配置开启会话<br><code>ARSession.run(ARSessionConfig)</code></li>
 <li>Reset：重启 ARSession<br><code>ARSession.run(_:options:)</code></li>
 </ol>
 <h2 id="Update-the-status-message"><a href="#Update-the-status-message" class="headerlink" title="Update the status message"></a>Update the status message</h2><blockquote>

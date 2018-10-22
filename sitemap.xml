@@ -2,16 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yoursite.com/2018/10/05/arkitSection3/</loc>
+    <loc>http://yoursite.com/2018/09/18/arkitSection1/</loc>
     
-    <lastmod>2018-10-07T01:01:05.005Z</lastmod>
+    <lastmod>2018-10-22T07:34:06.110Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2018/10/11/iosApprentice/</loc>
+    
+    <lastmod>2018-10-11T01:43:29.315Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://yoursite.com/2018/10/05/designPatternSection2/</loc>
     
-    <lastmod>2018-10-05T02:03:49.408Z</lastmod>
+    <lastmod>2018-10-08T01:14:04.771Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2018/10/05/arkitSection3/</loc>
+    
+    <lastmod>2018-10-07T01:19:32.950Z</lastmod>
     
   </url>
   
@@ -19,13 +33,6 @@
     <loc>http://yoursite.com/2018/09/25/designPatternSection1/</loc>
     
     <lastmod>2018-10-05T02:03:49.398Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2018/09/18/arkitSection1/</loc>
-    
-    <lastmod>2018-10-04T01:41:49.096Z</lastmod>
     
   </url>
   

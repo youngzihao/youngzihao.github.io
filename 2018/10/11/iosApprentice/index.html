@@ -1,0 +1,33 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> iOS Apprentice 笔记整理 · Autobiography</title><meta name="description" content="iOS Apprentice 笔记整理 - null"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Autobiography"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.svg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/youngzihao" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">iOS Apprentice 笔记整理</h1><div class="post-info">Oct 11, 2018</div><div class="post-content"><h1 id="Section-1-Bull’s-Eye"><a href="#Section-1-Bull’s-Eye" class="headerlink" title="Section 1 Bull’s Eye"></a>Section 1 Bull’s Eye</h1><ol>
+<li>In the app, the button’s Touch Up Inside event is connected to the view controller’s showAlert action. So when the button recognizes it has been tapped, it sends the showAlert message to your view controller.<br>Inside showAlert, the view controller sends another message, addAction, to the UIAlertController object. And to show the alert, the view controller sends the present message.</li>
+<li>sliderMoved() method takes a single parameter, slider, while showAlert() does not have any parameters. If an action method has a parameter, Interface Builder adds a : to the name.</li>
+<li>The difference between the two is that a function doesn’t belong to an object while a method does.</li>
+<li>The viewDidLoad() message is sent by UIKit immediately after the view controller loads its user interface from the storyboard file. At this point, the view controller isn’t visible yet, so this is a good place to set instance variables to their proper initial values. </li>
+<li>Action methods can have a parameter that refers to the UI control that triggered the method. This is convenient when you wish to refer to that object in the method, just as you did here (the object in question being the UISlider).</li>
+<li><p>When I first introduced variables, I mentioned that each variable has a certain lifetime, known as its scope. The scope of a variable depends on where in your program you defined that variable.</p>
+<ul>
+<li>Global scope: These objects exist for the duration of the app and are accessible from anywhere.</li>
+<li>Instance scope: This is for variables such as currentValue. These objects are alive for as long as the object that owns them stays alive.</li>
+<li>Local scope: Objects with a local scope, such as the slider parameter of sliderMoved(), only exist for the duration of that method. As soon as the execution of the program leaves this method, the local objects are no longer accessible.</li>
+</ul>
+<p>In other words, you use instance variables if you want to keep a certain value around, from one action event to the next.</p>
+</li>
+<li><p>The solution is to store a reference to the slider as a new instance variable, just like you did for currentValue. Except that this time, the data type of the variable is not Int, but UISlider. And you’re not using a regular instance variable but a special one called an outlet.</p>
+<p>For now, just remember that a variable for an outlet needs to be declared as @IBOutlet weak var and has an exclamation point at the end. </p>
+</li>
+<li><p>With previous versions of Swift, you had to use external methods such as arc4random_uniform(), but as of Swift 4.2, Swift numeric types such as Int have the built-in ability to generate random numbers. How handy, right?</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var number  = Int.random(in: 1...100)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p> The … part indicates that you want the range to include the closing value (100)</p>
+<ol start="9">
+<li>Recall how I just said that the view controller sends the message to itself. Well, that’s exactly what self means. </li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.startNewRound()</span><br></pre></td></tr></table></figure>
+<p> The receiver is the object you’re sending the message to. If you’re sending the message to yourself, then the receiver is self. But because sending messages to self is very common, you can also leave this special keyword out for many cases.<br>To be fair, this isn’t exactly the first time you’ve called methods. addAction() is a method on UIAlertController and present() is a method that all view controllers have, including yours.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">receiver.methodName(parameters)</span><br></pre></td></tr></table></figure>
+<ol start="10">
+<li>Normally you don’t need to use self to send messages to the view controller, even though it is allowed. The exception: inside closures you do have to use self to refer to the view controller.</li>
+<li>It’s a good idea to hide the status bar while the app is launching. It takes a few seconds for the operating system to load the app into memory and start it up, and during that time the status bar remains visible, unless you hide it using this option. </li>
+</ol>
+<h1 id="Section-2-Checklist"><a href="#Section-2-Checklist" class="headerlink" title="Section 2 Checklist"></a>Section 2 Checklist</h1><h2 id="Chapter-9-Table-Views"><a href="#Chapter-9-Table-Views" class="headerlink" title="Chapter 9: Table Views"></a>Chapter 9: Table Views</h2></div></article></div></main><footer><div class="paginator"><a href="/2018/10/05/arkitSection3/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://yoursite.com"></a> <a href="https://hexo.io/" target="_blank"> </a> <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank"> </a></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
